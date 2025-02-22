@@ -3,6 +3,13 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    private Animator animator;
+    private SpriteRenderer spriteRenderer;
+
+    // Animation parameter names
+    private const string IS_RUNNING = "isRunning";
+    // private const string IS_WALKING = "isWalking"; // Removed
+
     [Header("Movement Parameters")]
     [SerializeField] private float moveSpeed = 8f;
     [SerializeField] private float jumpForce = 16f;
@@ -46,6 +53,8 @@ public class PlayerMovement : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     private void Update()
@@ -66,7 +75,6 @@ public class PlayerMovement : MonoBehaviour
         // Ground and wall checks
         CheckGrounded();
         CheckWallSliding(horizontalInput);
-        //CheckFaceDirection();
 
         // Handle dash input
         if (dashInput && canDash && (canDashInAir || isGrounded))
@@ -141,7 +149,11 @@ public class PlayerMovement : MonoBehaviour
             // Handle horizontal movement
             if (wallJumpTimeCounter <= 0)
             {
+                float previousVelocityX = rb.velocity.x;
                 rb.velocity = new Vector2(horizontalInput * moveSpeed, rb.velocity.y);
+                //Debug.Log($"Movement Update - Previous Velocity: {previousVelocityX}, New Velocity: {rb.velocity.x}, Input: {horizontalInput}");
+
+                UpdateMovementAnimations(horizontalInput);
             }
             else
             {
@@ -160,9 +172,41 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void CheckFaceDirection()
+    private void UpdateMovementAnimations(float horizontalInput)
     {
-        
+        // Debug input and velocity
+        //Debug.Log($"Input: {horizontalInput}, Velocity: {rb.velocity.x}, IsDashing: {isDashing}");
+
+        // Handle sprite flipping
+        if (horizontalInput != 0)
+        {
+            transform.localScale = new Vector3(Mathf.Sign(horizontalInput), 1, 1);
+            //Debug.Log($"Flipping sprite to direction: {Mathf.Sign(horizontalInput)}");
+        }
+
+        // If dashing, treat it like running
+        if (isDashing)
+        {
+            animator.SetBool(IS_RUNNING, true);
+            //Debug.Log("Animation State: Dashing/Running");
+        }
+        else
+        {
+            // If there’s horizontal input, run; otherwise, idle
+            if (Mathf.Abs(horizontalInput) > 0.1f)
+            {
+                animator.SetBool(IS_RUNNING, true);
+                //Debug.Log("Animation State: Running");
+            }
+            else
+            {
+                animator.SetBool(IS_RUNNING, false);
+                //Debug.Log("Animation State: Idle");
+            }
+        }
+
+        // Debug final animation parameter values
+        Debug.Log($"Final Animation Parameters - IsRunning: {animator.GetBool(IS_RUNNING)}");
     }
 
     private void InitiateDash(float horizontalInput, float verticalInput)
@@ -178,9 +222,6 @@ public class PlayerMovement : MonoBehaviour
         {
             dashDirection = new Vector2(facingDirection, 0f);
         }
-
-        // Optional: Add dash effects here
-        // CreateDashEffect();
     }
 
     private void UpdateDash()
@@ -192,15 +233,12 @@ public class PlayerMovement : MonoBehaviour
                 // Apply dash velocity
                 rb.velocity = dashDirection * dashSpeed;
                 dashTimeLeft -= Time.deltaTime;
-
-                // Optional: Create trail effect
-                // CreateTrailEffect();
             }
             else
             {
                 // End dash
                 isDashing = false;
-                // Optional: Maintain some momentum
+                // Optional: maintain some momentum
                 rb.velocity = dashDirection * moveSpeed;
             }
         }
