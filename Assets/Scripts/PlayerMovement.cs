@@ -8,6 +8,10 @@ public class PlayerMovement : MonoBehaviour
 
     // Animation parameter names
     private const string IS_RUNNING = "isRunning";
+    private const string IS_GROUND = "isGround";
+    private const string IS_JUMPING = "isJumping";
+    private const string IS_FALLING = "isFalling";
+    private const string VERTICAL_VELOCITY = "verticalVelocity";
     // private const string IS_WALKING = "isWalking"; // Removed
 
     [Header("Movement Parameters")]
@@ -71,6 +75,11 @@ public class PlayerMovement : MonoBehaviour
         {
             facingDirection = (int)Mathf.Sign(horizontalInput);
         }
+
+        animator.SetFloat(VERTICAL_VELOCITY, rb.velocity.y);
+        animator.SetBool(IS_JUMPING, rb.velocity.y > 0.1f);
+        animator.SetBool(IS_FALLING, rb.velocity.y < -0.1f);
+        animator.SetBool(IS_GROUND, isGrounded);
 
         // Ground and wall checks
         CheckGrounded();
@@ -248,6 +257,7 @@ public class PlayerMovement : MonoBehaviour
     {
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, groundCheckDistance, groundLayer);
         isGrounded = hit.collider != null;
+        animator.SetBool(IS_GROUND, isGrounded);
     }
 
     private void CheckWallSliding(float horizontalInput)
@@ -273,7 +283,7 @@ public class PlayerMovement : MonoBehaviour
         float wallJumpDirection = isWallRight ? -1 : 1;
         rb.velocity = new Vector2(wallJumpDirection * wallJumpForce, wallJumpUpForce);
     }
-
+        
     private void OnDrawGizmos()
     {
         // Draw debug rays for ground and wall checks
