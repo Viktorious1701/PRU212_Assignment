@@ -1536,6 +1536,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerWithWeapon
       objectReference: {fileID: 0}
+    - target: {fileID: 5883888934238944523, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6380319326907858925, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.8

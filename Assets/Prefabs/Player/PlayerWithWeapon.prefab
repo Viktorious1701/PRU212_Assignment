@@ -109,9 +109,9 @@ MonoBehaviour:
   dashDuration: 0.2
   dashCooldown: 1
   canDashInAir: 1
-  coyoteTime: 0.2
+  coyoteTime: 0.1
   wallJumpTime: 0.2
-  jumpBufferTime: 0.2
+  jumpBufferTime: 0.1
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
