@@ -24,6 +24,7 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private GameObject arrowPrefab;
     [SerializeField] private GameObject spellPrefab;
     [SerializeField] private float projectileSpeed = 15f;
+    [SerializeField] private GameObject firePoint;
 
     private float lastAttackTime;
     private WeaponType currentWeapon = WeaponType.BareHand;
@@ -125,7 +126,8 @@ public class PlayerCombat : MonoBehaviour
         animator?.SetTrigger("BowAttack");
 
         // Instantiate arrow
-        GameObject arrow = Instantiate(arrowPrefab, transform.position, transform.rotation);
+        GameObject arrow = Instantiate(arrowPrefab, firePoint.transform.position, firePoint.transform.rotation);
+        arrow.transform.Rotate(0, 0, -90);
         Rigidbody2D arrowRb = arrow.GetComponent<Rigidbody2D>();
         arrowRb.velocity = transform.right * projectileSpeed;
 

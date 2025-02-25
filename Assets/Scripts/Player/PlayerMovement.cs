@@ -215,7 +215,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // Debug final animation parameter values
-        Debug.Log($"Final Animation Parameters - IsRunning: {animator.GetBool(IS_RUNNING)}");
+        //Debug.Log($"Final Animation Parameters - IsRunning: {animator.GetBool(IS_RUNNING)}");
     }
 
     private void InitiateDash(float horizontalInput, float verticalInput)
