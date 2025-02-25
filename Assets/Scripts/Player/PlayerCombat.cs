@@ -29,6 +29,7 @@ public class PlayerCombat : MonoBehaviour
     private float lastAttackTime;
     private WeaponType currentWeapon = WeaponType.BareHand;
     private Animator animator;
+    private bool isFacingRight = true;
 
     private enum WeaponType
     {
@@ -56,6 +57,17 @@ public class PlayerCombat : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha2)) currentWeapon = WeaponType.Sword;
         if (Input.GetKeyDown(KeyCode.Alpha3)) currentWeapon = WeaponType.Bow;
         if (Input.GetKeyDown(KeyCode.Alpha4)) currentWeapon = WeaponType.Spell;
+
+        // This is just an example - you should integrate with your actual player movement code
+        float moveX = Input.GetAxisRaw("Horizontal");
+        if (moveX > 0 && !isFacingRight)
+        {
+            isFacingRight = !isFacingRight;
+        }
+        else if (moveX < 0 && isFacingRight)
+        {
+            isFacingRight = !isFacingRight;
+        }    
     }
 
     private void PerformAttack()
@@ -98,11 +110,15 @@ public class PlayerCombat : MonoBehaviour
 
     private void BareHandAttack()
     {
+
         // Trigger animation
         animator?.SetTrigger("PunchAttack");
 
+        // Get the attack direction based on facing direction
+        Vector3 attackDirection = isFacingRight ? transform.right : -transform.right;
+
         // Check for hits using raycast or overlap
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position + transform.right * bareHandRange, 0.5f);
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position + attackDirection * bareHandRange, 0.5f);
         foreach (Collider2D hit in hits)
         {
             ApplyDamage(hit.gameObject, bareHandDamage);
@@ -113,8 +129,11 @@ public class PlayerCombat : MonoBehaviour
     {
         animator?.SetTrigger("SwordAttack");
 
+        // Get the attack direction based on facing direction
+        Vector3 attackDirection = isFacingRight ? transform.right : -transform.right;
+
         // Create a larger arc for sword attack
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position + transform.right * swordRange, 1f);
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position + attackDirection * swordRange, 1f);
         foreach (Collider2D hit in hits)
         {
             ApplyDamage(hit.gameObject, swordDamage);
@@ -127,9 +146,10 @@ public class PlayerCombat : MonoBehaviour
 
         // Instantiate arrow
         GameObject arrow = Instantiate(arrowPrefab, firePoint.transform.position, firePoint.transform.rotation);
-        arrow.transform.Rotate(0, 0, -90);
+        arrow.transform.Rotate(0, 0, isFacingRight ? -90 : 90); 
         Rigidbody2D arrowRb = arrow.GetComponent<Rigidbody2D>();
-        arrowRb.velocity = transform.right * projectileSpeed;
+        Vector2 direction = isFacingRight ? transform.right : -transform.right;
+        arrowRb.velocity = direction * projectileSpeed;
 
         // Add a script to the arrow to handle damage
         ProjectileController arrowController = arrow.AddComponent<ProjectileController>();
@@ -140,10 +160,20 @@ public class PlayerCombat : MonoBehaviour
     {
         animator?.SetTrigger("SpellAttack");
 
+        // Get the attack direction based on facing direction
+        Vector3 direction = isFacingRight ? transform.right : -transform.right;
+
         // Instantiate spell projectile
-        GameObject spell = Instantiate(spellPrefab, transform.position, transform.rotation);
+        GameObject spell = Instantiate(spellPrefab, firePoint.transform.position, firePoint.transform.rotation);
+
+        // Adjust rotation based on direction
+        if (!isFacingRight)
+        {
+            spell.transform.Rotate(0, 0, 180);
+        }
+
         Rigidbody2D spellRb = spell.GetComponent<Rigidbody2D>();
-        spellRb.velocity = transform.right * projectileSpeed;
+        spellRb.velocity = direction * projectileSpeed;
 
         // Add a script to the spell to handle damage and special effects
         ProjectileController spellController = spell.AddComponent<ProjectileController>();
@@ -164,13 +194,17 @@ public class PlayerCombat : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
+
+        // Determine direction for Gizmos
+        Vector3 direction = isFacingRight ? transform.right : -transform.right;
+
         switch (currentWeapon)
         {
             case WeaponType.BareHand:
-                Gizmos.DrawWireSphere(transform.position + transform.right * bareHandRange, 0.5f);
+                Gizmos.DrawWireSphere(transform.position + direction * bareHandRange, 0.5f);
                 break;
             case WeaponType.Sword:
-                Gizmos.DrawWireSphere(transform.position + transform.right * swordRange, 1f);
+                Gizmos.DrawWireSphere(transform.position + direction * swordRange, 1f);
                 break;
         }
     }

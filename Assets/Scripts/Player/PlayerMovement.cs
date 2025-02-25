@@ -20,6 +20,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float wallJumpForce = 14f;
     [SerializeField] private float wallJumpUpForce = 12f;
     [SerializeField] private float wallSlidingSpeed = 2f;
+    [SerializeField] private GameObject firePoint;
 
     [Header("Dash Parameters")]
     [SerializeField] private float dashSpeed = 20f;
@@ -186,11 +187,11 @@ public class PlayerMovement : MonoBehaviour
         // Debug input and velocity
         //Debug.Log($"Input: {horizontalInput}, Velocity: {rb.velocity.x}, IsDashing: {isDashing}");
 
-        // Handle sprite flipping
+        // Handle sprite    
         if (horizontalInput != 0)
         {
             transform.localScale = new Vector3(Mathf.Sign(horizontalInput), 1, 1);
-            //Debug.Log($"Flipping sprite to direction: {Mathf.Sign(horizontalInput)}");
+            //Debug.Log($"Flipping sprite to direction: {Mathf.Sign(horizontalInput
         }
 
         // If dashing, treat it like running
