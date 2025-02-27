@@ -11,6 +11,7 @@ public class PlayerMovement : MonoBehaviour
     private const string IS_GROUND = "isGround";
     private const string IS_JUMPING = "isJumping";
     private const string IS_FALLING = "isFalling";
+    private const string IS_ON_AIR = "isOnAir";
     private const string VERTICAL_VELOCITY = "verticalVelocity";
 
     [Header("Movement Parameters")]
@@ -187,6 +188,11 @@ public class PlayerMovement : MonoBehaviour
         // Update vertical velocity for blending or other effects
         animator.SetFloat(VERTICAL_VELOCITY, rb.velocity.y);
 
+        if(rb.velocity.y > 0.1f)
+        {
+            animator.SetBool(IS_ON_AIR, true);
+        }
+
         // Handle jump state changes
         if (rb.velocity.y < -0.1f && !isGrounded)
         {
@@ -197,6 +203,7 @@ public class PlayerMovement : MonoBehaviour
         else if (isGrounded)
         {
             // We've landed
+            animator.SetBool(IS_ON_AIR, false);
             animator.SetBool(IS_FALLING, false);
         }
 
@@ -346,6 +353,7 @@ public class PlayerMovement : MonoBehaviour
     {
         rb.velocity = new Vector2(rb.velocity.x, force);
         animator.SetBool(IS_JUMPING, true);
+        animator.SetBool(IS_ON_AIR, true);
         // Optional: Force the immediate transition
         animator.Play("player_jump", 0, 0f);
     }
