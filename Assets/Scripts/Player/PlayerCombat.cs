@@ -139,14 +139,17 @@ public class PlayerCombat : MonoBehaviour
             ApplyDamage(hit.gameObject, swordDamage);
         }
     }
-
     private void BowAttack()
     {
         animator?.SetTrigger("BowAttack");
 
+    }
+
+    public void SpawnArrow()
+    {
         // Instantiate arrow
         GameObject arrow = Instantiate(arrowPrefab, firePoint.transform.position, firePoint.transform.rotation);
-        arrow.transform.Rotate(0, 0, isFacingRight ? -90 : 90); 
+        arrow.transform.Rotate(0, 0, isFacingRight ? -90 : 90);
         Rigidbody2D arrowRb = arrow.GetComponent<Rigidbody2D>();
         Vector2 direction = isFacingRight ? transform.right : -transform.right;
         arrowRb.velocity = direction * projectileSpeed;
@@ -160,18 +163,19 @@ public class PlayerCombat : MonoBehaviour
     {
         animator?.SetTrigger("SpellAttack");
 
+       
+    }
+
+    public void SpawnSpell()
+    {
         // Get the attack direction based on facing direction
         Vector3 direction = isFacingRight ? transform.right : -transform.right;
 
         // Instantiate spell projectile
-        GameObject spell = Instantiate(spellPrefab, firePoint.transform.position, firePoint.transform.rotation);
-
-        // Adjust rotation based on direction
-        if (!isFacingRight)
-        {
-            spell.transform.Rotate(0, 0, 180);
-        }
-
+        Vector3 spawnPosition = firePoint.transform.position;
+        spawnPosition.y -= 0.75f;
+        GameObject spell = Instantiate(spellPrefab, spawnPosition, firePoint.transform.rotation);
+        
         Rigidbody2D spellRb = spell.GetComponent<Rigidbody2D>();
         spellRb.velocity = direction * projectileSpeed;
 
