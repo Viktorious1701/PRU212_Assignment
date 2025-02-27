@@ -12,7 +12,6 @@ public class PlayerMovement : MonoBehaviour
     private const string IS_JUMPING = "isJumping";
     private const string IS_FALLING = "isFalling";
     private const string VERTICAL_VELOCITY = "verticalVelocity";
-    // private const string IS_WALKING = "isWalking"; // Removed
 
     [Header("Movement Parameters")]
     [SerializeField] private float moveSpeed = 8f;
@@ -21,6 +20,12 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float wallJumpUpForce = 12f;
     [SerializeField] private float wallSlidingSpeed = 2f;
     [SerializeField] private GameObject firePoint;
+
+    [Header("Jump Physics")]
+    [SerializeField] private float fallMultiplier = 2.5f; // Makes falling faster
+    [SerializeField] private float lowJumpMultiplier = 2f; // For short jumps
+    [SerializeField] private float jumpApexThreshold = 2f; // Velocity threshold for jump apex control
+    [SerializeField] private float jumpApexBonus = 0.5f; // Extra gravity near apex for snappier jumps
 
     [Header("Dash Parameters")]
     [SerializeField] private float dashSpeed = 20f;
@@ -77,10 +82,11 @@ public class PlayerMovement : MonoBehaviour
             facingDirection = (int)Mathf.Sign(horizontalInput);
         }
 
-        animator.SetFloat(VERTICAL_VELOCITY, rb.velocity.y);
-        animator.SetBool(IS_JUMPING, rb.velocity.y > 0.1f);
-        animator.SetBool(IS_FALLING, rb.velocity.y < -0.1f);
-        animator.SetBool(IS_GROUND, isGrounded);
+        if (rb.velocity.y < -0.1f)
+        {
+            animator.SetBool(IS_JUMPING, false);
+            animator.SetBool(IS_FALLING, true);
+        }
 
         // Ground and wall checks
         CheckGrounded();
@@ -144,12 +150,6 @@ public class PlayerMovement : MonoBehaviour
                 }
             }
 
-            // Cut jump short if button released
-            if (!jumpHeld && rb.velocity.y > 0)
-            {
-                rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
-            }
-
             // Handle wall sliding
             if (isWallSliding)
             {
@@ -161,7 +161,6 @@ public class PlayerMovement : MonoBehaviour
             {
                 float previousVelocityX = rb.velocity.x;
                 rb.velocity = new Vector2(horizontalInput * moveSpeed, rb.velocity.y);
-                //Debug.Log($"Movement Update - Previous Velocity: {previousVelocityX}, New Velocity: {rb.velocity.x}, Input: {horizontalInput}");
 
                 UpdateMovementAnimations(horizontalInput);
             }
@@ -180,43 +179,95 @@ public class PlayerMovement : MonoBehaviour
                 canDash = true;
             }
         }
+        UpdateAnimationStates();
+    }
+
+    private void UpdateAnimationStates()
+    {
+        // Update vertical velocity for blending or other effects
+        animator.SetFloat(VERTICAL_VELOCITY, rb.velocity.y);
+
+        // Handle jump state changes
+        if (rb.velocity.y < -0.1f && !isGrounded)
+        {
+            // We're falling
+            animator.SetBool(IS_JUMPING, false);
+            animator.SetBool(IS_FALLING, true);
+        }
+        else if (isGrounded)
+        {
+            // We've landed
+            animator.SetBool(IS_FALLING, false);
+        }
+
+        // Ground state
+        animator.SetBool(IS_GROUND, isGrounded);
+
+        // Running state
+        float horizontalInput = Input.GetAxisRaw("Horizontal");
+        animator.SetBool(IS_RUNNING, Mathf.Abs(horizontalInput) > 0.1f && isGrounded);
+    }
+
+    private void FixedUpdate()
+    {
+        // Skip gravity modifications if dashing
+        if (!isDashing)
+        {
+            ApplyJumpPhysics();
+        }
+    }
+
+    private void ApplyJumpPhysics()
+    {
+        // Get the current gravity scale
+        float gravityScale = 1f;
+
+        // Apply higher gravity when falling
+        if (rb.velocity.y < 0)
+        {
+            gravityScale = fallMultiplier;
+        }
+        // Apply lower gravity when jumping but not holding the jump button (for short jumps)
+        else if (rb.velocity.y > 0 && !Input.GetButton("Jump"))
+        {
+            gravityScale = lowJumpMultiplier;
+        }
+
+        // Apply extra gravity when near the jump apex for snappier jumps
+        if (Mathf.Abs(rb.velocity.y) < jumpApexThreshold)
+        {
+            gravityScale += jumpApexBonus;
+        }
+
+        // Apply the calculated gravity scale
+        rb.velocity += Vector2.up * Physics2D.gravity.y * (gravityScale - 1) * Time.fixedDeltaTime;
     }
 
     private void UpdateMovementAnimations(float horizontalInput)
     {
-        // Debug input and velocity
-        //Debug.Log($"Input: {horizontalInput}, Velocity: {rb.velocity.x}, IsDashing: {isDashing}");
-
         // Handle sprite    
         if (horizontalInput != 0)
         {
             transform.localScale = new Vector3(Mathf.Sign(horizontalInput), 1, 1);
-            //Debug.Log($"Flipping sprite to direction: {Mathf.Sign(horizontalInput
         }
 
         // If dashing, treat it like running
         if (isDashing)
         {
             animator.SetBool(IS_RUNNING, true);
-            //Debug.Log("Animation State: Dashing/Running");
         }
         else
         {
-            // If there’s horizontal input, run; otherwise, idle
-            if (Mathf.Abs(horizontalInput) > 0.1f)
-            {
-                animator.SetBool(IS_RUNNING, true);
-                //Debug.Log("Animation State: Running");
-            }
-            else
-            {
-                animator.SetBool(IS_RUNNING, false);
-                //Debug.Log("Animation State: Idle");
-            }
+            // If there's horizontal input, run; otherwise, idle
+            //if (Mathf.Abs(horizontalInput) > 0.1f)
+            //{
+            //    animator.SetBool(IS_RUNNING, true);
+            //}
+            //else
+            //{
+            //    animator.SetBool(IS_RUNNING, false);
+            //}
         }
-
-        // Debug final animation parameter values
-        //Debug.Log($"Final Animation Parameters - IsRunning: {animator.GetBool(IS_RUNNING)}");
     }
 
     private void InitiateDash(float horizontalInput, float verticalInput)
@@ -256,9 +307,27 @@ public class PlayerMovement : MonoBehaviour
 
     private void CheckGrounded()
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, groundCheckDistance, groundLayer);
+        // Use a slightly longer ray for detection than for physics
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, groundCheckDistance + 0.1f, groundLayer);
+        bool wasGrounded = isGrounded;
         isGrounded = hit.collider != null;
+
+        // If just landed
+        if (!wasGrounded && isGrounded)
+        {
+            animator.SetBool(IS_FALLING, false);
+            animator.SetBool(IS_JUMPING, false);
+        }
+
         animator.SetBool(IS_GROUND, isGrounded);
+
+        if (isGrounded && animator.GetBool(IS_FALLING))
+        {
+            animator.SetBool(IS_FALLING, false);
+            // Force immediate transition to idle/run
+            string targetAnim = animator.GetBool(IS_RUNNING) ? "player_run" : "player_idle_sword";
+            animator.Play(targetAnim, 0, 0f);
+        }
     }
 
     private void CheckWallSliding(float horizontalInput)
@@ -276,6 +345,9 @@ public class PlayerMovement : MonoBehaviour
     private void Jump(float force)
     {
         rb.velocity = new Vector2(rb.velocity.x, force);
+        animator.SetBool(IS_JUMPING, true);
+        // Optional: Force the immediate transition
+        animator.Play("player_jump", 0, 0f);
     }
 
     private void WallJump()
@@ -283,8 +355,9 @@ public class PlayerMovement : MonoBehaviour
         wallJumpTimeCounter = wallJumpTime;
         float wallJumpDirection = isWallRight ? -1 : 1;
         rb.velocity = new Vector2(wallJumpDirection * wallJumpForce, wallJumpUpForce);
+        animator.SetBool(IS_JUMPING, true);
     }
-        
+
     private void OnDrawGizmos()
     {
         // Draw debug rays for ground and wall checks
@@ -292,5 +365,10 @@ public class PlayerMovement : MonoBehaviour
         Gizmos.DrawRay(transform.position, Vector2.down * groundCheckDistance);
         Gizmos.DrawRay(transform.position, Vector2.right * wallCheckDistance);
         Gizmos.DrawRay(transform.position, Vector2.left * wallCheckDistance);
+    }
+
+    public bool IsFacingRight()
+    {
+        return facingDirection == 1;
     }
 }
