@@ -22,28 +22,28 @@ AnimationClip:
     curve:
     - time: 0
       value: {fileID: 21300000, guid: a5b31c1df722d934980a5ea2c7333885, type: 3}
-    - time: 0.06666667
+    - time: 0.16666667
       value: {fileID: 21300000, guid: dacee52b696d4a047967527528cf2742, type: 3}
-    - time: 0.15
+    - time: 0.33333334
       value: {fileID: 21300000, guid: cae265db44456ad4db36308534cfae3b, type: 3}
-    - time: 0.21666667
+    - time: 0.41666666
       value: {fileID: 21300000, guid: 1612d45f6afc2a84b89797dc9dba1b87, type: 3}
-    - time: 0.3
-      value: {fileID: 21300000, guid: a0fc3e07ab0f92d44a2ece0fb487f1bd, type: 3}
-    - time: 0.36666667
-      value: {fileID: 21300000, guid: 376d5c446de41674c9a3a714acfe8504, type: 3}
-    - time: 0.43333334
-      value: {fileID: 21300000, guid: ce3d7d3a95a39fa4cb4d525587d37f82, type: 3}
-    - time: 0.51666665
-      value: {fileID: 21300000, guid: f3fe0124c8e461d43b6b0d97db6739fb, type: 3}
     - time: 0.5833333
+      value: {fileID: 21300000, guid: a0fc3e07ab0f92d44a2ece0fb487f1bd, type: 3}
+    - time: 0.75
+      value: {fileID: 21300000, guid: 376d5c446de41674c9a3a714acfe8504, type: 3}
+    - time: 0.8333333
+      value: {fileID: 21300000, guid: ce3d7d3a95a39fa4cb4d525587d37f82, type: 3}
+    - time: 1
+      value: {fileID: 21300000, guid: f3fe0124c8e461d43b6b0d97db6739fb, type: 3}
+    - time: 1.1666666
       value: {fileID: 21300000, guid: cf0c9d1380cbc8d48b41374f5349d668, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
     script: {fileID: 0}
     flags: 2
-  m_SampleRate: 60
+  m_SampleRate: 12
   m_WrapMode: 0
   m_Bounds:
     m_Center: {x: 0, y: 0, z: 0}
@@ -74,7 +74,7 @@ AnimationClip:
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 0.59999996
+    m_StopTime: 1.25
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
@@ -94,7 +94,7 @@ AnimationClip:
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
   m_Events:
-  - time: 0.51666665
+  - time: 1
     functionName: SpawnArrow
     data: 
     objectReferenceParameter: {fileID: 0}

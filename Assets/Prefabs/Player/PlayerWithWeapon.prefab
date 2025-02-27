@@ -45,6 +45,7 @@ GameObject:
   - component: {fileID: 6606685896978943907}
   - component: {fileID: 4393832610289218965}
   - component: {fileID: 5183692119057944404}
+  - component: {fileID: 2558119078521775459}
   m_Layer: 3
   m_Name: PlayerWithWeapon
   m_TagString: Untagged
@@ -138,6 +139,10 @@ MonoBehaviour:
   wallJumpUpForce: 12
   wallSlidingSpeed: 2
   firePoint: {fileID: 0}
+  fallMultiplier: 2.5
+  lowJumpMultiplier: 2
+  jumpApexThreshold: 2
+  jumpApexBonus: 0.5
   dashSpeed: 20
   dashDuration: 0.2
   dashCooldown: 1
@@ -243,3 +248,31 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2558119078521775459
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5883888934238944523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0681fd50ef03bba4e91199b31f8e8be1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bareHandDamage: 5
+  swordDamage: 15
+  bowDamage: 10
+  spellDamage: 20
+  bareHandCooldown: 0.3
+  swordCooldown: 0.5
+  bowCooldown: 1
+  spellCooldown: 1.5
+  bareHandRange: 0.75
+  swordRange: 1
+  bowRange: 10
+  spellRange: 20
+  arrowPrefab: {fileID: 0}
+  spellPrefab: {fileID: 5853618178704275592, guid: 83cf04ce4b112be4b81b8fa9b8aa61f7, type: 3}
+  projectileSpeed: 49.8
+  firePoint: {fileID: 1719411333002057815}

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BackgroundController : MonoBehaviour
 {
-    private float startPos, length;
+    private float startPos, length, height, startPosY;
     public GameObject cam;
     public float parallaxEffect; // The speed of the background move relatively with the camera
 
@@ -13,7 +13,9 @@ public class BackgroundController : MonoBehaviour
     void Start()
     {
         startPos = transform.position.x;
+        startPosY = transform.position.y;
         length = GetComponent<SpriteRenderer>().bounds.size.x;
+        height = GetComponent<SpriteRenderer>().bounds.size.y;
     }
 
     
@@ -23,7 +25,10 @@ public class BackgroundController : MonoBehaviour
         float distance = (cam.transform.position.x * parallaxEffect);
         float movement = cam.transform.position.x * (1 - parallaxEffect);
 
-        transform.position = new Vector3(startPos + distance, transform.position.y, transform.position.z);
+        float distanceY = (cam.transform.position.y * parallaxEffect);
+        float movementY = cam.transform.position.y * (1 - parallaxEffect);
+
+        transform.position = new Vector3(startPos + distance, startPosY + distanceY, transform.position.z);
 
         if(movement > startPos + length)
         {
@@ -32,6 +37,15 @@ public class BackgroundController : MonoBehaviour
         else if(movement < startPos - length)
         {
             startPos -= length;
-        }   
+        }
+        
+        if(movementY > startPosY + height)
+        {
+            startPosY += height;
+        }
+        else if(movementY < startPosY - height)
+        {
+            startPosY -= height;
+        }
     }
 }
