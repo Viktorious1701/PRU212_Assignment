@@ -1,15 +1,7 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-
-
-// IMPORTANT Public METHODS and their use
-
-// Say() can take a string or string array, and proceeds to print it one character at a time. It can also take a character name, and a line delay.
-// Skip() skips to the end of the line and then running skip again with 1 second of the first takes you to the next line in the index. 
-// Clear() clears the stored data and closes the text box. 
-
+using UnityEngine.UI;
 
 public class Dialogue : MonoBehaviour
 {
@@ -17,21 +9,36 @@ public class Dialogue : MonoBehaviour
     public TextMeshProUGUI textBox;
     public TextMeshProUGUI nameBox;
     public Animator animController;
-
-    
+    public Button skipButton;           // Reference to the UI skip button
+    public TextMeshProUGUI skipPrompt;  // Reference to the "Press F to skip" text
 
     [Header("Input")]
     [HideInInspector]
     public string[] sentences;
     private int index;
-    public float typingSpeed = 0.02f;
-    public float duration = 4f;
+    public float typingSpeed = 0.2f;    // Set to 0.2 as per your requirement
+    public float duration = 4f;         // Set to 4 as per your requirement
     private bool active = true;
-    
+    private bool isDialogueActive = false;  // Tracks if dialogue is currently active
+
+    private void Awake()
+    {
+        // Set up the skip button to call Skip() when clicked
+        if (skipButton != null)
+            skipButton.onClick.AddListener(Skip);
+    }
+
+    private void Update()
+    {
+        // Allow skipping with the "F" key when dialogue is active
+        if (isDialogueActive && Input.GetKeyDown(KeyCode.F))
+        {
+            Skip();
+        }
+    }
 
     IEnumerator Type()
     {
-        
         animController.ResetTrigger("Disappear");
         textBox.text = "";
         foreach (var letter in sentences[index].ToCharArray())
@@ -41,26 +48,27 @@ public class Dialogue : MonoBehaviour
                 textBox.text += letter;
                 yield return new WaitForSeconds(typingSpeed);
                 animController.ResetTrigger("Appear");
-
             }
             else
             {
                 textBox.text = sentences[index];
+                break; // Exit the loop if skipping to show full text
             }
-
         }
-
     }
 
     IEnumerator TypeMany()
     {
-        for (int i = 0; i < sentences.Length+1; i++)
+        Debug.Log("TypeMany started. sentences: " + (sentences != null ? sentences.Length.ToString() : "null") +
+                  ", animController: " + (animController != null ? "set" : "null") +
+                  ", skipButton: " + (skipButton != null ? "set" : "null"));
+        for (int i = 0; i < sentences.Length + 1; i++)
         {
-            
+            Debug.Log("Loop iteration: " + i + ", index: " + index + ", sentences null? " + (sentences == null));
             if (index < sentences.Length)
             {
                 StartCoroutine(Type());
-            }            
+            }
             yield return new WaitForSeconds(duration);
             if (index < sentences.Length)
             {
@@ -68,19 +76,14 @@ public class Dialogue : MonoBehaviour
             }
             else
             {
-                
-                //Debug.Log("Should Shrink");
                 animController.SetTrigger("Disappear");
-                
+                isDialogueActive = false;
+                skipButton.gameObject.SetActive(false);
+                skipPrompt.gameObject.SetActive(false);
             }
-            
         }
-        
     }
 
-
-
-    //Character Socket
     public void UpdateName(string name = null)
     {
         if (name == null)
@@ -97,74 +100,65 @@ public class Dialogue : MonoBehaviour
         }
     }
 
-
     public void Say(string _text, string _characterName = null, float _duration = 0)
     {
+        isDialogueActive = true;
         animController.SetTrigger("Appear");
-        string[] phrase = { _text};
+        string[] phrase = { _text };
         sentences = phrase;
-
         index = 0;
-        if (_duration > 0)
-        {
-            duration = _duration;
-        }
+        if (_duration > 0) duration = _duration;
         UpdateName(_characterName);
+        skipButton.gameObject.SetActive(true);
+        skipPrompt.gameObject.SetActive(true);
         StartCoroutine(Type());
     }
 
     public void Say(string[] _text, string _characterName = null, float _duration = 0)
     {
+        isDialogueActive = true;
         animController.SetTrigger("Appear");
         sentences = _text;
         index = 0;
-        if (_duration>0)
-        {
-            duration = _duration;
-        }
+        if (_duration > 0) duration = _duration;
         UpdateName(_characterName);
+        skipButton.gameObject.SetActive(true);
+        skipPrompt.gameObject.SetActive(true);
         StartCoroutine(TypeMany());
     }
 
-
     public void Skip()
     {
-        if (index < sentences.Length-1)
+        if (index < sentences.Length - 1)
         {
             if (active)
             {
-                active = false;
-                Invoke("SkipInvoke", 1f);
+                active = false; // Show full current line
             }
             else
             {
-                index++;
+                index++;        // Move to next line
                 StartCoroutine(Type());
-                Invoke("SkipInvoke", 1f);
+                active = true;
             }
         }
         else
         {
-            //Debug.Log("Should Shrink");
             animController.SetTrigger("Disappear");
+            isDialogueActive = false;
+            skipButton.gameObject.SetActive(false);
+            skipPrompt.gameObject.SetActive(false);
         }
-           
-    }
-
-    private void SkipInvoke()
-    {
-        active = true;
     }
 
     public void Clear()
     {
+        isDialogueActive = false;
         animController.SetTrigger("Disappear");
         sentences = null;
         UpdateName();
         textBox.text = "";
-
+        skipButton.gameObject.SetActive(false);
+        skipPrompt.gameObject.SetActive(false);
     }
 }
-
-
-
