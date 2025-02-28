@@ -161,7 +161,7 @@ public class PlayerCombat : MonoBehaviour
     private IEnumerator ResetComboAfterAnimation()
     {
         // Wait for animation to complete (approx)
-        float animationTime = 0.6f; // You may want to adjust this based on your actual animation length
+        float animationTime = 0.8f; // You may want to adjust this based on your actual animation length
         yield return new WaitForSeconds(animationTime);
 
         // Don't reset combo if player attacked again during animation
@@ -269,7 +269,15 @@ public class PlayerCombat : MonoBehaviour
 
     private void BowAttack()
     {
-        animator?.SetTrigger("BowAttack");
+        if(playerMovement.IsGrounded())
+        {
+			animator?.SetTrigger("BowAttack");
+		}
+		else
+        {
+			animator?.SetTrigger("BowAir");
+		}
+       
         // Reset combo when using bow (bows don't typically have melee combos)
         ResetCombo();
     }
@@ -422,7 +430,7 @@ public class PlayerCombat : MonoBehaviour
         if (isComboWindowOpen && currentComboCount < 3)
         {
             // Reset only if the player didn't input a new attack
-            if (Time.time - lastAttackTime > 0.4f)
+            if (Time.time - lastAttackTime > 0.6f)
             {
                 ResetCombo();
             }
