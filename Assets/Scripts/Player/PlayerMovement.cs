@@ -379,4 +379,9 @@ public class PlayerMovement : MonoBehaviour
     {
         return facingDirection == 1;
     }
+
+    public bool IsGrounded()
+	{
+		return isGrounded;
+	}
 }
