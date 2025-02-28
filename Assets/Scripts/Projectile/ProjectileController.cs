@@ -4,31 +4,53 @@ public class ProjectileController : MonoBehaviour
 {
     private float damage;
     private float range;
-    private Vector3 startPosition;
+    private float distanceTravelled = 0f;
+    private Vector3 lastPosition;
+    private GameObject owner;
+    public float speed = 10f; // Adjust in Inspector
 
-    public void Initialize(float damage, float range)
+    public void Initialize(float damageAmount, float maxRange, GameObject source)
     {
-        this.damage = damage;
-        this.range = range;
-        startPosition = transform.position;
+        damage = damageAmount;
+        range = maxRange;
+        lastPosition = transform.position;
+        owner = source;
+
     }
 
     private void Update()
     {
-        // Destroy projectile if it exceeds range
-        if (Vector3.Distance(startPosition, transform.position) > range)
+        //// Move projectile via transform (works with Kinematic or no Rigidbody)
+        //transform.position += transform.right * speed * Time.deltaTime;
+
+        //// Calculate distance traveled
+        //distanceTravelled += Vector3.Distance(transform.position, lastPosition);
+        //lastPosition = transform.position;
+
+        // Destroy if exceeded range
+        if (distanceTravelled >= range)
         {
             Destroy(gameObject);
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D collider)
     {
-        Health healthComponent = other.GetComponent<Health>();
-        if (healthComponent != null)
-        {
-            healthComponent.TakeDamage(damage);
-        }
+        // Skip if hitting the owner
+        if (owner != null && collider.gameObject == owner)
+            return;
+
+        // Apply damage
+        DamageInfo damageInfo = new DamageInfo(
+            damage,
+            owner,
+            transform.position,
+            transform.forward
+        );
+
+        DamageSystem.ApplyDamage(collider.gameObject, damageInfo);
+
+        // Destroy projectile on hit
         Destroy(gameObject);
     }
 }

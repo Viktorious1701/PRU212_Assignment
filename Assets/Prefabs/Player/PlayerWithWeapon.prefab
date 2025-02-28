@@ -243,12 +243,12 @@ MonoBehaviour:
   swordDamage: 15
   bowDamage: 10
   spellDamage: 20
-  bareHandCooldown: 0.3
-  swordCooldown: 0.5
+  bareHandCooldown: 0
+  swordCooldown: 0
   bowCooldown: 1
   spellCooldown: 1.5
   bareHandRange: 0.75
-  swordRange: 1
+  swordRange: 1.5
   bowRange: 10
   spellRange: 20
   comboTimeWindow: 0.8

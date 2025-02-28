@@ -26,9 +26,9 @@ AnimationClip:
       value: {fileID: 21300000, guid: fc6a971d89501294386a20ca1522a051, type: 3}
     - time: 0.13333334
       value: {fileID: 21300000, guid: 093e838eff84f0c418e278bbb387269f, type: 3}
-    - time: 0.33333334
+    - time: 0.2
       value: {fileID: 21300000, guid: 46f45e45accdaf74e971c99c076d78d4, type: 3}
-    - time: 0.4
+    - time: 0.33333334
       value: {fileID: 21300000, guid: 514407e9d9018b94c9e9ec12a56eec91, type: 3}
     - time: 0.53333336
       value: {fileID: 21300000, guid: d90000a07b681c54a89dabda99741079, type: 3}
@@ -92,14 +92,14 @@ AnimationClip:
     floatParameter: 0
     intParameter: 3
     messageOptions: 0
-  - time: 0.26666668
+  - time: 0.2
     functionName: OnComboWindowOpen
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0.53333336
+  - time: 0.46666667
     functionName: OnComboWindowClose
     data: 
     objectReferenceParameter: {fileID: 0}

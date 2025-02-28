@@ -46,6 +46,7 @@ public class PlayerCombat : MonoBehaviour
     private float comboTimer = 0f;
     private bool isInCombo = false;
     private Coroutine resetComboCoroutine;
+    private bool hasDealtDamage = false;
 
     private enum WeaponType
     {
@@ -104,68 +105,104 @@ public class PlayerCombat : MonoBehaviour
     {
         float currentCooldown = GetCurrentCooldown();
 
-        // Only check cooldown if not in a combo
-        if (!isInCombo && Time.time - lastAttackTime < currentCooldown)
+        // Allow attack if not in combo and off cooldown, or if combo just finished
+        if (!isInCombo && Time.time - lastAttackTime < currentCooldown && currentComboCount != 0)
         {
             Debug.Log("Attack on cooldown");
             return;
         }
-            
 
-       // If not in a combo or combo has timed out, start fresh
-    if (!isInCombo || comboTimer <= 0)
-    {
-        ResetCombo(); // Ensure clean slate
-        currentComboCount = 1; // Start at 1
-        isInCombo = true;
-        comboTimer = comboTimeWindow;
-    }
-    // If in combo and the combo window is open, proceed to next attack
-    else if (isInCombo && isComboWindowOpen && currentComboCount < 3)
-    {
-        currentComboCount++;
-        comboTimer = comboTimeWindow; // Reset timer for next attack
-    }
-    // If combo window isn’t open or we’re at max combo, don’t increment
-    else
-    {
-        return; // Ignore input until the combo window opens or combo resets
+        // Prevent new attack until damage is dealt, unless starting a new combo
+        if (isInCombo && isComboWindowOpen && !hasDealtDamage && currentComboCount > 0)
+        {
+            Debug.Log("Waiting for damage to be applied");
+            return;
+        }
+
+        lastAttackTime = Time.time;
+        hasDealtDamage = false; // Reset for the new attack
+
+        if (!isInCombo || comboTimer <= 0)
+        {
+            currentComboCount = 0;
+            isInCombo = true;
+        }
+
+        if (isComboWindowOpen || currentComboCount == 0)
+        {
+            currentComboCount = Mathf.Min(currentComboCount + 1, 3);
+            Debug.Log($"Combo count: {currentComboCount}");
+            comboTimer = comboTimeWindow;
+
+            if (resetComboCoroutine != null)
+            {
+                StopCoroutine(resetComboCoroutine);
+            }
+            resetComboCoroutine = StartCoroutine(ResetComboAfterAnimation());
+
+            switch (currentWeapon)
+            {
+                case WeaponType.BareHand:
+                    BareHandAttack();
+                    break;
+                case WeaponType.Sword:
+                    SwordAttack();
+                    break;
+                case WeaponType.Bow:
+                    BowAttack();
+                    break;
+                case WeaponType.Spell:
+                    SpellAttack();
+                    break;
+            }
+        }
     }
 
-    lastAttackTime = Time.time;
-
-    // Stop any existing reset coroutine
-    if (resetComboCoroutine != null)
+    public void OnAttackPoint(int comboStep)
     {
-        StopCoroutine(resetComboCoroutine);
-    }
-    resetComboCoroutine = StartCoroutine(ResetComboAfterAnimation());
+        Debug.Log($"Attack point hit for combo step {comboStep}");
+        hasDealtDamage = true; // Mark damage as dealt
+
+        // Rest of your OnAttackPoint logic...
+        Vector3 attackDirection = isFacingRight ? transform.right : -transform.right;
+        float damage = 0f;
+        float attackRadius = 0f;
+        float attackRange = 0f;
 
         switch (currentWeapon)
         {
             case WeaponType.BareHand:
-                BareHandAttack();
+                damage = bareHandDamage * Mathf.Pow(bareHandComboMultiplier, comboStep - 1);
+                attackRadius = comboStep == 3 ? 0.7f : 0.5f;
+                attackRange = bareHandRange;
                 break;
             case WeaponType.Sword:
-                SwordAttack();
-                break;
-            case WeaponType.Bow:
-                BowAttack();
-                break;
-            case WeaponType.Spell:
-                SpellAttack();
+                damage = swordDamage * Mathf.Pow(swordComboMultiplier, comboStep - 1);
+                attackRadius = comboStep == 3 ? 1.5f : 1f;
+                attackRange = swordRange;
                 break;
         }
-    }
 
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position + attackDirection * attackRange, attackRadius);
+        foreach (Collider2D hit in hits)
+        {
+            if (hit.gameObject == gameObject) continue;
+            ApplyDamage(hit.gameObject, damage);
+            Rigidbody2D hitRigidbody = hit.GetComponent<Rigidbody2D>();
+            if (hitRigidbody != null && comboStep == 3)
+            {
+                float knockbackForce = 5f;
+                hitRigidbody.AddForce(attackDirection * knockbackForce, ForceMode2D.Impulse);
+            }
+        }
+        SpawnHitEffect(transform.position + attackDirection * attackRange);
+    }
     private IEnumerator ResetComboAfterAnimation()
     {
-        // Wait for animation to complete (approx)
-        float animationTime = 0.8f; // You may want to adjust this based on your actual animation length
-        yield return new WaitForSeconds(animationTime);
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        yield return new WaitForSeconds(stateInfo.length * 0.9f); // Wait for 90% of the animation
 
-        // Don't reset combo if player attacked again during animation
-        if (comboTimer <= 0)
+        if (comboTimer <= 0) // Only reset if no new attack was input
         {
             ResetCombo();
         }
@@ -184,6 +221,16 @@ public class PlayerCombat : MonoBehaviour
         }
     }
 
+    private void ResetTriggers()
+    {
+        animator.ResetTrigger("SwordAttack1");
+        animator.ResetTrigger("SwordAttack2");
+        animator.ResetTrigger("SwordAttack3");
+        animator.ResetTrigger("PunchAttack1");
+        animator.ResetTrigger("PunchAttack2");
+        animator.ResetTrigger("PunchAttack3");
+    }
+
     private float GetCurrentCooldown()
     {
         switch (currentWeapon)
@@ -198,6 +245,7 @@ public class PlayerCombat : MonoBehaviour
 
     private void BareHandAttack()
     {
+        ResetTriggers();
         // Trigger appropriate combo animation
         switch (currentComboCount)
         {
@@ -211,28 +259,11 @@ public class PlayerCombat : MonoBehaviour
                 animator?.SetTrigger("PunchAttack3");
                 break;
         }
-
-        // Get the attack direction based on facing direction
-        Vector3 attackDirection = isFacingRight ? transform.right : -transform.right;
-
-        // Calculate damage based on combo
-        float damage = bareHandDamage;
-        if (currentComboCount > 1)
-        {
-            // Increase damage for each combo step
-            damage *= Mathf.Pow(bareHandComboMultiplier, currentComboCount - 1);
-        }
-
-        // Check for hits using raycast or overlap
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position + attackDirection * bareHandRange, 0.5f);
-        foreach (Collider2D hit in hits)
-        {
-            ApplyDamage(hit.gameObject, damage);
-        }
     }
 
     private void SwordAttack()
     {
+        ResetTriggers();
         // Trigger appropriate combo animation
         switch (currentComboCount)
         {
@@ -246,38 +277,19 @@ public class PlayerCombat : MonoBehaviour
                 animator?.SetTrigger("SwordAttack3");
                 break;
         }
-
-        // Get the attack direction based on facing direction
-        Vector3 attackDirection = isFacingRight ? transform.right : -transform.right;
-
-        // Calculate damage based on combo
-        float damage = swordDamage;
-        if (currentComboCount > 1)
-        {
-            // Increase damage for each combo step
-            damage *= Mathf.Pow(swordComboMultiplier, currentComboCount - 1);
-        }
-
-        // Create a larger arc for sword attack
-        float attackRadius = currentComboCount == 3 ? 1.5f : 1f; // Make the last attack in combo have a wider arc
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position + attackDirection * swordRange, attackRadius);
-        foreach (Collider2D hit in hits)
-        {
-            ApplyDamage(hit.gameObject, damage);
-        }
     }
 
     private void BowAttack()
     {
-        if(playerMovement.IsGrounded())
+        if (playerMovement.IsGrounded())
         {
-			animator?.SetTrigger("BowAttack");
-		}
-		else
+            animator?.SetTrigger("BowAttack");
+        }
+        else
         {
-			animator?.SetTrigger("BowAir");
-		}
-       
+            animator?.SetTrigger("BowAir");
+        }
+
         // Reset combo when using bow (bows don't typically have melee combos)
         ResetCombo();
     }
@@ -293,7 +305,7 @@ public class PlayerCombat : MonoBehaviour
 
         // Add a script to the arrow to handle damage
         ProjectileController arrowController = arrow.AddComponent<ProjectileController>();
-        arrowController.Initialize(bowDamage, bowRange);
+        arrowController.Initialize(bowDamage, bowRange, gameObject);
     }
 
     private void SpellAttack()
@@ -318,17 +330,27 @@ public class PlayerCombat : MonoBehaviour
 
         // Add a script to the spell to handle damage and special effects
         ProjectileController spellController = spell.AddComponent<ProjectileController>();
-        spellController.Initialize(spellDamage, spellRange);
+        spellController.Initialize(spellDamage, spellRange, gameObject);
     }
 
+    // Modified to use the damage system
     private void ApplyDamage(GameObject target, float damage)
     {
-        // Get the health component of the target
-        Health healthComponent = target.GetComponent<Health>();
-        if (healthComponent != null)
-        {
-            healthComponent.TakeDamage(damage);
-        }
+        if (target == null) return;
+
+        // Get attack direction
+        Vector3 attackDirection = isFacingRight ? transform.right : -transform.right;
+
+        // Create damage info
+        DamageInfo damageInfo = new DamageInfo(
+            damage,
+            gameObject,
+            target.transform.position,
+            attackDirection
+        );
+
+        // Apply damage through the damage system
+        DamageSystem.ApplyDamage(target, damageInfo);
     }
 
     // Helper method to visualize attack ranges in the editor
@@ -352,99 +374,28 @@ public class PlayerCombat : MonoBehaviour
         }
     }
 
-    // Public method to check if player is currently in an attack animation
-    // Useful for preventing movement during attacks if desired
-
-    // Called by animation event when the attack reaches its impact point (the moment damage should be applied)
-    public void OnAttackPoint(int comboStep)
-    {
-
-        Debug.Log($"Attack point hit for combo step {comboStep}");
-
-        // Get the attack direction based on facing direction
-        Vector3 attackDirection = isFacingRight ? transform.right : -transform.right;
-
-        float damage = 0f;
-        float attackRadius = 0f;
-        float attackRange = 0f;
-
-        // Apply appropriate damage and range based on current weapon and combo step
-        switch (currentWeapon)
-        {
-            case WeaponType.BareHand:
-                // Base damage with combo multiplier
-                damage = bareHandDamage * Mathf.Pow(bareHandComboMultiplier, comboStep - 1);
-                attackRadius = 0.5f;
-                attackRange = bareHandRange;
-
-                // Make the third combo hit have a slightly larger radius
-                if (comboStep == 3) attackRadius = 0.7f;
-                break;
-
-            case WeaponType.Sword:
-                // Base damage with combo multiplier
-                damage = swordDamage * Mathf.Pow(swordComboMultiplier, comboStep - 1);
-                attackRadius = 1f;
-                attackRange = swordRange;
-
-                // Make the third combo hit have a larger radius
-                if (comboStep == 3) attackRadius = 1.5f;
-                break;
-        }
-
-        // Apply the damage using a circle overlap
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position + attackDirection * attackRange, attackRadius);
-        foreach (Collider2D hit in hits)
-        {
-            // Skip self-collision
-            if (hit.gameObject == gameObject) continue;
-
-            ApplyDamage(hit.gameObject, damage);
-
-            // Optional: Apply knockback effect to enemies
-            Rigidbody2D hitRigidbody = hit.GetComponent<Rigidbody2D>();
-            if (hitRigidbody != null && comboStep == 3)
-            {
-                // Apply stronger knockback on the final hit
-                float knockbackForce = 5f;
-                hitRigidbody.AddForce(attackDirection * knockbackForce, ForceMode2D.Impulse);
-            }
-        }
-
-        // Optional: Spawn hit effect
-        SpawnHitEffect(transform.position + attackDirection * attackRange);
-
-    }
-
-    // Call this method from your animation event when the player can input the next combo attack
     public void OnComboWindowOpen()
     {
-        // Set a flag to indicate that player can input the next combo attack
-        isComboWindowOpen = true;
+        if (hasDealtDamage) // Only open window if damage has been applied
+        {
+            Debug.Log("Combo window opened");
+            isComboWindowOpen = true;
+        }
+        else
+        {
+            Debug.Log("Combo window delayed until damage is dealt");
+        }
     }
 
-    // Call this method from your animation event when the combo window closes
     public void OnComboWindowClose()
     {
-        // If the player didn't continue the combo, reset it
-        if (isComboWindowOpen && currentComboCount < 3)
-        {
-            // Reset only if the player didn't input a new attack
-            if (Time.time - lastAttackTime > 0.6f)
-            {
-                ResetCombo();
-            }
+        Debug.Log("Combo window closed");
+        isComboWindowOpen = false;
 
-        }
-
-        if(isComboWindowOpen && currentComboCount == 3)
+        if (currentComboCount > 0 && (Time.time - lastAttackTime > 0.2f || currentComboCount == 3))
         {
             ResetCombo();
         }
-
-       
-
-        isComboWindowOpen = false;
     }
 
     //Spawn visual effects on hit
@@ -456,7 +407,6 @@ public class PlayerCombat : MonoBehaviour
         switch (currentWeapon)
         {
             case WeaponType.BareHand:
-                // You would assign these in the inspector
                 if (bareHandHitEffectPrefab != null)
                     effectPrefab = bareHandHitEffectPrefab;
                 break;
@@ -476,11 +426,9 @@ public class PlayerCombat : MonoBehaviour
             Destroy(effect, 1f);
         }
     }
+
     public bool IsAttacking()
     {
         return isInCombo && currentComboCount > 0;
     }
-
-
 }
-
