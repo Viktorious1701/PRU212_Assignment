@@ -128,7 +128,7 @@ public abstract class Enemy : MonoBehaviour
 
         if (currentState != EnemyState.Hurt && currentState != EnemyState.Death)
         {
-            if (distanceToPlayer <= attackRange && canAttack)
+            if (distanceToPlayer <= attackRange)
             {
                 currentState = EnemyState.Attack;
             }

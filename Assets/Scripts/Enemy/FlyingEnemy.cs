@@ -4,124 +4,135 @@ using UnityEngine;
 
 public class FlyingEnemy : Enemy
 {
-	[SerializeField] private float flyHeight = 3f;
-	[SerializeField] private float hoverAmplitude = 0.5f;
-	[SerializeField] private float hoverFrequency = 2f;
-	[SerializeField] private GameObject projectilePrefab;
+    [SerializeField] private float flyHeight = 3f;
+    [SerializeField] private float hoverAmplitude = 0.5f;
+    [SerializeField] private float hoverFrequency = 2f;
+    [SerializeField] private GameObject projectilePrefab;
 
-	private Vector2 startPosition;
-	private float hoverOffset = 0f;
+    private Vector2 startPosition;
+    private float hoverOffset = 0f;
 
-	protected override void Awake()
-	{
-		base.Awake();
-		startPosition = transform.position;
-		// Flying enemies don't need gravity
-		rb.gravityScale = 0;
-	}
+    protected override void Awake()
+    {
+        base.Awake();
+        startPosition = transform.position;
+        rb.gravityScale = 0; // Flying enemies don't need gravity
+    }
 
-	protected override void UpdateIdleState()
-	{
-		// Hover in place
-		Hover();
-	}
+    protected override void UpdateIdleState()
+    {
+        Hover(); // Hover in place
+    }
 
-	protected override void UpdatePatrolState()
-	{
-		// Random movement or circular pattern
-		hoverOffset += Time.deltaTime * hoverFrequency;
-		float xOffset = Mathf.Sin(hoverOffset) * 2;
-		float yOffset = Mathf.Cos(hoverOffset) * hoverAmplitude;
+    protected override void UpdatePatrolState()
+    {
+        hoverOffset += Time.deltaTime * hoverFrequency;
+        float xOffset = Mathf.Sin(hoverOffset) * 2;
+        float yOffset = Mathf.Cos(hoverOffset) * hoverAmplitude;
 
-		Vector2 targetPosition = startPosition + new Vector2(xOffset, flyHeight + yOffset);
-		rb.velocity = (targetPosition - (Vector2)transform.position).normalized * movementSpeed;
+        Vector2 targetPosition = startPosition + new Vector2(xOffset, flyHeight + yOffset);
+        rb.velocity = (targetPosition - (Vector2)transform.position).normalized * movementSpeed;
 
-		// Flip if needed
-		if ((rb.velocity.x > 0 && !isFacingRight) || (rb.velocity.x < 0 && isFacingRight))
-			Flip();
-	}
+        if ((rb.velocity.x > 0 && !isFacingRight) || (rb.velocity.x < 0 && isFacingRight))
+            Flip();
+    }
 
-	protected override void UpdateChaseState()
-	{
-		// Follow player but maintain some distance
-		Vector2 direction = ((Vector2)player.position + Vector2.up - (Vector2)transform.position).normalized;
-		rb.velocity = direction * movementSpeed * 1.5f;
+    protected override void UpdateChaseState()
+    {
+        // Hover around player's head
+        hoverOffset += Time.deltaTime * hoverFrequency;
+        float xOffset = Mathf.Sin(hoverOffset);
+        float yOffset = Mathf.Sin(hoverOffset) * hoverAmplitude;
 
-		// Flip if needed
-		if ((rb.velocity.x > 0 && !isFacingRight) || (rb.velocity.x < 0 && isFacingRight))
-			Flip();
-	}
+        // Target position is above player's head
+        Vector2 targetPosition = (Vector2)player.position + new Vector2(0, flyHeight) + new Vector2(xOffset, yOffset);
+        Vector2 direction = (targetPosition - (Vector2)transform.position).normalized;
 
-	protected override void UpdateAttackState()
-	{
-		// Stop movement or slight hover during attack
-		Hover();
+        // Only change the facing direction based on the player's position, not the hover movement
+        if (player.position.x > transform.position.x && !isFacingRight)
+            Flip();
+        else if (player.position.x < transform.position.x && isFacingRight)
+            Flip();
 
-		if (!isAttacking && canAttack)
-		{
-			isAttacking = true;
-			PerformAttack();
-			StartCoroutine(AttackCooldown());
-		}
-	}
+        rb.velocity = direction * movementSpeed * 1.5f;
+    }
 
-	protected override void UpdateHurtState()
-	{
-		// Slight backward movement
-		Vector2 recoilDirection = ((Vector2)transform.position - (Vector2)player.position).normalized;
-		rb.velocity = recoilDirection * movementSpeed * 0.5f;
+    protected override void UpdateAttackState()
+    {
 
-		// Return to chase after hurt animation
-		if (!animator.GetCurrentAnimatorStateInfo(0).IsName("flying_eye_hurt"))
-		{
-			currentState = EnemyState.Chase;
-		}
-	}
+        // Hover around player's head during attack
+        hoverOffset += Time.deltaTime * hoverFrequency;
+        float xOffset = Mathf.Sin(hoverOffset);
+        float yOffset = Mathf.Sin(hoverOffset) * hoverAmplitude;
 
-	protected override void UpdateDeathState()
-	{
-		// Fall to ground
-		rb.gravityScale = 1;
+        Vector2 targetPosition = (Vector2)player.position + new Vector2(0, flyHeight) + new Vector2(xOffset, yOffset);
+        Vector2 direction = (targetPosition - (Vector2)transform.position).normalized;
+        rb.velocity = direction * movementSpeed * 0.5f; // Slower movement during attack
 
-		// Wait for death animation to finish
-		if (!animator.GetCurrentAnimatorStateInfo(0).IsName("flying_eye_death"))
-		{
-			// Destroy the enemy or disable components
-			Destroy(gameObject);
-		}
-	}
+        // Only change the facing direction based on the player's position
+        if (player.position.x > transform.position.x && !isFacingRight)
+            Flip();
+        else if (player.position.x < transform.position.x && isFacingRight)
+            Flip();
 
-	protected override void PerformAttack()
-	{
-		// Trigger attack animation
-		animator.SetTrigger("Attack");
+        if (!isAttacking && canAttack)
+        {
+            currentState = EnemyState.Attack;
+            isAttacking = true;
+            PerformAttack();
+            StartCoroutine(AttackCooldown());
+        }
+    }
 
-		// Projectile attack or diving attack
-		// Example: Instantiate a projectile
-		GameObject projectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
+    protected override void UpdateHurtState()
+    {
+        Vector2 recoilDirection = ((Vector2)transform.position - (Vector2)player.position).normalized;
+        rb.velocity = recoilDirection * movementSpeed * 0.5f;
 
-		// Aim at player
-		Vector2 direction = ((Vector2)player.position - (Vector2)transform.position).normalized;
-		projectile.GetComponent<Rigidbody2D>().velocity = direction * 10f;
+        if (!animator.GetCurrentAnimatorStateInfo(0).IsName("flying_eye_hurt"))
+        {
+            currentState = EnemyState.Chase;
+        }
+    }
 
-		ProjectileController projectileController = projectile.AddComponent<ProjectileController>();
-		projectileController.Initialize(10f, 15f, gameObject);
+    protected override void UpdateDeathState()
+    {
+        rb.gravityScale = 1; // Fall to ground
 
-		// Reset attack state after animation
-		StartCoroutine(FinishAttack());
-	}
+        if (!animator.GetCurrentAnimatorStateInfo(0).IsName("flying_eye_death"))
+        {
+            Destroy(gameObject);
+        }
+    }
 
-	private IEnumerator FinishAttack()
-	{
-		yield return new WaitForSeconds(0.5f);
-		isAttacking = false;
-		currentState = EnemyState.Chase;
-	}
+    protected override void PerformAttack()
+    {
+        animator.SetTrigger("Attack");
+        currentState = EnemyState.Attack;
+    }
 
-	private void Hover()
-	{
-    		hoverOffset += Time.deltaTime * hoverFrequency;
-		float yOffset = Mathf.Sin(hoverOffset) * hoverAmplitude;
-		rb.velocity = new Vector2(0, yOffset);
-	}
+    public void ShootProjectile()
+    {
+        GameObject projectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
+        Vector2 direction = ((Vector2)player.position - (Vector2)transform.position).normalized;
+        
+
+        ProjectileController projectileController = projectile.GetComponent<ProjectileController>();
+        if (projectileController != null)
+        {
+            projectileController.Initialize(10f, 15f, gameObject,direction);
+            projectile.GetComponent<Rigidbody2D>().velocity = direction * 10f;
+        }
+        isAttacking = false;
+        currentState = EnemyState.Chase;
+    }
+
+   
+
+    private void Hover()
+    {
+        hoverOffset += Time.deltaTime * hoverFrequency;
+        float yOffset = Mathf.Sin(hoverOffset) * hoverAmplitude;
+        rb.velocity = new Vector2(-0.5f, yOffset); // Slight left drift in idle
+    }
 }
