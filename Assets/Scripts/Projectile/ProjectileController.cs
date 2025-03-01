@@ -39,6 +39,11 @@ public class ProjectileController : MonoBehaviour
         // Skip if hitting the owner
         if (owner != null && collider.gameObject == owner)
             return;
+        Animator animator = GetComponent<Animator>();
+		if ( animator != null)
+        {	
+            animator.SetTrigger("Explode");
+		}
 
         // Apply damage
         DamageInfo damageInfo = new DamageInfo(
@@ -50,7 +55,9 @@ public class ProjectileController : MonoBehaviour
 
         DamageSystem.ApplyDamage(collider.gameObject, damageInfo);
 
-        // Destroy projectile on hit
-        Destroy(gameObject);
-    }
+        transform.SetParent(collider.transform);
+        Destroy(gameObject,2f);
+	}
+
+
 }

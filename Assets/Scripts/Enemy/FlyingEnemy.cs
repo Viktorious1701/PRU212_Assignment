@@ -7,6 +7,7 @@ public class FlyingEnemy : Enemy
 	[SerializeField] private float flyHeight = 3f;
 	[SerializeField] private float hoverAmplitude = 0.5f;
 	[SerializeField] private float hoverFrequency = 2f;
+	[SerializeField] private GameObject projectilePrefab;
 
 	private Vector2 startPosition;
 	private float hoverOffset = 0f;
@@ -71,7 +72,7 @@ public class FlyingEnemy : Enemy
 		rb.velocity = recoilDirection * movementSpeed * 0.5f;
 
 		// Return to chase after hurt animation
-		if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Hurt"))
+		if (!animator.GetCurrentAnimatorStateInfo(0).IsName("flying_eye_hurt"))
 		{
 			currentState = EnemyState.Chase;
 		}
@@ -83,10 +84,10 @@ public class FlyingEnemy : Enemy
 		rb.gravityScale = 1;
 
 		// Wait for death animation to finish
-		if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Death"))
+		if (!animator.GetCurrentAnimatorStateInfo(0).IsName("flying_eye_death"))
 		{
 			// Destroy the enemy or disable components
-			Destroy(gameObject, 1f);
+			Destroy(gameObject);
 		}
 	}
 
@@ -97,11 +98,14 @@ public class FlyingEnemy : Enemy
 
 		// Projectile attack or diving attack
 		// Example: Instantiate a projectile
-		GameObject projectile = Instantiate(Resources.Load<GameObject>("EnemyProjectile"), transform.position, Quaternion.identity);
+		GameObject projectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
 
 		// Aim at player
 		Vector2 direction = ((Vector2)player.position - (Vector2)transform.position).normalized;
 		projectile.GetComponent<Rigidbody2D>().velocity = direction * 10f;
+
+		ProjectileController projectileController = projectile.AddComponent<ProjectileController>();
+		projectileController.Initialize(10f, 15f, gameObject);
 
 		// Reset attack state after animation
 		StartCoroutine(FinishAttack());
