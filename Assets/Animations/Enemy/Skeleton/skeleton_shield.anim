@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: flying_eye_attack_3
+  m_Name: skeleton_shield
   serializedVersion: 7
   m_Legacy: 0
   m_Compressed: 0
@@ -21,23 +21,19 @@ AnimationClip:
   - serializedVersion: 2
     curve:
     - time: 0
-      value: {fileID: -1040424111, guid: 20ced3c523975f043943986f6c909ecd, type: 3}
-    - time: 0.1
-      value: {fileID: -1203800261, guid: 20ced3c523975f043943986f6c909ecd, type: 3}
-    - time: 0.2
-      value: {fileID: -1676649098, guid: 20ced3c523975f043943986f6c909ecd, type: 3}
-    - time: 0.3
-      value: {fileID: -1516097152, guid: 20ced3c523975f043943986f6c909ecd, type: 3}
-    - time: 0.4
-      value: {fileID: 136146137, guid: 20ced3c523975f043943986f6c909ecd, type: 3}
-    - time: 0.5
-      value: {fileID: -1027978133, guid: 20ced3c523975f043943986f6c909ecd, type: 3}
+      value: {fileID: -1637959492, guid: 9b226ba3bd540154ca5ba05f555c7cea, type: 3}
+    - time: 0.25
+      value: {fileID: -272126473, guid: 9b226ba3bd540154ca5ba05f555c7cea, type: 3}
+    - time: 0.41666666
+      value: {fileID: -601374928, guid: 9b226ba3bd540154ca5ba05f555c7cea, type: 3}
+    - time: 0.6666667
+      value: {fileID: 1837564594, guid: 9b226ba3bd540154ca5ba05f555c7cea, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
     script: {fileID: 0}
     flags: 2
-  m_SampleRate: 10
+  m_SampleRate: 12
   m_WrapMode: 0
   m_Bounds:
     m_Center: {x: 0, y: 0, z: 0}
@@ -54,18 +50,16 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     pptrCurveMapping:
-    - {fileID: -1040424111, guid: 20ced3c523975f043943986f6c909ecd, type: 3}
-    - {fileID: -1203800261, guid: 20ced3c523975f043943986f6c909ecd, type: 3}
-    - {fileID: -1676649098, guid: 20ced3c523975f043943986f6c909ecd, type: 3}
-    - {fileID: -1516097152, guid: 20ced3c523975f043943986f6c909ecd, type: 3}
-    - {fileID: 136146137, guid: 20ced3c523975f043943986f6c909ecd, type: 3}
-    - {fileID: -1027978133, guid: 20ced3c523975f043943986f6c909ecd, type: 3}
+    - {fileID: -1637959492, guid: 9b226ba3bd540154ca5ba05f555c7cea, type: 3}
+    - {fileID: -272126473, guid: 9b226ba3bd540154ca5ba05f555c7cea, type: 3}
+    - {fileID: -601374928, guid: 9b226ba3bd540154ca5ba05f555c7cea, type: 3}
+    - {fileID: 1837564594, guid: 9b226ba3bd540154ca5ba05f555c7cea, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 0.6
+    m_StopTime: 0.75
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
@@ -84,11 +78,4 @@ AnimationClip:
   m_EulerEditorCurves: []
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
-  m_Events:
-  - time: 0.4
-    functionName: ShootProjectile
-    data: 
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
+  m_Events: []
