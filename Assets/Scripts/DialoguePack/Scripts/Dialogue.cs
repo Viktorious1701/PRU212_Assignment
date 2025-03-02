@@ -19,7 +19,7 @@ public class Dialogue : MonoBehaviour
     public float typingSpeed = 0.2f;    // Set to 0.2 as per your requirement
     public float duration = 4f;         // Set to 4 as per your requirement
     private bool active = true;
-    private bool isDialogueActive = false;  // Tracks if dialogue is currently active
+    public bool isDialogueActive = false;
 
     private void Awake()
     {

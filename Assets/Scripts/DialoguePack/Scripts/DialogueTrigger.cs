@@ -1,9 +1,11 @@
+using System;
+using System.Linq;
 using UnityEngine;
 
 public class DialogueTrigger : MonoBehaviour
 {
     public Dialogue dialogueSystem;
-
+    private bool canInteract = false;
     private void Awake()
     {
         // Find the dialogue system if not assigned in the Inspector
@@ -15,8 +17,7 @@ public class DialogueTrigger : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            // Start the dialogue when the player enters the trigger area
-            dialogueSystem.Say(new string[] { "Hello, traveler!", "Welcome to our village." }, "Village Girl", 4f);
+            canInteract = true;
         }
     }
 
@@ -24,8 +25,15 @@ public class DialogueTrigger : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            // Clear the dialogue when the player leaves the area
+            canInteract = false;
             dialogueSystem.Clear();
+        }
+    }
+    private void Update()
+    {
+        if (canInteract && !dialogueSystem.isDialogueActive && Input.GetKeyDown(KeyCode.E))
+        {
+            dialogueSystem.Say(new string[] { "Hello, traveler!", "Welcome to our village." }, "Village Girl", 2f);
         }
     }
 }

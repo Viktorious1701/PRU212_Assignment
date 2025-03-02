@@ -1,11 +1,12 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
     private Animator animator;
     private SpriteRenderer spriteRenderer;
-
+    private Dialogue dialogueSystem;
     // Animation parameter names
     private const string IS_RUNNING = "isRunning";
     private const string IS_GROUND = "isGround";
@@ -66,118 +67,122 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        dialogueSystem = FindObjectOfType<Dialogue>();
     }
 
     private void Update()
     {
-        // Input handling
-        float horizontalInput = Input.GetAxisRaw("Horizontal");
-        float verticalInput = Input.GetAxisRaw("Vertical");
-        bool jumpInput = Input.GetButtonDown("Jump");
-        bool jumpHeld = Input.GetButton("Jump");
-        bool dashInput = Input.GetKeyDown(KeyCode.LeftShift);
-
-        // Update facing direction
-        if (horizontalInput != 0)
+        if (!dialogueSystem.isDialogueActive)
         {
-            facingDirection = (int)Mathf.Sign(horizontalInput);
-        }
+            // Input handling
+            float horizontalInput = Input.GetAxisRaw("Horizontal");
+            float verticalInput = Input.GetAxisRaw("Vertical");
+            bool jumpInput = Input.GetButtonDown("Jump");
+            bool jumpHeld = Input.GetButton("Jump");
+            bool dashInput = Input.GetKeyDown(KeyCode.LeftShift);
 
-        if (rb.velocity.y < -0.1f)
-        {
-            animator.SetBool(IS_JUMPING, false);
-            animator.SetBool(IS_FALLING, true);
-        }
-
-        // Ground and wall checks
-        CheckGrounded();
-        CheckWallSliding(horizontalInput);
-
-        // Handle dash input
-        if (dashInput && canDash && (canDashInAir || isGrounded))
-        {
-            InitiateDash(horizontalInput, verticalInput);
-        }
-
-        // Update dash state
-        UpdateDash();
-
-        // If not dashing, handle normal movement
-        if (!isDashing)
-        {
-            // Handle coyote time
-            if (isGrounded)
+            // Update facing direction
+            if (horizontalInput != 0)
             {
-                coyoteTimeCounter = coyoteTime;
-                canDoubleJump = true;
-            }
-            else
-            {
-                coyoteTimeCounter -= Time.deltaTime;
+                facingDirection = (int)Mathf.Sign(horizontalInput);
             }
 
-            // Jump buffer
-            if (jumpInput)
+            if (rb.velocity.y < -0.1f)
             {
-                jumpBufferCounter = jumpBufferTime;
-            }
-            else
-            {
-                jumpBufferCounter -= Time.deltaTime;
+                animator.SetBool(IS_JUMPING, false);
+                animator.SetBool(IS_FALLING, true);
             }
 
-            // Handle jumping
-            if (jumpBufferCounter > 0f)
+            // Ground and wall checks
+            CheckGrounded();
+            CheckWallSliding(horizontalInput);
+
+            // Handle dash input
+            if (dashInput && canDash && (canDashInAir || isGrounded))
             {
-                // Normal jump
-                if (coyoteTimeCounter > 0f)
+                InitiateDash(horizontalInput, verticalInput);
+            }
+
+            // Update dash state
+            UpdateDash();
+
+            // If not dashing, handle normal movement
+            if (!isDashing)
+            {
+                // Handle coyote time
+                if (isGrounded)
                 {
-                    Jump(jumpForce);
-                    jumpBufferCounter = 0f;
-                    coyoteTimeCounter = 0f;
+                    coyoteTimeCounter = coyoteTime;
+                    canDoubleJump = true;
                 }
-                // Wall jump
-                else if (isWallSliding)
+                else
                 {
-                    WallJump();
-                    jumpBufferCounter = 0f;
+                    coyoteTimeCounter -= Time.deltaTime;
                 }
-                // Double jump
-                else if (canDoubleJump)
+
+                // Jump buffer
+                if (jumpInput)
                 {
-                    Jump(jumpForce * 0.8f);
-                    canDoubleJump = false;
-                    jumpBufferCounter = 0f;
+                    jumpBufferCounter = jumpBufferTime;
+                }
+                else
+                {
+                    jumpBufferCounter -= Time.deltaTime;
+                }
+
+                // Handle jumping
+                if (jumpBufferCounter > 0f)
+                {
+                    // Normal jump
+                    if (coyoteTimeCounter > 0f)
+                    {
+                        Jump(jumpForce);
+                        jumpBufferCounter = 0f;
+                        coyoteTimeCounter = 0f;
+                    }
+                    // Wall jump
+                    else if (isWallSliding)
+                    {
+                        WallJump();
+                        jumpBufferCounter = 0f;
+                    }
+                    // Double jump
+                    else if (canDoubleJump)
+                    {
+                        Jump(jumpForce * 0.8f);
+                        canDoubleJump = false;
+                        jumpBufferCounter = 0f;
+                    }
+                }
+
+                // Handle wall sliding
+                if (isWallSliding)
+                {
+                    rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -wallSlidingSpeed));
+                }
+
+                // Handle horizontal movement
+                if (wallJumpTimeCounter <= 0)
+                {
+                    float previousVelocityX = rb.velocity.x;
+                    rb.velocity = new Vector2(horizontalInput * moveSpeed, rb.velocity.y);
+
+                    UpdateMovementAnimations(horizontalInput);
+                }
+                else
+                {
+                    wallJumpTimeCounter -= Time.deltaTime;
                 }
             }
 
-            // Handle wall sliding
-            if (isWallSliding)
+            // Update dash cooldown
+            if (dashCooldownTimeLeft > 0)
             {
-                rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -wallSlidingSpeed));
-            }
-
-            // Handle horizontal movement
-            if (wallJumpTimeCounter <= 0)
-            {
-                float previousVelocityX = rb.velocity.x;
-                rb.velocity = new Vector2(horizontalInput * moveSpeed, rb.velocity.y);
-
-                UpdateMovementAnimations(horizontalInput);
-            }
-            else
-            {
-                wallJumpTimeCounter -= Time.deltaTime;
-            }
-        }
-
-        // Update dash cooldown
-        if (dashCooldownTimeLeft > 0)
-        {
-            dashCooldownTimeLeft -= Time.deltaTime;
-            if (dashCooldownTimeLeft <= 0)
-            {
-                canDash = true;
+                dashCooldownTimeLeft -= Time.deltaTime;
+                if (dashCooldownTimeLeft <= 0)
+                {
+                    canDash = true;
+                }
             }
         }
         UpdateAnimationStates();
@@ -188,7 +193,7 @@ public class PlayerMovement : MonoBehaviour
         // Update vertical velocity for blending or other effects
         animator.SetFloat(VERTICAL_VELOCITY, rb.velocity.y);
 
-        if(rb.velocity.y > 0.1f)
+        if (rb.velocity.y > 0.1f)
         {
             animator.SetBool(IS_ON_AIR, true);
         }
@@ -217,8 +222,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // Skip gravity modifications if dashing
-        if (!isDashing)
+        if (dialogueSystem.isDialogueActive)
+        {
+            rb.velocity = Vector2.zero;
+        }
+        else if (!isDashing)
         {
             ApplyJumpPhysics();
         }
@@ -381,7 +389,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     public bool IsGrounded()
-	{
-		return isGrounded;
-	}
+    {
+        return isGrounded;
+    }
 }
