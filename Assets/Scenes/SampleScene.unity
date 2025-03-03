@@ -2091,6 +2091,63 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!1001 &1921779903
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3340087711279263511, guid: 4753c2063b9ed4e45900bc62d3222c62, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 19.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3340087711279263511, guid: 4753c2063b9ed4e45900bc62d3222c62, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.64
+      objectReference: {fileID: 0}
+    - target: {fileID: 3340087711279263511, guid: 4753c2063b9ed4e45900bc62d3222c62, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3340087711279263511, guid: 4753c2063b9ed4e45900bc62d3222c62, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3340087711279263511, guid: 4753c2063b9ed4e45900bc62d3222c62, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3340087711279263511, guid: 4753c2063b9ed4e45900bc62d3222c62, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3340087711279263511, guid: 4753c2063b9ed4e45900bc62d3222c62, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3340087711279263511, guid: 4753c2063b9ed4e45900bc62d3222c62, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3340087711279263511, guid: 4753c2063b9ed4e45900bc62d3222c62, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3340087711279263511, guid: 4753c2063b9ed4e45900bc62d3222c62, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7370853083791101945, guid: 4753c2063b9ed4e45900bc62d3222c62, type: 3}
+      propertyPath: m_Name
+      value: VillageGirl
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 4753c2063b9ed4e45900bc62d3222c62, type: 3}
 --- !u!1 &2042084932
 GameObject:
   m_ObjectHideFlags: 0
@@ -2229,10 +2286,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 6049906536097040416, guid: 7cd95d4ec9d8b5a4e86f224fc649e3c0, type: 3}
-      propertyPath: m_Follow
-      value: 
-      objectReference: {fileID: 1864830966}
     - target: {fileID: 6986854913677418927, guid: 7cd95d4ec9d8b5a4e86f224fc649e3c0, type: 3}
       propertyPath: m_LocalPosition.x
       value: -19.48
