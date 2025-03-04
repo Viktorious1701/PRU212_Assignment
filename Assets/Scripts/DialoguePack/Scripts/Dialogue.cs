@@ -71,9 +71,9 @@ public class Dialogue : MonoBehaviour
             yield break;
         }
 
-        Debug.Log("TypeMany started. sentences: " + sentences.Length +
-                  ", animController: " + (animController != null ? "set" : "null") +
-                  ", skipButton: " + (skipButton != null ? "set" : "null"));
+        //Debug.Log("TypeMany started. sentences: " + sentences.Length +
+        //          ", animController: " + (animController != null ? "set" : "null") +
+        //          ", skipButton: " + (skipButton != null ? "set" : "null"));
         for (int i = 0; i < sentences.Length + 1; i++)
         {
             Debug.Log("Loop iteration: " + i + ", index: " + index + ", sentences null? " + (sentences == null));
