@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2248652418328530093}
   - component: {fileID: 5365814422205384400}
   - component: {fileID: 3596535233645682399}
+  - component: {fileID: 824439132980864425}
   m_Layer: 7
   m_Name: VillageGirl
   m_TagString: Untagged
@@ -135,6 +136,19 @@ CircleCollider2D:
   m_Offset: {x: 0.15514565, y: 0}
   serializedVersion: 2
   m_Radius: 3.7953339
+--- !u!114 &824439132980864425
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7370853083791101945}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f76d7cace09fe14086f7875e99f54f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  questIcon: {fileID: 7963167224549457713}
 --- !u!1 &7963167224549457713
 GameObject:
   m_ObjectHideFlags: 0
