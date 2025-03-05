@@ -1230,6 +1230,11 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &816305733 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5883888934238944523, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
+  m_PrefabInstance: {fileID: 1652930637}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &920032302
 GameObject:
   m_ObjectHideFlags: 0
@@ -1765,7 +1770,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5883888934238944523, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1864830973}
   m_SourcePrefab: {fileID: 100100000, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
 --- !u!1 &1666487797
 GameObject:
@@ -1975,6 +1983,51 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6380319326907858925, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
   m_PrefabInstance: {fileID: 1652930637}
   m_PrefabAsset: {fileID: 0}
+--- !u!95 &1864830967 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 7944740274898364522, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
+  m_PrefabInstance: {fileID: 1652930637}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1864830973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 816305733}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64b4fe7a0778dd14eb507f4af6819548, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHealth: 100
+  maxHealth: 100
+  invincibilityTime: 1
+  isInvincible: 0
+  onHealthChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  onDeath:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamageImpact:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1864830967}
+        m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
+        m_MethodName: SetTrigger
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Hurt
+          m_BoolArgument: 0
+        m_CallState: 2
+  onInvincibilityChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1001 &1885018314
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2142,6 +2195,10 @@ PrefabInstance:
     - target: {fileID: 7370853083791101945, guid: 4753c2063b9ed4e45900bc62d3222c62, type: 3}
       propertyPath: m_Name
       value: VillageGirl
+      objectReference: {fileID: 0}
+    - target: {fileID: 7370853083791101945, guid: 4753c2063b9ed4e45900bc62d3222c62, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2744,7 +2801,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movementSpeed: 5
   attackRange: 4.38
-  detectionRange: 15
+  detectionRange: 20
   health: 100
   damage: 20
   attackCooldown: 1.5
@@ -2764,10 +2821,10 @@ MonoBehaviour:
   - {r: 1, g: 1, b: 1, a: 1}
   - {r: 1, g: 0, b: 0, a: 1}
   - {r: 1, g: 0, b: 1, a: 1}
-  specialAttackRange: 10
+  specialAttackRange: 15
   specialAttackCooldown: 5
   dashSpeed: 20
-  dashDuration: 0.5
+  dashDuration: 1
   jumpForce: 10
   aoeRadius: 3
   projectileSpeed: 7
@@ -2798,6 +2855,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentHealth: 100
   maxHealth: 100
+  invincibilityTime: 1
+  isInvincible: 0
   onHealthChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -2805,6 +2864,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   onDamageImpact:
+    m_PersistentCalls:
+      m_Calls: []
+  onInvincibilityChanged:
     m_PersistentCalls:
       m_Calls: []
 --- !u!50 &7920157791976304831
@@ -2819,10 +2881,10 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 1000
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 0
+  m_GravityScale: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -2960,3 +3022,4 @@ SceneRoots:
   - {fileID: 1885018314}
   - {fileID: 7519273250748923556}
   - {fileID: 6919770945230837982}
+  - {fileID: 1921779903}

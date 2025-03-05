@@ -74,14 +74,37 @@ public class BossEnemy : Enemy
 
     protected override void Update()
     {
+
         // Check ground status
         CheckGroundStatus();
 
         // Check for phase transitions
         CheckPhaseTransition();
 
+        switch (currentState)
+        {
+            case EnemyState.Idle:
+                UpdateIdleState();
+                break;
+            case EnemyState.Patrol:
+                UpdatePatrolState();
+                break;
+            case EnemyState.Chase:
+                UpdateChaseState();
+                break;
+            case EnemyState.Attack:
+                UpdateAttackState();
+                break;
+            case EnemyState.Hurt:
+                UpdateHurtState();
+                break;
+            case EnemyState.Death:
+                UpdateDeathState();
+                break;
+        }
+
         // Run the base update logic which handles state machine
-        base.Update();
+        UpdateAnimation();
     }
 
     protected override void UpdateAnimation()
@@ -346,7 +369,7 @@ public class BossEnemy : Enemy
         animator.SetTrigger("DashAttack");
 
         // Wait for animation wind-up
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(1f);
 
         // Direction toward player
         float direction = IsPlayerToRight() ? 1 : -1;
