@@ -1018,7 +1018,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -19.48, y: -1.16, z: -10}
+  m_LocalPosition: {x: -14.27, y: 0.2, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1432,11 +1432,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!1 &816305733 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5883888934238944523, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
-  m_PrefabInstance: {fileID: 1652930637}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &920032302
 GameObject:
   m_ObjectHideFlags: 0
@@ -1503,7 +1498,7 @@ Transform:
   m_GameObject: {fileID: 920032302}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -19.48, y: -1.16, z: -10}
+  m_LocalPosition: {x: -14.27, y: 0.2, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1964,11 +1959,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6380319326907858925, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -19.48
+      value: -14.27
       objectReference: {fileID: 0}
     - target: {fileID: 6380319326907858925, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.16
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 6380319326907858925, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
       propertyPath: m_LocalPosition.z
@@ -2002,13 +1997,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6606685896978943907, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
+      propertyPath: m_IncludeLayers.m_Bits
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 5883888934238944523, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1864830973}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
 --- !u!1 &1666487797
 GameObject:
@@ -2223,51 +2219,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6380319326907858925, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
   m_PrefabInstance: {fileID: 1652930637}
   m_PrefabAsset: {fileID: 0}
---- !u!95 &1864830967 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 7944740274898364522, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
-  m_PrefabInstance: {fileID: 1652930637}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1864830973
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 816305733}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 64b4fe7a0778dd14eb507f4af6819548, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentHealth: 100
-  maxHealth: 100
-  invincibilityTime: 1
-  isInvincible: 0
-  onHealthChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  onDeath:
-    m_PersistentCalls:
-      m_Calls: []
-  onDamageImpact:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1864830967}
-        m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
-        m_MethodName: SetTrigger
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: Hurt
-          m_BoolArgument: 0
-        m_CallState: 2
-  onInvincibilityChanged:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1001 &1885018314
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2984,7 +2935,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementSpeed: 5
-  attackRange: 4.38
+  attackRange: 5
   detectionRange: 20
   health: 100
   damage: 20
@@ -3008,7 +2959,7 @@ MonoBehaviour:
   specialAttackRange: 15
   specialAttackCooldown: 5
   dashSpeed: 20
-  dashDuration: 1
+  dashDuration: 0.75
   jumpForce: 10
   aoeRadius: 10
   projectileSpeed: 7
@@ -3022,9 +2973,9 @@ MonoBehaviour:
   shieldDamageReduction: 0.5
   shieldVFX: {fileID: 0}
   shieldColor: {r: 0.3, g: 0.8, b: 1, a: 0.5}
-  immunityDuration: 3
+  immunityDuration: 4
   phaseTransitionVFX: {fileID: 0}
-  knockbackForce: 5
+  knockbackForce: 10
   groundSlamEffectPrefab: {fileID: 1845478342}
 --- !u!114 &7920157791976304830
 MonoBehaviour:
@@ -3038,7 +2989,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64b4fe7a0778dd14eb507f4af6819548, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentHealth: 30
+  currentHealth: 50
   maxHealth: 100
   invincibilityTime: 1
   isInvincible: 0
@@ -3187,8 +3138,8 @@ MonoBehaviour:
         m_PostInfinity: 2
         m_RotationOrder: 4
       m_AttackTime: 0
-      m_SustainTime: 0.3
-      m_DecayTime: 0.7
+      m_SustainTime: 1
+      m_DecayTime: 0.3
       m_ScaleWithImpact: 1
       m_HoldForever: 0
     m_ImpactRadius: 100

@@ -50,6 +50,7 @@ public class BossEnemy : Enemy
     private bool canUseShield = true;
     private bool isImmune = false;
     private float maxHealth;
+    private bool isDead = false;
     private Vector2 startPosition; // For returning to after certain attacks
 
     // Boss specific states
@@ -196,6 +197,12 @@ public class BossEnemy : Enemy
 
     protected override void UpdateAttackState()
     {
+        float direction = IsPlayerToRight() ? 1 : -1;
+        float distanceToPlayer = Vector2.Distance(transform.position, player.position);
+        // Flip if needed
+        if (((direction > 0 && !isFacingRight) || (direction < 0 && isFacingRight)) && distanceToPlayer > 1f)
+            Flip();
+
         // Regular attack handling
         if (!isAttacking && canAttack && !isDashing && !isJumping && !isImmune)
         {
@@ -205,6 +212,7 @@ public class BossEnemy : Enemy
             PerformAttack();
             StartCoroutine(AttackCooldown());
         }
+      
 
         // Return to chase once attack is complete
         if (!isAttacking && !isDashing && !isJumping && !isImmune)
@@ -274,17 +282,25 @@ public class BossEnemy : Enemy
         // Deactivate shield if active
         DeactivateShield();
 
+       
+
         // Disable colliders
         Collider2D[] colliders = GetComponents<Collider2D>();
         foreach (Collider2D col in colliders)
             col.enabled = false;
-
+        // Drop rewards, trigger events, etc.
+        if (!isDead)
+        {
+            isDead = true;
+            //DropRewards();
+            //TriggerDeathEvents();
+            GetComponent<CinemachineImpulseSource>().GenerateImpulse();
+        }
         // Wait for death animation to finish
         AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
         if (stateInfo.IsName("death") && stateInfo.normalizedTime >= 0.9f)
         {
-            // Drop rewards, trigger events, etc.
-
+           
             // Destroy after delay for dramatic effect
             StartCoroutine(DeathSequence());
         }
@@ -292,6 +308,7 @@ public class BossEnemy : Enemy
 
     private IEnumerator DeathSequence()
     {
+
         // Optional: Add particle effects, screen shake, etc.
         GetComponent<SpriteRenderer>().enabled = false;
         yield return new WaitForSeconds(2f);
@@ -308,13 +325,20 @@ public class BossEnemy : Enemy
         if (currentAttackType == BossAttackType.MeleeSlash || !canUseSpecialAttack)
         {
             currentAttackType = BossAttackType.MeleeSlash;
-            animator.SetTrigger("MeleeAttack");
         }
+        
 
+        if(currentAttackType == BossAttackType.MeleeSlash && !IsPlayerInRange(attackRange))
+        {
+            currentState = EnemyState.Chase;
+            isAttacking = false;
+            return;
+        }
         switch (currentAttackType)
         {
             case BossAttackType.MeleeSlash:
                 // Basic melee attack handled by animation event
+                animator.SetTrigger("MeleeAttack");
                 break;
 
             case BossAttackType.DashAttack:
@@ -439,8 +463,12 @@ public class BossEnemy : Enemy
         // Wait until at apex of jump
         yield return new WaitUntil(() => rb.velocity.y <= 0);
 
+        rb.gravityScale = 2f; // Increase gravity for faster descent
+
         // Wait until landed
         yield return new WaitUntil(() => isGrounded);
+
+        rb.gravityScale = 1f; // Reset gravity
 
         // Ground pound effect when landing
         animator.SetTrigger("GroundPound");
@@ -477,7 +505,6 @@ public class BossEnemy : Enemy
             CinemachineImpulseSource temp = GetComponent<CinemachineImpulseSource>();
             if(temp != null)
             {
-                Debug.Log("Impulse");
                 temp.GenerateImpulse();
             }
             yield return new WaitForSeconds(0.65f);
@@ -718,6 +745,7 @@ public class BossEnemy : Enemy
         StopAllCoroutines();
 
         // Clear any active effects
+        isAttacking = false;
         isDashing = false;
         isJumping = false;
         DeactivateShield();
@@ -743,6 +771,8 @@ public class BossEnemy : Enemy
             GameObject vfx = Instantiate(phaseTransitionVFX, transform.position, Quaternion.identity);
             Destroy(vfx, 3f);
         }
+        // Wait for animation
+        yield return new WaitForSeconds(immunityDuration);
 
         // Create a shockwave that pushes players away
         Collider2D[] nearbyPlayers = Physics2D.OverlapCircleAll(transform.position, detectionRange, LayerMask.GetMask("Player"));
@@ -751,11 +781,20 @@ public class BossEnemy : Enemy
             if (playerCollider.attachedRigidbody != null)
             {
                 Vector2 direction = (playerCollider.transform.position - transform.position).normalized;
-                playerCollider.attachedRigidbody.AddForce(direction * knockbackForce, ForceMode2D.Impulse);
-
+                if (playerCollider.TryGetComponent<PlayerMovement>(out PlayerMovement movement))
+                {
+                    Vector2 force = (direction + Vector2.up) * knockbackForce;
+                    movement.ApplyKnockback(force, 0.5f);
+                }
+                else if (playerCollider.attachedRigidbody != null)
+                {
+                    // Fallback for objects without PlayerMovement
+                    playerCollider.attachedRigidbody.AddForce(direction * knockbackForce, ForceMode2D.Impulse);
+                }
+                GetComponent<CinemachineImpulseSource>().GenerateImpulse();
                 // Apply small damage to player
                 DamageInfo damageInfo = new DamageInfo(
-                    damage * 0.5f,
+                    damage * 0.25f,
                     gameObject,
                     playerCollider.transform.position,
                     direction
@@ -765,8 +804,7 @@ public class BossEnemy : Enemy
             }
         }
 
-        // Wait for animation
-        yield return new WaitForSeconds(immunityDuration);
+
 
         // Update phase
         currentPhase++;

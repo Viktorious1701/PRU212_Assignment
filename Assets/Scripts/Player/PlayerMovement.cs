@@ -64,6 +64,17 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float groundCheckDistance = 0.5f;
     [SerializeField] private float wallCheckDistance = 0.5f;
 
+    private bool isKnockedBack = false;
+    private float knockbackEndTime = 0f;
+
+    public void ApplyKnockback(Vector2 force, float duration)
+    {
+        rb.velocity = Vector2.zero; // Optional: clear current velocity
+        rb.AddForce(force, ForceMode2D.Impulse);
+        isKnockedBack = true;
+        knockbackEndTime = Time.time + duration;
+    }
+
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -74,6 +85,19 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        if (isKnockedBack)
+        {
+            if (Time.time >= knockbackEndTime)
+            {
+                isKnockedBack = false;
+            }
+            else
+            {
+                // Skip normal movement processing
+                return;
+            }
+        }
+        
         if (!dialogueSystem.isDialogueActive)
         {
             // Input handling
