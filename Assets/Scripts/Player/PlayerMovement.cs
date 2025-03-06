@@ -58,7 +58,9 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 dashDirection;
 
     [Header("Collision Checks")]
-    [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private Transform groundCheck; // New: assign a child transform at your player's feet
+    [SerializeField] private float groundCheckRadius = 0.2f; // New: tweak this value as needed
+    [SerializeField] private LayerMask groundLayer; // Already exists in your code
     [SerializeField] private float groundCheckDistance = 0.5f;
     [SerializeField] private float wallCheckDistance = 0.5f;
 
@@ -322,12 +324,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void CheckGrounded()
     {
-        // Use a slightly longer ray for detection than for physics
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, groundCheckDistance + 0.1f, groundLayer);
+        // Use an overlap circle for a more robust ground check on moving platforms.
         bool wasGrounded = isGrounded;
-        isGrounded = hit.collider != null;
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer) != null;
 
-        // If just landed
+        // If just landed, update animations.
         if (!wasGrounded && isGrounded)
         {
             animator.SetBool(IS_FALLING, false);
@@ -339,11 +340,11 @@ public class PlayerMovement : MonoBehaviour
         if (isGrounded && animator.GetBool(IS_FALLING))
         {
             animator.SetBool(IS_FALLING, false);
-            // Force immediate transition to idle/run
             string targetAnim = animator.GetBool(IS_RUNNING) ? "player_run" : "player_idle_sword";
             animator.Play(targetAnim, 0, 0f);
         }
     }
+
 
     private void CheckWallSliding(float horizontalInput)
     {
