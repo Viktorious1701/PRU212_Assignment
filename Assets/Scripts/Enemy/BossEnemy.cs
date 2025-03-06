@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Cinemachine;
 
 public class BossEnemy : Enemy
 {
@@ -23,6 +24,7 @@ public class BossEnemy : Enemy
     [SerializeField] private Transform firePoint; // Where projectiles spawn from
     [SerializeField] private LayerMask groundLayer; // For ground detection
 
+
     [Header("Shield Settings")]
     [SerializeField] private float shieldCooldown = 12f; // Time between shield activations
     [SerializeField] private float shieldDuration = 5f; // How long shield lasts
@@ -34,6 +36,10 @@ public class BossEnemy : Enemy
     [SerializeField] private float immunityDuration = 3f; // How long immunity lasts during phase transition
     [SerializeField] private GameObject phaseTransitionVFX; // Visual effect for phase transition
     [SerializeField] private float knockbackForce = 5f; // Force to push nearby players during transition
+
+    [Header("Effects")]
+    [SerializeField] private GameObject groundSlamEffectPrefab; // Effect for ground slam attack
+    private GameObject groundSlamEffect;
 
     // State tracking for boss
     private int currentPhase = 1;
@@ -56,9 +62,12 @@ public class BossEnemy : Enemy
     // Ground check
     private float groundCheckDistance = 2.5f;
 
+
+
     protected override void Awake()
     {
         base.Awake();
+
         startPosition = transform.position;
         maxHealth = health;
         // Ensure current phase starts at 1
@@ -74,14 +83,37 @@ public class BossEnemy : Enemy
 
     protected override void Update()
     {
+        CheckPlayerDamageCollision();
         // Check ground status
         CheckGroundStatus();
 
         // Check for phase transitions
         CheckPhaseTransition();
 
+        switch (currentState)
+        {
+            case EnemyState.Idle:
+                UpdateIdleState();
+                break;
+            case EnemyState.Patrol:
+                UpdatePatrolState();
+                break;
+            case EnemyState.Chase:
+                UpdateChaseState();
+                break;
+            case EnemyState.Attack:
+                UpdateAttackState();
+                break;
+            case EnemyState.Hurt:
+                UpdateHurtState();
+                break;
+            case EnemyState.Death:
+                UpdateDeathState();
+                break;
+        }
+
         // Run the base update logic which handles state machine
-        base.Update();
+        UpdateAnimation();
     }
 
     protected override void UpdateAnimation()
@@ -346,7 +378,7 @@ public class BossEnemy : Enemy
         animator.SetTrigger("DashAttack");
 
         // Wait for animation wind-up
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(1f);
 
         // Direction toward player
         float direction = IsPlayerToRight() ? 1 : -1;
@@ -368,18 +400,24 @@ public class BossEnemy : Enemy
         // Start special attack cooldown
         StartCoroutine(SpecialAttackCooldownRoutine());
     }
-
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void CheckPlayerDamageCollision()
     {
-        // Check for collision with player during dash
-        if (isDashing && collision.gameObject.CompareTag("Player"))
+        if (isDashing || isJumping)
         {
-            Debug.Log("Dash hit player!");
-            float phaseDamage = damage * phaseDamageMultipliers[currentPhase - 1];
-            DealDamageToPlayer(phaseDamage);
+            Collider2D[] hitPlayers = Physics2D.OverlapBoxAll(
+                transform.position,
+                new Vector2(attackRange * 0.8f, attackRange * 0.8f),
+                0,
+                LayerMask.GetMask("Player")
+            );
+
+            foreach (Collider2D playerCollider in hitPlayers)
+            {
+                float phaseDamage = damage * phaseDamageMultipliers[currentPhase - 1];
+                DealDamageToPlayer(phaseDamage);
+            }
         }
     }
-
     private IEnumerator JumpAttack()
     {
         Debug.Log("Jump Attack!");
@@ -419,12 +457,35 @@ public class BossEnemy : Enemy
             DealDamageToPlayer(phaseDamage * 1.5f); // Ground pound does more damage
         }
 
+        StartCoroutine(GroundSlamEffect());
+
         // Reset jump state
         isJumping = false;
         isAttacking = false;
 
         // Start special attack cooldown
         StartCoroutine(SpecialAttackCooldownRoutine());
+    }
+
+    private IEnumerator GroundSlamEffect()
+    {
+        GameObject groundSlamEffect = Instantiate(groundSlamEffectPrefab, transform.position, Quaternion.identity);
+        groundSlamEffect.SetActive(false);
+        if (groundSlamEffect)
+        {
+            groundSlamEffect.SetActive(true);
+            CinemachineImpulseSource temp = GetComponent<CinemachineImpulseSource>();
+            if(temp != null)
+            {
+                Debug.Log("Impulse");
+                temp.GenerateImpulse();
+            }
+            yield return new WaitForSeconds(0.65f);
+            groundSlamEffect.GetComponent<SpriteRenderer>().enabled = false;
+            yield return new WaitForSeconds(1.5f);
+            Destroy(groundSlamEffect);
+        }
+        yield return null;
     }
 
     private IEnumerator RangedAttack()

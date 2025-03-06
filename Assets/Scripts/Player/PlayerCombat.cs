@@ -425,7 +425,7 @@ public class PlayerCombat : MonoBehaviour
             // Optionally destroy after a short time
             Destroy(effect, 1f);
         }
-    }
+    }   
 
     public bool IsAttacking()
     {
