@@ -10,9 +10,15 @@ public class ProjectileController : MonoBehaviour
     private Vector2 direction = Vector2.zero;
     private GameObject owner;
     private Animator animator;
-    [SerializeField] private bool isHoming = false; // Adjust in Inspector
+    [SerializeField] private bool isHoming = true; // Adjust in Inspector
     public float speed = 10f; // Adjust in Inspector
     private bool hasHit = false; // Flag to track if the projectile has hit something
+    [SerializeField] private float startChasingTime = 0.1f; // Time to start chasing target
+    private float chasingTimer;
+
+    // Rotation smoothing
+    [SerializeField] private float rotationSpeed = 10f; // Adjust this to control rotation smoothness
+    [SerializeField] private float homingSmoothness = 0.5f; // Higher values make direction change more gradual (0-1)
 
     // Homing parameters
     [SerializeField] private float homingRadius = 10f; // Detection radius for targets
@@ -20,9 +26,11 @@ public class ProjectileController : MonoBehaviour
     [SerializeField] private string targetTag = "Enemy"; // Tag of objects to target
     [SerializeField] private LayerMask allyLayer; // Layer mask for allies to ignore
     private Transform currentTarget = null;
+    private Vector2 currentMoveDirection;
+    [SerializeField] private bool needRoate = false;
 
     // Cached results to avoid garbage collection
-    private Collider2D[] colliderResults;
+    private Collider2D[] colliderResults = new Collider2D[10];
 
     private void Awake()
     {
@@ -32,18 +40,22 @@ public class ProjectileController : MonoBehaviour
     public void Initialize(float damageAmount, float maxRange, GameObject source)
     {
         damage = damageAmount;
-        range = maxRange;
+        range = maxRange * 5;
         lastPosition = transform.position;
         owner = source;
+        chasingTimer = startChasingTime;
+        currentMoveDirection = transform.up;
 
         // If owner is player, target enemies. If owner is enemy, target player
         if (owner.CompareTag("Player"))
         {
             targetTag = "Enemy";
+            allyLayer = LayerMask.GetMask("Player");
         }
         else if (owner.CompareTag("Enemy"))
         {
             targetTag = "Player";
+            allyLayer = LayerMask.GetMask("Enemy");
         }
     }
 
@@ -53,16 +65,31 @@ public class ProjectileController : MonoBehaviour
         range = maxRange;
         lastPosition = transform.position;
         owner = source;
-        direction = dir;
+        direction = dir.normalized;
+        currentMoveDirection = direction;
+        chasingTimer = startChasingTime;
 
         // If owner is player, target enemies. If owner is enemy, target player
         if (owner.CompareTag("Player"))
         {
             targetTag = "Enemy";
+            allyLayer = LayerMask.GetMask("Player");
         }
         else if (owner.CompareTag("Enemy"))
         {
             targetTag = "Player";
+            allyLayer = LayerMask.GetMask("Enemy");
+        }
+
+        // Set initial rotation based on direction
+        if (direction != Vector2.zero)
+        {
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f; // Subtract 90 degrees because sprite faces up
+            if(!needRoate)
+            {
+                angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            }
+            transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
         }
     }
 
@@ -70,7 +97,11 @@ public class ProjectileController : MonoBehaviour
     {
         if (hasHit) return; // Skip if already hit something
 
-        Vector3 moveDirection = direction;
+        // Update chase timer
+        if (chasingTimer > 0)
+        {
+            chasingTimer -= Time.deltaTime;
+        }
 
         // Handle homing behavior if enabled
         if (isHoming)
@@ -82,38 +113,62 @@ public class ProjectileController : MonoBehaviour
             }
 
             // Apply homing behavior if we have a target
-            if (currentTarget != null)
+            if (currentTarget != null && chasingTimer <= 0)
             {
                 // Calculate direction to target
-                Vector3 directionToTarget = (currentTarget.position - transform.position).normalized;
+                Vector2 directionToTarget = (currentTarget.position - transform.position).normalized;
 
-                // If we had an initial direction, blend between it and the homing direction
+                // Smoothly change direction
                 if (direction != Vector2.zero)
                 {
-                    moveDirection = Vector3.Lerp(direction.normalized, directionToTarget, homingForce * Time.deltaTime);
+                    // Gradually adjust direction based on homingSmoothness
+                    currentMoveDirection = Vector2.Lerp(
+                        currentMoveDirection,
+                        directionToTarget,
+                        homingForce * Time.deltaTime * (1f - homingSmoothness)
+                    );
                 }
                 else
                 {
-                    // Use the current right direction (the way the projectile is facing) and blend with homing
-                    moveDirection = Vector3.Lerp(transform.right, directionToTarget, homingForce * Time.deltaTime);
+                    currentMoveDirection = Vector2.Lerp(
+                        currentMoveDirection,
+                        directionToTarget,
+                        homingForce * Time.deltaTime * (1f - homingSmoothness)
+                    );
                 }
-
-                // Update the projectile's rotation to face the movement direction
-                float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;
-                transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
             }
-        }
-
-        // Move the projectile
-        if (moveDirection != Vector3.zero)
-        {
-            transform.position += (Vector3)moveDirection.normalized * speed * Time.deltaTime;
         }
         else
         {
-            // Fallback to moving along the right direction
-            transform.position += transform.right * speed * Time.deltaTime;
+            // If not homing, just use the initial direction
+            if (direction != Vector2.zero)
+            {
+                currentMoveDirection = direction;
+            }
+            else
+            {
+                currentMoveDirection = transform.up;
+            }
         }
+
+        // Update rotation smoothly
+        if (currentMoveDirection != Vector2.zero)
+        {
+            float angle = Mathf.Atan2(currentMoveDirection.y, currentMoveDirection.x) * Mathf.Rad2Deg;
+            if(needRoate)
+            {
+                angle = Mathf.Atan2(currentMoveDirection.y, currentMoveDirection.x) * Mathf.Rad2Deg - 90f;
+            }
+
+            Quaternion targetRotation = Quaternion.AngleAxis(angle, Vector3.forward);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        }
+
+        // Move the projectile
+        transform.position += (Vector3)currentMoveDirection * speed * Time.deltaTime;
+
+        // Draw debug ray
+        Debug.DrawRay(transform.position, currentMoveDirection * 2, Color.green);
 
         // Calculate distance traveled
         distanceTravelled += Vector3.Distance(transform.position, lastPosition);
@@ -162,7 +217,6 @@ public class ProjectileController : MonoBehaviour
                 }
             }
         }
-
         currentTarget = closestTarget;
     }
 
@@ -178,7 +232,14 @@ public class ProjectileController : MonoBehaviour
         if (((1 << hitObject.layer) & allyLayer.value) != 0)
             return;
 
-        hasHit = true; // Stop movement
+        if(collider.gameObject.CompareTag("Player") || collider.gameObject.CompareTag("Enemy"))
+        {
+            hasHit = true; // Stop movement
+        }
+        else
+        {
+            return;
+        }
 
         if (animator != null)
         {
@@ -204,7 +265,7 @@ public class ProjectileController : MonoBehaviour
         }
 
         // Destroy after a delay (e.g., 2 seconds)
-        Destroy(gameObject, 2f);
+        Destroy(gameObject, 1f);
     }
 
     public void OnExplodeAnimationEnd()

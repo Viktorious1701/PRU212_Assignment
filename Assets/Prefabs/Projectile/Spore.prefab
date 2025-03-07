@@ -193,4 +193,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1a746a6dd3854248be68fece5f00bfa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isHoming: 0
   speed: 20
+  startChasingTime: 0.15
+  rotationSpeed: 10
+  homingSmoothness: 0.5
+  homingRadius: 10
+  homingForce: 5
+  targetTag: Enemy
+  allyLayer:
+    serializedVersion: 2
+    m_Bits: 0
