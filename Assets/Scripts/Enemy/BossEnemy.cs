@@ -84,7 +84,9 @@ public class BossEnemy : Enemy
 
     protected new void Update()
     {
+        if(isDashing)
         CheckPlayerDamageCollision();
+
         // Check ground status
         CheckGroundStatus();
 
@@ -178,12 +180,12 @@ public class BossEnemy : Enemy
 
         // Consider using shield when health is below 50% in the current phase threshold
         // and player is getting close but not in melee range yet
-        if (CanActivateShield() && IsPlayerInRange(specialAttackRange) && !IsPlayerInRange(attackRange))
-        {
-            currentAttackType = BossAttackType.ShieldCast;
-            currentState = EnemyState.Attack;
-            return;
-        }
+        //if (CanActivateShield() && IsPlayerInRange(specialAttackRange) && !IsPlayerInRange(attackRange))
+        //{
+        //    currentAttackType = BossAttackType.ShieldCast;
+        //    currentState = EnemyState.Attack;
+        //    return;
+        //}
 
         // Chase the player
         float direction = IsPlayerToRight() ? 1 : -1;
@@ -352,11 +354,13 @@ public class BossEnemy : Enemy
             canAttack = true;
             return;
         }
+       
         switch (currentAttackType)
         {
             case BossAttackType.MeleeSlash:
                 // Basic melee attack handled by animation event
                 animator.SetTrigger("MeleeAttack");
+                rb.velocity = new Vector2(0, rb.velocity.y);
                 break;
 
             case BossAttackType.DashAttack:
@@ -420,7 +424,7 @@ public class BossEnemy : Enemy
         animator.SetTrigger("DashAttack");
 
         // Wait for animation wind-up
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.75f);
 
         // Direction toward player
         float direction = IsPlayerToRight() ? 1 : -1;
@@ -538,7 +542,7 @@ public class BossEnemy : Enemy
         Debug.Log("Ranged Attack!");
         // Play ranged attack animation
         animator.SetTrigger("RangedAttack");
-
+        rb.velocity = new Vector2(0, rb.velocity.y);
         // Wait for animation wind-up
         yield return new WaitForSeconds(0.4f);
 
@@ -689,7 +693,7 @@ public class BossEnemy : Enemy
     private IEnumerator SpecialAttackCooldownRoutine()
     {
         canUseSpecialAttack = false;
-        yield return new WaitForSeconds(specialAttackCooldown / currentPhase); // Shorter cooldown in later phases
+        yield return new WaitForSeconds(specialAttackCooldown); // Shorter cooldown in later phases
         canUseSpecialAttack = true;
     }
 
@@ -848,7 +852,6 @@ public class BossEnemy : Enemy
         isImmune = false;
 
         // Reset cooldowns for attacks
-        canUseSpecialAttack = true;
         canUseShield = true;
         canAttack = true;
 

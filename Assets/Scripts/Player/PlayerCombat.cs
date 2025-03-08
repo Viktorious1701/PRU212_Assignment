@@ -219,6 +219,12 @@ public class PlayerCombat : MonoBehaviour
             StopCoroutine(resetComboCoroutine);
             resetComboCoroutine = null;
         }
+
+        // Make sure time scale is reset when combo ends
+        if (HitFeedbackManager.Instance != null)
+        {
+            HitFeedbackManager.Instance.ResetTimeScale();
+        }
     }
 
     private void ResetTriggers()
@@ -336,7 +342,6 @@ public class PlayerCombat : MonoBehaviour
         spellController.Initialize(spellDamage, spellRange, gameObject,direction);
     }
 
-    // Modified to use the damage system
     private void ApplyDamage(GameObject target, float damage)
     {
         if (target == null) return;
@@ -354,6 +359,13 @@ public class PlayerCombat : MonoBehaviour
 
         // Apply damage through the damage system
         DamageSystem.ApplyDamage(target, damageInfo);
+
+        // Trigger hit feedback effects
+        if (HitFeedbackManager.Instance != null)
+        {
+            Debug.Log("Triggering hit feedback");
+            HitFeedbackManager.Instance.TriggerHitFeedback(target.transform.position, damage);
+        }
     }
 
     // Helper method to visualize attack ranges in the editor
@@ -399,6 +411,7 @@ public class PlayerCombat : MonoBehaviour
         {
             ResetCombo();
         }
+
     }
 
     //Spawn visual effects on hit

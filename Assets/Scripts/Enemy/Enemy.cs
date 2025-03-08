@@ -59,7 +59,10 @@ public abstract class Enemy : MonoBehaviour
             currentState = EnemyState.Hurt;
             // Trigger hurt animation
             if (animator != null)
+            {
                 animator.SetTrigger("Hurt");
+                animator.SetBool("IsHurt", true);
+            }
         }
         else
         {
@@ -67,6 +70,14 @@ public abstract class Enemy : MonoBehaviour
             // Trigger death animation
             if (animator != null)
                 animator.SetTrigger("Death");
+        }
+    }
+
+    public void OnHurtEnd()
+    {
+        if (animator)
+        {
+            animator.SetBool("IsHurt", false);
         }
     }
 
