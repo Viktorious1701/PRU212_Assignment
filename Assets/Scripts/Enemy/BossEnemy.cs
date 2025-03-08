@@ -82,7 +82,7 @@ public class BossEnemy : Enemy
         StartCoroutine(ShieldCooldownRoutine());
     }
 
-    protected override void Update()
+    protected new void Update()
     {
         CheckPlayerDamageCollision();
         // Check ground status
@@ -212,7 +212,7 @@ public class BossEnemy : Enemy
             PerformAttack();
             StartCoroutine(AttackCooldown());
         }
-      
+
 
         // Return to chase once attack is complete
         if (!isAttacking && !isDashing && !isJumping && !isImmune)
@@ -234,9 +234,14 @@ public class BossEnemy : Enemy
         if (!isShieldActive)
         {
             animator.SetTrigger("Hurt");
-            StopAllCoroutines();
+
+            // Don't stop ALL coroutines, just attack-related ones
+            // Instead of StopAllCoroutines(), stop specific ones:
+            StopAttackCoroutines();
+
             isDashing = false;
             isJumping = false;
+            isAttacking = false; // Reset this flag too
 
             // Apply knockback
             AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
@@ -251,7 +256,8 @@ public class BossEnemy : Enemy
             if (stateInfo.normalizedTime >= 0.9f)
             {
                 currentState = EnemyState.Chase;
-                // Resume special attack cooldown
+
+                // Always ensure these are restarted
                 if (!canUseSpecialAttack)
                     StartCoroutine(SpecialAttackCooldownRoutine());
                 if (!canUseShield)
@@ -270,6 +276,17 @@ public class BossEnemy : Enemy
             // Skip hurt state animation
             currentState = EnemyState.Chase;
         }
+    }
+
+    private void StopAttackCoroutines()
+    {
+        // Find and stop specific attack coroutines
+        StopCoroutine(DashAttack());
+        StopCoroutine(JumpAttack());
+        StopCoroutine(RangedAttack());
+        StopCoroutine(ActivateShieldSequence());
+
+        // Don't stop cooldown coroutines
     }
 
     protected override void UpdateDeathState()
@@ -332,6 +349,7 @@ public class BossEnemy : Enemy
         {
             currentState = EnemyState.Chase;
             isAttacking = false;
+            canAttack = true;
             return;
         }
         switch (currentAttackType)
@@ -742,7 +760,7 @@ public class BossEnemy : Enemy
     private void TransitionToNextPhase()
     {
         // Stop all actions
-        StopAllCoroutines();
+        StopAttackCoroutines();
 
         // Clear any active effects
         isAttacking = false;
@@ -758,6 +776,14 @@ public class BossEnemy : Enemy
     {
         // Enter immunity state
         isImmune = true;
+        // Reset attack states
+        isAttacking = false;
+        isDashing = false;
+        isJumping = false;
+        DeactivateShield();
+
+        // Clear attack coroutines but don't stop ALL coroutines
+        StopAttackCoroutines();
 
         // Stop movement
         rb.velocity = Vector2.zero;
@@ -814,6 +840,9 @@ public class BossEnemy : Enemy
         {
             spriteRenderer.color = phaseColors[currentPhase - 1];
         }
+
+        StartCoroutine(SpecialAttackCooldownRoutine());
+        StartCoroutine(ShieldCooldownRoutine());
 
         // End immunity state
         isImmune = false;
