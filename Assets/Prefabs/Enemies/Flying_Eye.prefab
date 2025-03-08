@@ -13,10 +13,11 @@ GameObject:
   - component: {fileID: 8639324206879212888}
   - component: {fileID: 6546040104186659181}
   - component: {fileID: 7519959117541609002}
+  - component: {fileID: 1282906630580391811}
   - component: {fileID: 5962051585280039336}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Flying_Eye
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -176,6 +177,34 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.5104232, y: 1.312984}
   m_EdgeRadius: 0
+--- !u!114 &1282906630580391811
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1538242559078545303}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64b4fe7a0778dd14eb507f4af6819548, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHealth: 100
+  maxHealth: 100
+  invincibilityTime: 1
+  isInvincible: 0
+  onHealthChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  onDeath:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamageImpact:
+    m_PersistentCalls:
+      m_Calls: []
+  onInvincibilityChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!50 &5962051585280039336
 Rigidbody2D:
   serializedVersion: 4

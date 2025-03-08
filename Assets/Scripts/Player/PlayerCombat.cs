@@ -301,10 +301,10 @@ public class PlayerCombat : MonoBehaviour
         arrow.transform.Rotate(0, 0, isFacingRight ? -90 : 90);
         Rigidbody2D arrowRb = arrow.GetComponent<Rigidbody2D>();
         Vector2 direction = isFacingRight ? transform.right : -transform.right;
-        arrowRb.velocity = direction * projectileSpeed;
+
 
         // Add a script to the arrow to handle damage
-        ProjectileController arrowController = arrow.AddComponent<ProjectileController>();
+        ProjectileController arrowController = arrow.GetComponent<ProjectileController>();
         arrowController.Initialize(bowDamage, bowRange, gameObject);
     }
 
@@ -318,19 +318,22 @@ public class PlayerCombat : MonoBehaviour
     public void SpawnSpell()
     {
         // Get the attack direction based on facing direction
-        Vector3 direction = isFacingRight ? transform.right : -transform.right;
+        Vector2 direction = isFacingRight ? transform.right : -transform.right;
 
         // Instantiate spell projectile
         Vector3 spawnPosition = firePoint.transform.position;
-        spawnPosition.y -= 0.75f;
+        if(isFacingRight)
+        {
+            spawnPosition.y -= 1.35f;
+        }
         GameObject spell = Instantiate(spellPrefab, spawnPosition, firePoint.transform.rotation);
 
         Rigidbody2D spellRb = spell.GetComponent<Rigidbody2D>();
-        spellRb.velocity = direction * projectileSpeed * 0.5f;
+        
 
         // Add a script to the spell to handle damage and special effects
-        ProjectileController spellController = spell.AddComponent<ProjectileController>();
-        spellController.Initialize(spellDamage, spellRange, gameObject);
+        ProjectileController spellController = spell.GetComponent<ProjectileController>();
+        spellController.Initialize(spellDamage, spellRange, gameObject,direction);
     }
 
     // Modified to use the damage system

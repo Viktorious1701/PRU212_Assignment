@@ -122,12 +122,23 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5853618178704275592}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c1a746a6dd3854248be68fece5f00bfa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 10
+  isHoming: 1
+  speed: 20
+  startChasingTime: 0.15
+  rotationSpeed: 10
+  homingSmoothness: 0.5
+  homingRadius: 10
+  homingForce: 5
+  targetTag: Enemy
+  allyLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  needRoate: 0
 --- !u!95 &205951335178067967
 Animator:
   serializedVersion: 5

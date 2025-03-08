@@ -293,7 +293,7 @@ MonoBehaviour:
   swordHitEffectPrefab: {fileID: 0}
   arrowPrefab: {fileID: 2321373737910018366, guid: 21c5cbf1346b52649b3ab7eb60dc3562, type: 3}
   spellPrefab: {fileID: 5853618178704275592, guid: 83cf04ce4b112be4b81b8fa9b8aa61f7, type: 3}
-  projectileSpeed: 49.8
+  projectileSpeed: 10
   firePoint: {fileID: 1719411333002057815}
 --- !u!95 &7944740274898364522
 Animator:
