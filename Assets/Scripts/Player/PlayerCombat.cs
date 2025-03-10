@@ -187,11 +187,14 @@ public class PlayerCombat : MonoBehaviour
         foreach (Collider2D hit in hits)
         {
             if (hit.gameObject == gameObject) continue;
-            ApplyDamage(hit.gameObject, damage);
+            if(hit.GetComponent<Health>() && !hit.GetComponent<Health>().IsInvincible())
+            {
+                ApplyDamage(hit.gameObject, damage);
+            }
             Rigidbody2D hitRigidbody = hit.GetComponent<Rigidbody2D>();
             if (hitRigidbody != null && comboStep == 3)
             {
-                float knockbackForce = 5f;
+                float knockbackForce = 15f;
                 hitRigidbody.AddForce(attackDirection * knockbackForce, ForceMode2D.Impulse);
             }
         }

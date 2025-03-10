@@ -142,7 +142,7 @@ public class PatrollingEnemy : Enemy
         foreach (Collider2D player in hitPlayers)
         {
             // Assuming player has a health component
-            //player.GetComponent<PlayerHealth>()?.TakeDamage(damage);
+            player.GetComponent<Health>()?.TakeDamage(damage);
         }
         isAttacking = false;
     }
