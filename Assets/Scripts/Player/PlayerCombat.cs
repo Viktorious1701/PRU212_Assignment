@@ -105,17 +105,12 @@ public class PlayerCombat : MonoBehaviour
     {
         float currentCooldown = GetCurrentCooldown();
 
-        // Allow attack if not in combo and off cooldown, or if combo just finished
-        if (!isInCombo && Time.time - lastAttackTime < currentCooldown && currentComboCount != 0)
-        {
-            Debug.Log("Attack on cooldown");
-            return;
-        }
+      
 
         // Prevent new attack until damage is dealt, unless starting a new combo
         if (isInCombo && isComboWindowOpen && !hasDealtDamage && currentComboCount > 0)
         {
-            Debug.Log("Waiting for damage to be applied");
+            Debug.LogError("Waiting for damage to be applied");
             return;
         }
 
@@ -203,7 +198,8 @@ public class PlayerCombat : MonoBehaviour
     private IEnumerator ResetComboAfterAnimation()
     {
         AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-        yield return new WaitForSeconds(stateInfo.length * 0.9f); // Wait for 90% of the animation
+        // Reduce this value to make the combo reset faster
+        yield return new WaitForSeconds(stateInfo.length * 0.5f); // Changed from 0.9f to 0.5f
 
         if (comboTimer <= 0) // Only reset if no new attack was input
         {
@@ -216,6 +212,7 @@ public class PlayerCombat : MonoBehaviour
         isInCombo = false;
         currentComboCount = 0;
         comboTimer = 0;
+        hasDealtDamage = false;
 
         if (resetComboCoroutine != null)
         {
@@ -399,10 +396,10 @@ public class PlayerCombat : MonoBehaviour
             Debug.Log("Combo window opened");
             isComboWindowOpen = true;
         }
-        else
+        if(currentComboCount == 3)
         {
-            Debug.Log("Combo window delayed until damage is dealt");
-        }
+            ResetCombo();
+        }   
     }
 
     public void OnComboWindowClose()
@@ -410,11 +407,11 @@ public class PlayerCombat : MonoBehaviour
         Debug.Log("Combo window closed");
         isComboWindowOpen = false;
 
-        if (currentComboCount > 0 && (Time.time - lastAttackTime > 0.2f || currentComboCount == 3))
+        // Remove the Time.time check that's causing the delay
+        if (currentComboCount > 0 && currentComboCount == 3)
         {
             ResetCombo();
         }
-
     }
 
     //Spawn visual effects on hit

@@ -156,10 +156,9 @@ public class PlayerMovement : MonoBehaviour
                     jumpBufferCounter -= Time.deltaTime;
                 }
 
-                // Handle jumping
                 if (jumpBufferCounter > 0f)
                 {
-                    // Normal jump
+                    // Normal jump (includes coyote time)
                     if (coyoteTimeCounter > 0f)
                     {
                         Jump(jumpForce);
@@ -173,7 +172,7 @@ public class PlayerMovement : MonoBehaviour
                         jumpBufferCounter = 0f;
                     }
                     // Double jump
-                    else if (canDoubleJump)
+                    else if (canDoubleJump && !isWallSliding)
                     {
                         Jump(jumpForce * 0.8f);
                         canDoubleJump = false;
@@ -191,6 +190,11 @@ public class PlayerMovement : MonoBehaviour
                 if (wallJumpTimeCounter <= 0)
                 {
                     float previousVelocityX = rb.velocity.x;
+                    if(isWallSliding)
+                    {
+                        rb.velocity = new Vector2(previousVelocityX, -wallSlidingSpeed);
+                    }
+                    else
                     rb.velocity = new Vector2(horizontalInput * moveSpeed, rb.velocity.y);
 
                     UpdateMovementAnimations(horizontalInput);
@@ -355,10 +359,15 @@ public class PlayerMovement : MonoBehaviour
         // If just landed, update animations.
         if (!wasGrounded && isGrounded)
         {
+            coyoteTimeCounter = coyoteTime;
+            canDoubleJump = true;
             animator.SetBool(IS_FALLING, false);
             animator.SetBool(IS_JUMPING, false);
         }
-
+        else if (wasGrounded && !isGrounded)
+        {
+            coyoteTimeCounter = coyoteTime;
+        }
         animator.SetBool(IS_GROUND, isGrounded);
 
         if (isGrounded && animator.GetBool(IS_FALLING))
@@ -378,8 +387,13 @@ public class PlayerMovement : MonoBehaviour
         isWallRight = hitRight.collider != null;
         bool isWallLeft = hitLeft.collider != null;
 
-        isWallSliding = (isWallRight || isWallLeft) && !isGrounded &&
-                        ((horizontalInput > 0 && isWallRight) || (horizontalInput < 0 && isWallLeft));
+        // Update the condition to allow wall sliding even without input
+        isWallSliding = (isWallRight || isWallLeft) && !isGrounded;
+
+        if (isWallSliding)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -wallSlidingSpeed));
+        }
     }
 
     private void Jump(float force)
