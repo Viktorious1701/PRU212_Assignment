@@ -411,6 +411,7 @@ public class PlayerMovement : MonoBehaviour
         float wallJumpDirection = isWallRight ? -1 : 1;
         rb.velocity = new Vector2(wallJumpDirection * wallJumpForce, wallJumpUpForce);
         animator.SetBool(IS_JUMPING, true);
+        animator.Play("player_jump", 0, 0f);
     }
 
     private void OnDrawGizmos()
