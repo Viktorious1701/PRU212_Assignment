@@ -11,7 +11,7 @@ public class Health : MonoBehaviour
     [SerializeField] private bool isInvincible = false;
 
     // Optional: Unity Events for UI updates or other responses
-    [SerializeField] private UnityEvent<float> onHealthChanged;
+    [SerializeField] public UnityEvent<float> onHealthChanged;
     [SerializeField] private UnityEvent onDeath;
 
     // Optional: Event for knock-back or visual effects on hit

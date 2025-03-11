@@ -172,7 +172,7 @@ MonoBehaviour:
   detectionRange: 10
   health: 100
   damage: 10
-  attackCooldown: 0.8
+  attackCooldown: 2
   patrolPoints:
   - {fileID: 0}
   - {fileID: 0}
@@ -218,6 +218,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentHealth: 100
   maxHealth: 100
+  invincibilityTime: 0.25
+  isInvincible: 0
   onHealthChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -225,5 +227,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   onDamageImpact:
+    m_PersistentCalls:
+      m_Calls: []
+  onInvincibilityChanged:
     m_PersistentCalls:
       m_Calls: []

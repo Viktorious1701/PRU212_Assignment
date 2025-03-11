@@ -187,11 +187,14 @@ public class PlayerCombat : MonoBehaviour
         foreach (Collider2D hit in hits)
         {
             if (hit.gameObject == gameObject) continue;
-            ApplyDamage(hit.gameObject, damage);
+            if(hit.GetComponent<Health>() && !hit.GetComponent<Health>().IsInvincible())
+            {
+                ApplyDamage(hit.gameObject, damage);
+            }
             Rigidbody2D hitRigidbody = hit.GetComponent<Rigidbody2D>();
             if (hitRigidbody != null && comboStep == 3)
             {
-                float knockbackForce = 5f;
+                float knockbackForce = 15f;
                 hitRigidbody.AddForce(attackDirection * knockbackForce, ForceMode2D.Impulse);
             }
         }
@@ -218,6 +221,12 @@ public class PlayerCombat : MonoBehaviour
         {
             StopCoroutine(resetComboCoroutine);
             resetComboCoroutine = null;
+        }
+
+        // Make sure time scale is reset when combo ends
+        if (HitFeedbackManager.Instance != null)
+        {
+            HitFeedbackManager.Instance.ResetTimeScale();
         }
     }
 
@@ -336,7 +345,6 @@ public class PlayerCombat : MonoBehaviour
         spellController.Initialize(spellDamage, spellRange, gameObject,direction);
     }
 
-    // Modified to use the damage system
     private void ApplyDamage(GameObject target, float damage)
     {
         if (target == null) return;
@@ -354,6 +362,13 @@ public class PlayerCombat : MonoBehaviour
 
         // Apply damage through the damage system
         DamageSystem.ApplyDamage(target, damageInfo);
+
+        // Trigger hit feedback effects
+        if (HitFeedbackManager.Instance != null)
+        {
+            Debug.Log("Triggering hit feedback");
+            HitFeedbackManager.Instance.TriggerHitFeedback(target.transform.position, damage);
+        }
     }
 
     // Helper method to visualize attack ranges in the editor
@@ -399,6 +414,7 @@ public class PlayerCombat : MonoBehaviour
         {
             ResetCombo();
         }
+
     }
 
     //Spawn visual effects on hit

@@ -82,9 +82,11 @@ public class BossEnemy : Enemy
         StartCoroutine(ShieldCooldownRoutine());
     }
 
-    protected override void Update()
+    protected new void Update()
     {
+        if(isDashing)
         CheckPlayerDamageCollision();
+
         // Check ground status
         CheckGroundStatus();
 
@@ -178,12 +180,12 @@ public class BossEnemy : Enemy
 
         // Consider using shield when health is below 50% in the current phase threshold
         // and player is getting close but not in melee range yet
-        if (CanActivateShield() && IsPlayerInRange(specialAttackRange) && !IsPlayerInRange(attackRange))
-        {
-            currentAttackType = BossAttackType.ShieldCast;
-            currentState = EnemyState.Attack;
-            return;
-        }
+        //if (CanActivateShield() && IsPlayerInRange(specialAttackRange) && !IsPlayerInRange(attackRange))
+        //{
+        //    currentAttackType = BossAttackType.ShieldCast;
+        //    currentState = EnemyState.Attack;
+        //    return;
+        //}
 
         // Chase the player
         float direction = IsPlayerToRight() ? 1 : -1;
@@ -212,7 +214,7 @@ public class BossEnemy : Enemy
             PerformAttack();
             StartCoroutine(AttackCooldown());
         }
-      
+
 
         // Return to chase once attack is complete
         if (!isAttacking && !isDashing && !isJumping && !isImmune)
@@ -234,9 +236,14 @@ public class BossEnemy : Enemy
         if (!isShieldActive)
         {
             animator.SetTrigger("Hurt");
-            StopAllCoroutines();
+
+            // Don't stop ALL coroutines, just attack-related ones
+            // Instead of StopAllCoroutines(), stop specific ones:
+            StopAttackCoroutines();
+
             isDashing = false;
             isJumping = false;
+            isAttacking = false; // Reset this flag too
 
             // Apply knockback
             AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
@@ -251,7 +258,8 @@ public class BossEnemy : Enemy
             if (stateInfo.normalizedTime >= 0.9f)
             {
                 currentState = EnemyState.Chase;
-                // Resume special attack cooldown
+
+                // Always ensure these are restarted
                 if (!canUseSpecialAttack)
                     StartCoroutine(SpecialAttackCooldownRoutine());
                 if (!canUseShield)
@@ -270,6 +278,17 @@ public class BossEnemy : Enemy
             // Skip hurt state animation
             currentState = EnemyState.Chase;
         }
+    }
+
+    private void StopAttackCoroutines()
+    {
+        // Find and stop specific attack coroutines
+        StopCoroutine(DashAttack());
+        StopCoroutine(JumpAttack());
+        StopCoroutine(RangedAttack());
+        StopCoroutine(ActivateShieldSequence());
+
+        // Don't stop cooldown coroutines
     }
 
     protected override void UpdateDeathState()
@@ -332,13 +351,16 @@ public class BossEnemy : Enemy
         {
             currentState = EnemyState.Chase;
             isAttacking = false;
+            canAttack = true;
             return;
         }
+       
         switch (currentAttackType)
         {
             case BossAttackType.MeleeSlash:
                 // Basic melee attack handled by animation event
                 animator.SetTrigger("MeleeAttack");
+                rb.velocity = new Vector2(0, rb.velocity.y);
                 break;
 
             case BossAttackType.DashAttack:
@@ -402,7 +424,7 @@ public class BossEnemy : Enemy
         animator.SetTrigger("DashAttack");
 
         // Wait for animation wind-up
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.75f);
 
         // Direction toward player
         float direction = IsPlayerToRight() ? 1 : -1;
@@ -520,7 +542,7 @@ public class BossEnemy : Enemy
         Debug.Log("Ranged Attack!");
         // Play ranged attack animation
         animator.SetTrigger("RangedAttack");
-
+        rb.velocity = new Vector2(0, rb.velocity.y);
         // Wait for animation wind-up
         yield return new WaitForSeconds(0.4f);
 
@@ -671,7 +693,7 @@ public class BossEnemy : Enemy
     private IEnumerator SpecialAttackCooldownRoutine()
     {
         canUseSpecialAttack = false;
-        yield return new WaitForSeconds(specialAttackCooldown / currentPhase); // Shorter cooldown in later phases
+        yield return new WaitForSeconds(specialAttackCooldown); // Shorter cooldown in later phases
         canUseSpecialAttack = true;
     }
 
@@ -742,7 +764,7 @@ public class BossEnemy : Enemy
     private void TransitionToNextPhase()
     {
         // Stop all actions
-        StopAllCoroutines();
+        StopAttackCoroutines();
 
         // Clear any active effects
         isAttacking = false;
@@ -758,6 +780,14 @@ public class BossEnemy : Enemy
     {
         // Enter immunity state
         isImmune = true;
+        // Reset attack states
+        isAttacking = false;
+        isDashing = false;
+        isJumping = false;
+        DeactivateShield();
+
+        // Clear attack coroutines but don't stop ALL coroutines
+        StopAttackCoroutines();
 
         // Stop movement
         rb.velocity = Vector2.zero;
@@ -815,11 +845,13 @@ public class BossEnemy : Enemy
             spriteRenderer.color = phaseColors[currentPhase - 1];
         }
 
+        StartCoroutine(SpecialAttackCooldownRoutine());
+        StartCoroutine(ShieldCooldownRoutine());
+
         // End immunity state
         isImmune = false;
 
         // Reset cooldowns for attacks
-        canUseSpecialAttack = true;
         canUseShield = true;
         canAttack = true;
 
