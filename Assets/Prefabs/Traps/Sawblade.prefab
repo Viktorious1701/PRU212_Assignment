@@ -1,5 +1,49 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1174682294080149332
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5946946213914942520}
+  - component: {fileID: 1596079127547103692}
+  m_Layer: 8
+  m_Name: Deadzone
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5946946213914942520
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1174682294080149332}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8908418879093964668}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1596079127547103692
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1174682294080149332}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e053a4020daea743843c774605d7a10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8959850448802280174
 GameObject:
   m_ObjectHideFlags: 0
@@ -11,7 +55,7 @@ GameObject:
   - component: {fileID: 8908418879093964668}
   - component: {fileID: 5518789670205184521}
   - component: {fileID: 7566084477609938813}
-  - component: {fileID: 3561297796186162765}
+  - component: {fileID: 5372128296900560156}
   m_Layer: 8
   m_Name: Sawblade
   m_TagString: Untagged
@@ -31,7 +75,8 @@ Transform:
   m_LocalPosition: {x: 119.86, y: 10.37, z: 0}
   m_LocalScale: {x: 3.97, y: 3.97, z: 3.97}
   m_ConstrainProportionsScale: 1
-  m_Children: []
+  m_Children:
+  - {fileID: 5946946213914942520}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &5518789670205184521
@@ -107,7 +152,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &3561297796186162765
+--- !u!114 &5372128296900560156
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -116,7 +161,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 8959850448802280174}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e64415ce745d52d48919b7c04a6b95c4, type: 3}
+  m_Script: {fileID: 11500000, guid: 417b674d9e455f542b47e25a0d999c50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sawblade: {fileID: 0}
+  isMoving: 1
+  pointA: {fileID: 0}
+  pointB: {fileID: 0}
+  speed: 20
+  waitTime: 5
+  startMovingImmediately: 0
+  requireTrigger: 0
+  isDeadly: 1
+  respawnPoint: {fileID: 0}
