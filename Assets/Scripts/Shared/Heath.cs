@@ -40,10 +40,10 @@ public class Health : MonoBehaviour
         // Check if currently invincible
         if (isInvincible) return;
 
-        TakeDamage(damageInfo.damageAmount);
-
         // Trigger impact event (for knockback, particles, etc)
         onDamageImpact?.Invoke(damageInfo.hitDirection);
+        TakeDamage(damageInfo.damageAmount);
+
 
         // Start invincibility
         StartInvincibility();
