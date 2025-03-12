@@ -44,7 +44,6 @@ public class Health : MonoBehaviour
         onDamageImpact?.Invoke(damageInfo.hitDirection);
         TakeDamage(damageInfo.damageAmount);
 
-
         // Start invincibility
         StartInvincibility();
     }
