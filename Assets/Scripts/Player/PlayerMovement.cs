@@ -23,6 +23,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float wallSlidingSpeed = 2f;
     [SerializeField] private GameObject firePoint;
 
+    [Header("Platform Parameters")]
+    [SerializeField] private float platformJumpMultiplier = 1.5f; // Multiplier for jumps from moving platforms
+    [SerializeField] private LayerMask movingPlatformLayer; // Layer for moving platforms
+
     [Header("Jump Physics")]
     [SerializeField] private float fallMultiplier = 2.5f; // Makes falling faster
     [SerializeField] private float lowJumpMultiplier = 2f; // For short jumps
@@ -50,6 +54,11 @@ public class PlayerMovement : MonoBehaviour
     private int facingDirection = 1;
     private bool isWallRight;
 
+    // Platform tracking
+    private Transform currentPlatform;
+    private Vector2 platformVelocity;
+    private bool isOnMovingPlatform;
+
     // Dash state
     private bool isDashing;
     private bool canDash = true;
@@ -61,11 +70,13 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Transform groundCheck; // New: assign a child transform at your player's feet
     [SerializeField] private float groundCheckRadius = 0.2f; // New: tweak this value as needed
     [SerializeField] private LayerMask groundLayer; // Already exists in your code
+    [SerializeField] public LayerMask movingGroundLayer;
     [SerializeField] private float groundCheckDistance = 0.5f;
     [SerializeField] private float wallCheckDistance = 0.5f;
 
     private bool isKnockedBack = false;
     private float knockbackEndTime = 0f;
+    
 
     public void ApplyKnockback(Vector2 force, float duration)
     {
@@ -97,7 +108,7 @@ public class PlayerMovement : MonoBehaviour
                 return;
             }
         }
-        
+
         if (!dialogueSystem.isDialogueActive)
         {
             // Input handling
@@ -161,7 +172,7 @@ public class PlayerMovement : MonoBehaviour
                     // Normal jump (includes coyote time)
                     if (coyoteTimeCounter > 0f)
                     {
-                        Jump(jumpForce);
+                        PerformJump();
                         jumpBufferCounter = 0f;
                         coyoteTimeCounter = 0f;
                     }
@@ -190,12 +201,12 @@ public class PlayerMovement : MonoBehaviour
                 if (wallJumpTimeCounter <= 0)
                 {
                     float previousVelocityX = rb.velocity.x;
-                    if(isWallSliding)
+                    if (isWallSliding)
                     {
                         rb.velocity = new Vector2(previousVelocityX, -wallSlidingSpeed);
                     }
                     else
-                    rb.velocity = new Vector2(horizontalInput * moveSpeed, rb.velocity.y);
+                        rb.velocity = new Vector2(horizontalInput * moveSpeed, rb.velocity.y);
 
                     UpdateMovementAnimations(horizontalInput);
                 }
@@ -216,6 +227,29 @@ public class PlayerMovement : MonoBehaviour
             }
         }
         UpdateAnimationStates();
+    }
+
+    private void PerformJump()
+    {
+        // Calculate the appropriate jump force based on whether we're on a moving platform
+        float actualJumpForce = jumpForce;
+
+        if (isOnMovingPlatform)
+        {
+            // If we're on a vertically moving platform, add its velocity to our jump
+            if (platformVelocity.y > 0)
+            {
+                // Platform is moving up - add its velocity to our jump force
+                actualJumpForce += platformVelocity.y * platformJumpMultiplier;
+            }
+            else if (platformVelocity.y < 0)
+            {
+                // Platform is moving down - use normal jump force but slightly boosted
+                actualJumpForce *= 1.2f;
+            }
+        }
+
+        Jump(actualJumpForce);
     }
 
     private void UpdateAnimationStates()
@@ -356,6 +390,37 @@ public class PlayerMovement : MonoBehaviour
         bool wasGrounded = isGrounded;
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer) != null;
 
+        // Check if on moving platform
+        Collider2D platformCollider = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, movingPlatformLayer);
+
+        // Reset platform tracking
+        isOnMovingPlatform = false;
+        platformVelocity = Vector2.zero;
+
+        if (platformCollider != null)
+        {
+            // We're on a moving platform
+            isOnMovingPlatform = true;
+            currentPlatform = platformCollider.transform;
+
+            // Get the platform's velocity
+            Rigidbody2D platformRb = platformCollider.GetComponent<Rigidbody2D>();
+            if (platformRb != null)
+            {
+                platformVelocity = platformRb.velocity;
+            }
+            else
+            {
+                // If the platform doesn't have a Rigidbody2D (like a scrolling tilemap),
+                // try to get the VerticalScrollingTilemap component
+                VerticalScrollingTilemap scrollingTilemap = platformCollider.GetComponent<VerticalScrollingTilemap>();
+                if (scrollingTilemap != null)
+                {
+                    platformVelocity = new Vector2(0, scrollingTilemap.scrollSpeed);
+                }
+            }
+        }
+
         // If just landed, update animations.
         if (!wasGrounded && isGrounded)
         {
@@ -377,7 +442,6 @@ public class PlayerMovement : MonoBehaviour
             animator.Play(targetAnim, 0, 0f);
         }
     }
-
 
     private void CheckWallSliding(float horizontalInput)
     {

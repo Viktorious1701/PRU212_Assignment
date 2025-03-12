@@ -17,7 +17,7 @@ TagManager:
   - NPC
   - Enemy
   - Boss
-  - 
+  - MovingGround
   - 
   - 
   - 
@@ -57,6 +57,9 @@ TagManager:
     locked: 0
   - name: Foreground
     uniqueID: 1022189187
+    locked: 0
+  - name: Moving Ground
+    uniqueID: 3843538325
     locked: 0
   - name: Dialogue & UI
     uniqueID: 2758879105
