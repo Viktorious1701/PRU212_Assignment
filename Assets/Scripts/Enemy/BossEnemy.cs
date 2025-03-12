@@ -520,6 +520,7 @@ public class BossEnemy : Enemy
     private IEnumerator GroundSlamEffect()
     {
         GameObject groundSlamEffect = Instantiate(groundSlamEffectPrefab, transform.position, Quaternion.identity);
+        groundSlamEffect.transform.position -= new Vector3(0, 0.5f, 0);
         groundSlamEffect.SetActive(false);
         if (groundSlamEffect)
         {
@@ -531,7 +532,7 @@ public class BossEnemy : Enemy
             }
             yield return new WaitForSeconds(0.65f);
             groundSlamEffect.GetComponent<SpriteRenderer>().enabled = false;
-            yield return new WaitForSeconds(1.5f);
+            yield return new WaitForSeconds(2f);
             Destroy(groundSlamEffect);
         }
         yield return null;
@@ -544,7 +545,7 @@ public class BossEnemy : Enemy
         animator.SetTrigger("RangedAttack");
         rb.velocity = new Vector2(0, rb.velocity.y);
         // Wait for animation wind-up
-        yield return new WaitForSeconds(0.4f);
+        yield return new WaitForSeconds(1.25f);
 
         // Number of projectiles based on phase
         int projectileCount = currentPhase;
