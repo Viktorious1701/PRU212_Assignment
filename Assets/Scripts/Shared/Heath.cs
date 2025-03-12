@@ -12,7 +12,7 @@ public class Health : MonoBehaviour
 
     // Optional: Unity Events for UI updates or other responses
     [SerializeField] public UnityEvent<float> onHealthChanged;
-    [SerializeField] private UnityEvent onDeath;
+    [SerializeField] public UnityEvent onDeath;
 
     // Optional: Event for knock-back or visual effects on hit
     [SerializeField] private UnityEvent<Vector3> onDamageImpact;

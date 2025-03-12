@@ -4591,6 +4591,153 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: Crate_0
+      rect:
+        serializedVersion: 2
+        x: 75
+        y: 982
+        width: 12
+        height: 23
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 28e2db630a4be7443b2c53e25bc961c9
+      internalID: -971064712
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Create_1
+      rect:
+        serializedVersion: 2
+        x: 59
+        y: 970
+        width: 16
+        height: 28
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ca62672eb3441df41a9dcf4e57f5dc1b
+      internalID: -1974245177
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Create_2
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 960
+        width: 17
+        height: 24
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 57bafb0b796bc4a40a476f27ba96a8f8
+      internalID: 1343991325
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Create_4
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 998
+        width: 32
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7d0793c57ddaa3c48a6aa89ca0a26382
+      internalID: 1353278174
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Create_3
+      rect:
+        serializedVersion: 2
+        x: 75
+        y: 960
+        width: 12
+        height: 22
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4ffbbc26ce065f84cacbc67eb654d6e1
+      internalID: 410452255
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Create_5
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 984
+        width: 17
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3086ddb6c84a8b44c923459e353063c0
+      internalID: 1721967684
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Create_6
+      rect:
+        serializedVersion: 2
+        x: 59
+        y: 960
+        width: 16
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 085b24315056fe546aa620e07026774f
+      internalID: -1749126596
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -4602,6 +4749,13 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
+      Crate_0: -971064712
+      Create_1: -1974245177
+      Create_2: 1343991325
+      Create_3: 410452255
+      Create_4: 1353278174
+      Create_5: 1721967684
+      Create_6: -1749126596
       TX Village Props - Anvil: 21300084
       TX Village Props - Apple: 21300178
       TX Village Props - Archert Target: 21300154
