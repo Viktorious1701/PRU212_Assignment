@@ -796,8 +796,28 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 3663112077424495464, guid: 276653579d616bf49a863e59486e1c2a, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3663112077424495464, guid: 276653579d616bf49a863e59486e1c2a, type: 3}
       propertyPath: onDeath.m_PersistentCalls.m_Calls.Array.size
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3663112077424495464, guid: 276653579d616bf49a863e59486e1c2a, type: 3}
+      propertyPath: onDeath.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 859022146}
+    - target: {fileID: 3663112077424495464, guid: 276653579d616bf49a863e59486e1c2a, type: 3}
+      propertyPath: onDeath.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5542322855011849339, guid: 276653579d616bf49a863e59486e1c2a, type: 3}
+      propertyPath: destroyOnAnyHit
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5542322855011849339, guid: 276653579d616bf49a863e59486e1c2a, type: 3}
+      propertyPath: destructionForce
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 5896127070235791027, guid: 276653579d616bf49a863e59486e1c2a, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1190,6 +1210,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 819830102}
   m_CullTransparentMesh: 1
+--- !u!1 &859022146 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9016977705363151837, guid: 276653579d616bf49a863e59486e1c2a, type: 3}
+  m_PrefabInstance: {fileID: 553227261}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &920032302
 GameObject:
   m_ObjectHideFlags: 0
@@ -1256,7 +1281,7 @@ Transform:
   m_GameObject: {fileID: 920032302}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -14.27, y: 0.2, z: -10}
+  m_LocalPosition: {x: -2.79, y: 0.2, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1955,7 +1980,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6380319326907858925, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -14.27
+      value: -2.79
       objectReference: {fileID: 0}
     - target: {fileID: 6380319326907858925, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2923,7 +2948,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5394179010992963895, guid: d7b5cac681f972d45b67d0ee48a7467a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -14.27
+      value: -2.79
       objectReference: {fileID: 0}
     - target: {fileID: 5394179010992963895, guid: d7b5cac681f972d45b67d0ee48a7467a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -3013,8 +3038,20 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 3663112077424495464, guid: 276653579d616bf49a863e59486e1c2a, type: 3}
-      propertyPath: onDeath.m_PersistentCalls.m_Calls.Array.size
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5542322855011849339, guid: 276653579d616bf49a863e59486e1c2a, type: 3}
+      propertyPath: destroyOnAnyHit
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5542322855011849339, guid: 276653579d616bf49a863e59486e1c2a, type: 3}
+      propertyPath: destructionForce
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 5542322855011849339, guid: 276653579d616bf49a863e59486e1c2a, type: 3}
+      propertyPath: destructionTorque
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5896127070235791027, guid: 276653579d616bf49a863e59486e1c2a, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3075,7 +3112,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1190247861185391247, guid: cdc20307a11dbe743aeb0d9dd57d1451, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -10.54
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 1190247861185391247, guid: cdc20307a11dbe743aeb0d9dd57d1451, type: 3}
       propertyPath: m_LocalPosition.y
