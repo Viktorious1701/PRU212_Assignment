@@ -43,7 +43,7 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D rb;
     private bool isGrounded;
     private bool isWallSliding;
-    private bool canDoubleJump = true;
+    private bool canDoubleJump = false;
     private float coyoteTimeCounter;
     private float wallJumpTimeCounter;
     private float jumpBufferCounter;
@@ -139,7 +139,6 @@ public class PlayerMovement : MonoBehaviour
                 if (isGrounded)
                 {
                     coyoteTimeCounter = coyoteTime;
-                    canDoubleJump = true;
                 }
                 else
                 {
