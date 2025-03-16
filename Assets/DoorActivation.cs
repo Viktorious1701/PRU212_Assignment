@@ -5,32 +5,38 @@ using System.Collections;
 public class DoorActivation : MonoBehaviour
 {
     [Header("Door Settings")]
-    [SerializeField] private float moveDistance = 3f; // How far the door moves up
-    [SerializeField] private float moveSpeed = 2f; // How fast the door moves
-    [SerializeField] private float playerDetectionRadius = 3f; // Detection radius for player
-    [SerializeField] private LayerMask playerLayer; // Layer for the player
-    [SerializeField] private KeyCode doorInteractionKey = KeyCode.F; // Key to interact with door
-    [SerializeField] private string playerTag = "Player"; // Player tag option
+    [SerializeField] private float moveDistance = 3f;
+    [SerializeField] private float moveSpeed = 2f;
+    [SerializeField] private float playerDetectionRadius = 3f;
+    [SerializeField] private LayerMask playerLayer;
+    [SerializeField] private KeyCode doorInteractionKey = KeyCode.F;
+    [SerializeField] private string playerTag = "Player";
 
     [Header("Key Object References")]
-    [SerializeField] private GameObject keyObject; // Reference to the key object that must be obtained/destroyed
-    [SerializeField] private string keyTag = "DoorKey"; // Tag of the key if using tag-based detection
+    [SerializeField] private GameObject keyObject;
+    [SerializeField] private string keyTag = "DoorKey";
+
+    [Header("Dialogue System")]
+    [SerializeField] private Dialogue dialogueSystem; // Reference to your dialogue system
+    [SerializeField] private string noKeyMessage = "You need a key to open this door."; // Message to display
+    [SerializeField] private string doorOpenMessage = "The door opens..."; // Optional message when door opens
+    [SerializeField] private string characterName = ""; // Optional character name for the dialogue
+    [SerializeField] private float dialogueDuration = 2f; // How long to display the message
 
     [Header("Debug Options")]
     [SerializeField] private bool showDebugLogs = true;
     [SerializeField] private bool showGizmos = true;
 
-    private Vector3 initialPosition; // Store the door's initial position
-    private Vector3 targetPosition; // Target position when door is activated
-    private bool isDoorOpen = false; // Track door state
-    private bool isMoving = false; // Flag to prevent multiple coroutines
+    private Vector3 initialPosition;
+    private Vector3 targetPosition;
+    private bool isDoorOpen = false;
+    private bool isMoving = false;
+    private bool hasShownNoKeyMessage = false; // Prevents message spam
 
-    // For tilemaps
     private Tilemap tilemap;
     private CompositeCollider2D compositeCollider;
     private Rigidbody2D rb;
-    private GameObject playerObject; // Cache player reference
-
+    private GameObject playerObject;
     private void Awake()
     {
         // Get components
@@ -47,6 +53,15 @@ public class DoorActivation : MonoBehaviour
         // Try to find player if using tag
         playerObject = GameObject.FindGameObjectWithTag(playerTag);
 
+        // Check for dialogue system reference
+        if (dialogueSystem == null)
+        {
+            dialogueSystem = FindObjectOfType<Dialogue>();
+            if (dialogueSystem == null && showDebugLogs)
+            {
+                Debug.LogWarning("No Dialogue system found. No key messages will be displayed.");
+            }
+        }
         if (showDebugLogs)
         {
             Debug.Log("Door initialized. Initial position: " + initialPosition);
@@ -71,23 +86,51 @@ public class DoorActivation : MonoBehaviour
         bool hasKey = PlayerHasKey();
         bool inRange = PlayerInRange();
 
+        // Reset the message flag when player moves away
+        if (!inRange)
+        {
+            hasShownNoKeyMessage = false;
+        }
         if (showDebugLogs && Time.frameCount % 60 == 0)
         {
             Debug.Log("Has key: " + hasKey + ", In range: " + inRange);
         }
 
         // Only check for F key press if not already open and the player has the key
-        if (!isDoorOpen && !isMoving && hasKey && inRange)
+        if (!isDoorOpen && !isMoving && inRange)
         {
-            // Check if player presses the F key to open the door
             if (Input.GetKeyDown(doorInteractionKey))
             {
-                if (showDebugLogs) Debug.Log("F key pressed! Starting door movement...");
-                StartCoroutine(MoveDoor(targetPosition));
-                isDoorOpen = true;
+                if (hasKey)
+                {
+                    // Open the door
+                    if (showDebugLogs) Debug.Log("F key pressed with key! Starting door movement...");
+                    StartCoroutine(MoveDoor(targetPosition));
+                    isDoorOpen = true;
+
+                    // Optional: Show door opening message
+                    if (dialogueSystem != null && !string.IsNullOrEmpty(doorOpenMessage))
+                    {
+                        dialogueSystem.Say(doorOpenMessage, characterName, dialogueDuration);
+                    }
+                }
+                else if (!hasShownNoKeyMessage)
+                {
+                    // Show "need key" message
+                    if (dialogueSystem != null)
+                    {
+                        dialogueSystem.Say(noKeyMessage, characterName, dialogueDuration);
+                        hasShownNoKeyMessage = true;
+                        if (showDebugLogs) Debug.Log("Showing 'no key' message");
+                    }
+                    else if (showDebugLogs)
+                    {
+                        Debug.Log("Player needs key but dialogueSystem is null");
+                    }
+                }
             }
         }
-    }
+ }
 
     private bool PlayerHasKey()
     {
