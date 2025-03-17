@@ -85,6 +85,17 @@ public class Sawblade : MonoBehaviour
                 // Handle player death
                 Debug.Log("Player hit a sawblade!");
 
+                // Get the player's health component
+                Health playerHealth = other.GetComponent<Health>();
+
+                // Reset player health to maximum
+                if (playerHealth != null)
+                {
+                    // Reset to max health (assuming 100 is max)
+                    float healAmount = playerHealth.GetMaxHealth() - playerHealth.GetCurrentHealth();
+                    playerHealth.TakeDamage(-healAmount); // Negative damage to heal
+                }
+
                 // Respawn the player
                 if (respawnPoint != null)
                 {
