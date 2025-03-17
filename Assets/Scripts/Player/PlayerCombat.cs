@@ -35,6 +35,19 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private float projectileSpeed = 15f;
     [SerializeField] private GameObject firePoint;
 
+    [Header("Arrow Settings")]
+    [SerializeField] private int maxArrows = 10;
+    [SerializeField] private int currentArrows;
+    [SerializeField] private float arrowPickupAmount = 3;
+
+    [Header("Mana Settings")]
+    [SerializeField] private float maxMana = 100f;
+    [SerializeField] private float currentMana;
+    [SerializeField] private float spellManaCost = 20f;
+    [SerializeField] private float manaRegenRate = 5f;
+    [SerializeField] private float manaRegenDelay = 2f;
+    private float lastManaUseTime;
+
     private float lastAttackTime;
     private WeaponType currentWeapon = WeaponType.BareHand;
     private Animator animator;
@@ -60,6 +73,11 @@ public class PlayerCombat : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         playerMovement = GetComponent<PlayerMovement>();
+
+        // Initialize arrows and mana
+        currentArrows = maxArrows;
+        currentMana = maxMana;
+        lastManaUseTime = -manaRegenDelay; // Allow immediate regen at start
     }
 
     private void Update()
@@ -86,6 +104,11 @@ public class PlayerCombat : MonoBehaviour
             {
                 ResetCombo();
             }
+        }
+
+        if (Time.time > lastManaUseTime + manaRegenDelay)
+        {
+            currentMana = Mathf.Min(currentMana + manaRegenRate * Time.deltaTime, maxMana);
         }
     }
 
@@ -287,6 +310,14 @@ public class PlayerCombat : MonoBehaviour
 
     private void BowAttack()
     {
+        // Check if we have arrows
+        if (currentArrows <= 0)
+        {
+            // Optional: Play a "no arrows" animation or feedback
+            Debug.Log("Out of arrows!");
+            return;
+        }
+
         if (playerMovement.IsGrounded())
         {
             animator?.SetTrigger("BowAttack");
@@ -296,12 +327,16 @@ public class PlayerCombat : MonoBehaviour
             animator?.SetTrigger("BowAir");
         }
 
+
+
         // Reset combo when using bow (bows don't typically have melee combos)
         ResetCombo();
     }
 
     public void SpawnArrow()
     {
+        // Decrease arrow count
+        currentArrows--;
         // Instantiate arrow
         GameObject arrow = Instantiate(arrowPrefab, firePoint.transform.position, firePoint.transform.rotation);
         arrow.transform.Rotate(0, 0, isFacingRight ? -90 : 90);
@@ -312,17 +347,35 @@ public class PlayerCombat : MonoBehaviour
         // Add a script to the arrow to handle damage
         ProjectileController arrowController = arrow.GetComponent<ProjectileController>();
         arrowController.Initialize(bowDamage, bowRange, gameObject);
+       
+
     }
 
     private void SpellAttack()
     {
+        // Check if we have enough mana
+        if (currentMana < spellManaCost)
+        {
+            // Optional: Play a "not enough mana" animation or feedback
+            Debug.Log("Not enough mana!");
+            return;
+        }
+
         animator?.SetTrigger("SpellAttack");
-        // Reset combo when using spell (spells don't typically have melee combos)
+
+        // Reset combo when using spell
         ResetCombo();
     }
 
     public void SpawnSpell()
     {
+        if(currentMana < spellManaCost)
+        {
+            return;
+        }
+        // Use mana
+        currentMana -= spellManaCost;
+        lastManaUseTime = Time.time;
         // Get the attack direction based on facing direction
         Vector2 direction = isFacingRight ? transform.right : -transform.right;
 
@@ -441,10 +494,20 @@ public class PlayerCombat : MonoBehaviour
             // Optionally destroy after a short time
             Destroy(effect, 1f);
         }
-    }   
+    }
 
+
+    public void AddArrows(int amount = 0)
+    {
+        if (amount <= 0) amount = (int)arrowPickupAmount;
+        currentArrows = Mathf.Min(currentArrows + amount, maxArrows);
+    }
     public bool IsAttacking()
     {
         return isInCombo && currentComboCount > 0;
     }
+    public int GetCurrentArrows() { return currentArrows; }
+    public int GetMaxArrows() { return maxArrows; }
+    public float GetCurrentMana() { return currentMana; }
+    public float GetMaxMana() { return maxMana; }
 }

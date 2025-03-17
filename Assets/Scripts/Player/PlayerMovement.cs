@@ -14,6 +14,7 @@ public class PlayerMovement : MonoBehaviour
     private const string IS_FALLING = "isFalling";
     private const string IS_ON_AIR = "isOnAir";
     private const string VERTICAL_VELOCITY = "verticalVelocity";
+    private const string IS_CLIMBING = "isClimbing"; // New animation parameter
 
     [Header("Movement Parameters")]
     [SerializeField] private float moveSpeed = 8f;
@@ -26,6 +27,9 @@ public class PlayerMovement : MonoBehaviour
     [Header("Platform Parameters")]
     [SerializeField] private float platformJumpMultiplier = 1.5f; // Multiplier for jumps from moving platforms
     [SerializeField] private LayerMask movingPlatformLayer; // Layer for moving platforms
+    [Header("Ladder Parameters")] // New section for ladder parameters
+    [SerializeField] private float climbSpeed = 5f;
+    [SerializeField] private LayerMask ladderLayer;
 
     [Header("Jump Physics")]
     [SerializeField] private float fallMultiplier = 2.5f; // Makes falling faster
@@ -58,6 +62,9 @@ public class PlayerMovement : MonoBehaviour
     private Transform currentPlatform;
     private Vector2 platformVelocity;
     private bool isOnMovingPlatform;
+    // Ladder state
+    private bool isOnLadder = false;
+    private bool isClimbing = false;
 
     // Dash state
     private bool isDashing;
@@ -124,7 +131,7 @@ public class PlayerMovement : MonoBehaviour
                 facingDirection = (int)Mathf.Sign(horizontalInput);
             }
 
-            if (rb.velocity.y < -0.1f)
+            if (rb.velocity.y < -0.1f && !isClimbing)
             {
                 animator.SetBool(IS_JUMPING, false);
                 animator.SetBool(IS_FALLING, true);
@@ -133,44 +140,30 @@ public class PlayerMovement : MonoBehaviour
             // Ground and wall checks
             CheckGrounded();
             CheckWallSliding(horizontalInput);
+            CheckLadder(); // New ladder check
 
-            // Handle dash input
-            if (dashInput && canDash && (canDashInAir || isGrounded))
+            // Handle climbing
+            if (isOnLadder)
             {
-                InitiateDash(horizontalInput, verticalInput);
+                HandleLadderMovement(verticalInput, horizontalInput);
             }
-
-            // Update dash state
-            UpdateDash();
-
-            // If not dashing, handle normal movement
-            if (!isDashing)
+            // If not on ladder or climbing, resume normal movement
+            else if (!isClimbing)
             {
-                // Handle coyote time
-                if (isGrounded)
+                // Handle dash input
+                if (dashInput && canDash && (canDashInAir || isGrounded))
                 {
-                    coyoteTimeCounter = coyoteTime;
-                    canDoubleJump = true;
-                }
-                else
-                {
-                    coyoteTimeCounter -= Time.deltaTime;
+                    InitiateDash(horizontalInput, verticalInput);
                 }
 
-                // Jump buffer
-                if (jumpInput)
-                {
-                    jumpBufferCounter = jumpBufferTime;
-                }
-                else
-                {
-                    jumpBufferCounter -= Time.deltaTime;
-                }
+                // Update dash state
+                UpdateDash();
 
-                if (jumpBufferCounter > 0f)
+                // If not dashing, handle normal movement
+                if (!isDashing)
                 {
-                    // Normal jump (includes coyote time)
-                    if (coyoteTimeCounter > 0f)
+                    // Handle coyote time
+                    if (isGrounded)
                     {
                         PerformJump();
                         jumpBufferCounter = 0f;
@@ -207,25 +200,84 @@ public class PlayerMovement : MonoBehaviour
                     }
                     else
                         rb.velocity = new Vector2(horizontalInput * moveSpeed, rb.velocity.y);
+                        coyoteTimeCounter = coyoteTime;
+                        canDoubleJump = true;
+                    }
+                    else
+                    {
+                        coyoteTimeCounter -= Time.deltaTime;
+                    }
 
-                    UpdateMovementAnimations(horizontalInput);
+                    // Jump buffer
+                    if (jumpInput)
+                    {
+                        jumpBufferCounter = jumpBufferTime;
+                    }
+                    else
+                    {
+                        jumpBufferCounter -= Time.deltaTime;
+                    }
+
+                    if (jumpBufferCounter > 0f)
+                    {
+                        // Normal jump (includes coyote time)
+                        if (coyoteTimeCounter > 0f)
+                        {
+                            Jump(jumpForce);
+                            jumpBufferCounter = 0f;
+                            coyoteTimeCounter = 0f;
+                        }
+                        // Wall jump
+                        else if (isWallSliding)
+                        {
+                            WallJump();
+                            jumpBufferCounter = 0f;
+                        }
+                        // Double jump
+                        else if (canDoubleJump && !isWallSliding)
+                        {
+                            Jump(jumpForce * 0.8f);
+                            canDoubleJump = false;
+                            jumpBufferCounter = 0f;
+                        }
+                    }
+
+                    // Handle wall sliding
+                    if (isWallSliding)
+                    {
+                        rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -wallSlidingSpeed));
+                    }
+
+                    // Handle horizontal movement
+                    if (wallJumpTimeCounter <= 0)
+                    {
+                        float previousVelocityX = rb.velocity.x;
+                        if (isWallSliding)
+                        {
+                            rb.velocity = new Vector2(previousVelocityX, -wallSlidingSpeed);
+                        }
+                        else
+                            rb.velocity = new Vector2(horizontalInput * moveSpeed, rb.velocity.y);
+
+                        UpdateMovementAnimations(horizontalInput);
+                    }
+                    else
+                    {
+                        wallJumpTimeCounter -= Time.deltaTime;
+                    }
                 }
-                else
+
+                // Update dash cooldown
+                if (dashCooldownTimeLeft > 0)
                 {
-                    wallJumpTimeCounter -= Time.deltaTime;
+                    dashCooldownTimeLeft -= Time.deltaTime;
+                    if (dashCooldownTimeLeft <= 0)
+                    {
+                        canDash = true;
+                    }
                 }
             }
-
-            // Update dash cooldown
-            if (dashCooldownTimeLeft > 0)
-            {
-                dashCooldownTimeLeft -= Time.deltaTime;
-                if (dashCooldownTimeLeft <= 0)
-                {
-                    canDash = true;
-                }
-            }
-        }
+        
         UpdateAnimationStates();
     }
 
@@ -251,9 +303,82 @@ public class PlayerMovement : MonoBehaviour
 
         Jump(actualJumpForce);
     }
+    // New method to check if player is on a ladder
+    private void CheckLadder()
+    {
+        // Check if player is overlapping with a ladder
+        Collider2D ladder = Physics2D.OverlapCircle(transform.position, 0.3f, ladderLayer);
+        isOnLadder = ladder != null;
+
+        // If player is no longer on ladder, exit climbing state
+        if (!isOnLadder && isClimbing)
+        {
+            ExitLadder();
+        }
+    }
+
+    // New method to handle ladder movement
+    private void HandleLadderMovement(float verticalInput, float horizontalInput)
+    {
+        // If vertical input is provided while on ladder, enter climbing state
+        if (Mathf.Abs(verticalInput) > 0.1f)
+        {
+            if (!isClimbing)
+            {
+                // Enter climbing state
+                isClimbing = true;
+                rb.gravityScale = 0;
+                rb.velocity = Vector2.zero;
+                animator.SetBool(IS_CLIMBING, true);
+                animator.SetBool(IS_FALLING, false);
+                animator.SetBool(IS_JUMPING, false);
+            }
+
+            // Move up/down on ladder
+            rb.velocity = new Vector2(horizontalInput * moveSpeed * 0.5f, verticalInput * climbSpeed);
+
+            // Optional: Play climbing animation based on input
+            if (Mathf.Abs(verticalInput) > 0.1f)
+            {
+                animator.speed = Mathf.Abs(verticalInput);
+            }
+            else
+            {
+                animator.speed = 0; // Pause animation when not moving
+            }
+        }
+        else if (isClimbing)
+        {
+            // If no vertical input while climbing, just stop vertical movement
+            rb.velocity = new Vector2(horizontalInput * moveSpeed * 0.5f, 0);
+            animator.speed = 0; // Pause animation
+        }
+
+        // Allow jumping off ladder
+        if (Input.GetButtonDown("Jump") && isClimbing)
+        {
+            ExitLadder();
+            Jump(jumpForce);
+        }
+    }
+
+    // New method to exit ladder state
+    private void ExitLadder()
+    {
+        isClimbing = false;
+        rb.gravityScale = 1; // Reset gravity
+        animator.SetBool(IS_CLIMBING, false);
+        animator.speed = 1; // Reset animation speed
+    }
 
     private void UpdateAnimationStates()
     {
+        // Skip normal animation updates if climbing
+        if (isClimbing)
+        {
+            return;
+        }
+
         // Update vertical velocity for blending or other effects
         animator.SetFloat(VERTICAL_VELOCITY, rb.velocity.y);
 
@@ -290,7 +415,7 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.velocity = Vector2.zero;
         }
-        else if (!isDashing)
+        else if (!isDashing && !isClimbing)
         {
             ApplyJumpPhysics();
         }
@@ -298,6 +423,10 @@ public class PlayerMovement : MonoBehaviour
 
     private void ApplyJumpPhysics()
     {
+        // Skip jump physics if climbing
+        if (isClimbing)
+            return;
+
         // Get the current gravity scale
         float gravityScale = 1f;
 
@@ -386,6 +515,10 @@ public class PlayerMovement : MonoBehaviour
 
     private void CheckGrounded()
     {
+        // Skip ground check if climbing
+        if (isClimbing)
+            return;
+
         // Use an overlap circle for a more robust ground check on moving platforms.
         bool wasGrounded = isGrounded;
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer) != null;
@@ -445,6 +578,10 @@ public class PlayerMovement : MonoBehaviour
 
     private void CheckWallSliding(float horizontalInput)
     {
+        // Skip wall check if climbing
+        if (isClimbing)
+            return;
+
         RaycastHit2D hitRight = Physics2D.Raycast(transform.position, Vector2.right, wallCheckDistance, groundLayer);
         RaycastHit2D hitLeft = Physics2D.Raycast(transform.position, Vector2.left, wallCheckDistance, groundLayer);
 
@@ -485,6 +622,10 @@ public class PlayerMovement : MonoBehaviour
         Gizmos.DrawRay(transform.position, Vector2.down * groundCheckDistance);
         Gizmos.DrawRay(transform.position, Vector2.right * wallCheckDistance);
         Gizmos.DrawRay(transform.position, Vector2.left * wallCheckDistance);
+
+        // Draw ladder check radius
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(transform.position, 0.3f);
     }
 
     public bool IsFacingRight()
