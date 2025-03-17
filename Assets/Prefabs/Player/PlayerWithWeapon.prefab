@@ -177,7 +177,7 @@ MonoBehaviour:
   climbSpeed: 5
   ladderLayer:
     serializedVersion: 2
-    m_Bits: 1024
+    m_Bits: 4096
   fallMultiplier: 3
   lowJumpMultiplier: 3.5
   jumpApexThreshold: 2
