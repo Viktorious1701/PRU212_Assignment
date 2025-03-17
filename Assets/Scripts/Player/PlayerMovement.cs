@@ -6,7 +6,6 @@ public class PlayerMovement : MonoBehaviour
 {
     private Animator animator;
     private SpriteRenderer spriteRenderer;
-    private Dialogue dialogueSystem;
     // Animation parameter names
     private const string IS_RUNNING = "isRunning";
     private const string IS_GROUND = "isGround";
@@ -15,7 +14,7 @@ public class PlayerMovement : MonoBehaviour
     private const string IS_ON_AIR = "isOnAir";
     private const string VERTICAL_VELOCITY = "verticalVelocity";
     private const string IS_CLIMBING = "isClimbing"; // New animation parameter
-
+    [SerializeField] private PlayerDialogueManager dialogueManager;
     [Header("Movement Parameters")]
     [SerializeField] private float moveSpeed = 8f;
     [SerializeField] private float jumpForce = 16f;
@@ -89,7 +88,8 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        dialogueSystem = FindObjectOfType<Dialogue>();
+        if (dialogueManager == null)
+            dialogueManager = GetComponent<PlayerDialogueManager>();
     }
 
     private void Update()
@@ -107,7 +107,7 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        if (!dialogueSystem.isDialogueActive)
+        if (dialogueManager.CanMove())
         {
             // Input handling
             float horizontalInput = Input.GetAxisRaw("Horizontal");
@@ -345,11 +345,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (dialogueSystem.isDialogueActive)
-        {
-            rb.velocity = Vector2.zero;
-        }
-        else if (!isDashing && !isClimbing)
+        if (!isDashing && !isClimbing)
         {
             ApplyJumpPhysics();
         }

@@ -80,6 +80,7 @@ GameObject:
   - component: {fileID: 4516675297573743189}
   - component: {fileID: 5724186218945257143}
   - component: {fileID: 1513655586181583578}
+  - component: {fileID: 3607338565575380048}
   m_Layer: 3
   m_Name: PlayerWithWeapon
   m_TagString: Player
@@ -168,6 +169,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12042f2d113fd4f4f9857dd6d69c520e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dialogueManager: {fileID: 0}
   moveSpeed: 10
   jumpForce: 10
   wallJumpForce: 14
@@ -396,3 +398,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   coins: 0
   keys: []
+--- !u!114 &3607338565575380048
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5883888934238944523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99d563995c3b9d7489162c9c6e727555, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerMovement: {fileID: 373014949009209793}
+  dialogueSystem: {fileID: 0}
