@@ -243,6 +243,112 @@ public class PlayerMovement : MonoBehaviour
         UpdateAnimationStates();
     }
 
+    // New method to check if player is on a ladder
+    private void CheckLadder()
+    {
+        // Check if player is overlapping with a ladder
+        Collider2D ladder = Physics2D.OverlapCircle(transform.position, 0.75f, ladderLayer);
+        isOnLadder = ladder != null;
+
+        // If player is no longer on ladder, exit climbing state
+        if (!isOnLadder && isClimbing)
+        {
+            ExitLadder();
+        }
+    }
+
+    // New method to handle ladder movement
+    private void HandleLadderMovement(float verticalInput, float horizontalInput)
+    {
+        // If vertical input is provided while on ladder, enter climbing state
+        if (Mathf.Abs(verticalInput) > 0.1f)
+        {
+            if (!isClimbing)
+            {
+                // Enter climbing state
+                isClimbing = true;
+                rb.gravityScale = 0;
+                rb.velocity = Vector2.zero;
+                animator.SetBool(IS_CLIMBING, true);
+                animator.SetBool(IS_FALLING, false);
+                animator.SetBool(IS_JUMPING, false);
+            }
+
+            // Move up/down on ladder
+            rb.velocity = new Vector2(horizontalInput * moveSpeed * 0.5f, verticalInput * climbSpeed);
+
+            // Optional: Play climbing animation based on input
+            if (Mathf.Abs(verticalInput) > 0.1f)
+            {
+                animator.speed = Mathf.Abs(verticalInput);
+            }
+            else
+            {
+                animator.speed = 0; // Pause animation when not moving
+            }
+        }
+        else if (isClimbing)
+        {
+            // If no vertical input while climbing, just stop vertical movement
+            rb.velocity = new Vector2(horizontalInput * moveSpeed * 0.5f, 0);
+            animator.speed = 0; // Pause animation
+        }
+
+        // Allow jumping off ladder
+        if (Input.GetButtonDown("Jump") && isClimbing)
+        {
+            ExitLadder();
+            Jump(jumpForce);
+        }
+    }
+
+    // New method to exit ladder state
+    private void ExitLadder()
+    {
+        isClimbing = false;
+        rb.gravityScale = 1; // Reset gravity
+        animator.SetBool(IS_CLIMBING, false);
+        animator.speed = 1; // Reset animation speed
+    }
+
+    private void UpdateAnimationStates()
+    {
+        // Skip normal animation updates if climbing
+        if (isClimbing)
+        {
+            return;
+        }
+
+        // Update vertical velocity for blending or other effects
+        animator.SetFloat(VERTICAL_VELOCITY, rb.velocity.y);
+
+        if (rb.velocity.y > 0.1f)
+        {
+            animator.SetBool(IS_ON_AIR, true);
+        }
+
+        // Handle jump state changes
+        if (rb.velocity.y < -0.1f && !isGrounded)
+        {
+            // We're falling
+            animator.SetBool(IS_JUMPING, false);
+            animator.SetBool(IS_FALLING, true);
+        }
+        else if (isGrounded)
+        {
+            // We've landed
+            animator.SetBool(IS_ON_AIR, false);
+            animator.SetBool(IS_FALLING, false);
+        }
+
+        // Ground state
+        animator.SetBool(IS_GROUND, isGrounded);
+
+        // Running state
+        float horizontalInput = Input.GetAxisRaw("Horizontal");
+        animator.SetBool(IS_RUNNING, Mathf.Abs(horizontalInput) > 0.1f && isGrounded);
+    }
+
     private void FixedUpdate()
     {
         if (dialogueSystem.isDialogueActive)
