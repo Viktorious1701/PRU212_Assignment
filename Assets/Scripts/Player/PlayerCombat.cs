@@ -75,7 +75,7 @@ public class PlayerCombat : MonoBehaviour
         playerMovement = GetComponent<PlayerMovement>();
 
         // Initialize arrows and mana
-        currentArrows = maxArrows;
+        currentArrows = maxArrows/10;
         currentMana = maxMana;
         lastManaUseTime = -manaRegenDelay; // Allow immediate regen at start
     }
@@ -510,4 +510,41 @@ public class PlayerCombat : MonoBehaviour
     public int GetMaxArrows() { return maxArrows; }
     public float GetCurrentMana() { return currentMana; }
     public float GetMaxMana() { return maxMana; }
+    public void AddMana(float amount)
+    {
+        currentMana = Mathf.Min(currentMana + amount, maxMana);
+    }
+
+    // You could also add this method for convenience
+    public bool HasMaxMana()
+    {
+        return currentMana >= maxMana;
+    }
+
+    // Method to boost damage temporarily
+    public void ApplyDamageBoost(float multiplier, float duration)
+    {
+        StartCoroutine(DamageBoostCoroutine(multiplier, duration));
+    }
+
+    private IEnumerator DamageBoostCoroutine(float multiplier, float duration)
+    {
+        // Store original damage values
+        float originalSwordDamage = swordDamage;
+        float originalBowDamage = bowDamage;
+        float originalSpellDamage = spellDamage;
+
+        // Apply multiplier
+        swordDamage *= multiplier;
+        bowDamage *= multiplier;
+        spellDamage *= multiplier;
+
+        // Wait for duration
+        yield return new WaitForSeconds(duration);
+
+        // Reset to original values
+        swordDamage = originalSwordDamage;
+        bowDamage = originalBowDamage;
+        spellDamage = originalSpellDamage;
+    }
 }

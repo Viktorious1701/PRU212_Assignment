@@ -241,7 +241,7 @@ public class PlayerMovement : MonoBehaviour
     private void CheckLadder()
     {
         // Check if player is overlapping with a ladder
-        Collider2D ladder = Physics2D.OverlapCircle(transform.position, 0.3f, ladderLayer);
+        Collider2D ladder = Physics2D.OverlapCircle(transform.position, 0.75f, ladderLayer);
         isOnLadder = ladder != null;
 
         // If player is no longer on ladder, exit climbing state
