@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5934684497677460313}
   - component: {fileID: 2238048847601530277}
   - component: {fileID: 310110326153633673}
+  - component: {fileID: 7771629868414880183}
   m_Layer: 0
   m_Name: Feedback HIt
   m_TagString: Untagged
@@ -46,8 +47,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enableScreenShake: 1
-  shakeIntensity: 0.1
-  shakeDuration: 0.1
   enableHitStop: 1
   hitStopDuration: 0.25
   hitStopTimeScale: 0.05
@@ -110,3 +109,15 @@ MonoBehaviour:
     m_DissipationDistance: 100
     m_PropagationSpeed: 343
   m_DefaultVelocity: {x: 0, y: -1, z: 0}
+--- !u!114 &7771629868414880183
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2434361608635559651}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1562a3766c13d949be95e73008207cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

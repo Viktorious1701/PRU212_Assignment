@@ -6,8 +6,6 @@ public class HitFeedbackManager : MonoBehaviour
 {
     [Header("Screen Shake")]
     [SerializeField] private bool enableScreenShake = true;
-    [SerializeField] private float shakeIntensity = 0.1f;
-    [SerializeField] private float shakeDuration = 0.1f;
 
     [Header("Hit Stop")]
     [SerializeField] private bool enableHitStop = true;
