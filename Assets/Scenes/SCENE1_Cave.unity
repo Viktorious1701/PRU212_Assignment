@@ -906,7 +906,7 @@ MonoBehaviour:
   m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
-  m_ApplyToSortingLayers: 00000000af0b53f91b4d8e8a
+  m_ApplyToSortingLayers: 00000000af0b53f91b4d8e8ad11478c6
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -1081,7 +1081,7 @@ MonoBehaviour:
   m_Lens:
     FieldOfView: 34
     OrthographicSize: 8.453466
-    NearClipPlane: 0.3
+    NearClipPlane: 0.1
     FarClipPlane: 1000
     Dutch: 0
     ModeOverride: 0
@@ -1106,7 +1106,7 @@ Transform:
   m_GameObject: {fileID: 920032302}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.79, y: 0.2, z: -10}
+  m_LocalPosition: {x: 0.19, y: -1, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1627,6 +1627,34 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2558119078521775459, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
+      propertyPath: hitEffectSize
+      value: 64
+      objectReference: {fileID: 0}
+    - target: {fileID: 2558119078521775459, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
+      propertyPath: swordHitColor.b
+      value: 0.6226415
+      objectReference: {fileID: 0}
+    - target: {fileID: 2558119078521775459, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
+      propertyPath: swordHitColor.g
+      value: 0.6226415
+      objectReference: {fileID: 0}
+    - target: {fileID: 2558119078521775459, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
+      propertyPath: swordHitColor.r
+      value: 0.6226415
+      objectReference: {fileID: 0}
+    - target: {fileID: 2558119078521775459, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
+      propertyPath: bareHandHitColor.b
+      value: 0.5239409
+      objectReference: {fileID: 0}
+    - target: {fileID: 2558119078521775459, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
+      propertyPath: bareHandHitColor.g
+      value: 0.5239409
+      objectReference: {fileID: 0}
+    - target: {fileID: 2558119078521775459, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
+      propertyPath: bareHandHitColor.r
+      value: 0.5471698
+      objectReference: {fileID: 0}
     - target: {fileID: 4393832610289218965, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
       propertyPath: m_Size.x
       value: 1.3421774
@@ -1693,11 +1721,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6380319326907858925, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.79
+      value: 0.19
       objectReference: {fileID: 0}
     - target: {fileID: 6380319326907858925, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.2
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 6380319326907858925, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
       propertyPath: m_LocalPosition.z
@@ -2464,6 +2492,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: CurrentHealth/MaxHealth
       objectReference: {fileID: 0}
+    - target: {fileID: 1650159603569442120, guid: d7b5cac681f972d45b67d0ee48a7467a, type: 3}
+      propertyPath: m_ClearFlags
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650159603569442120, guid: d7b5cac681f972d45b67d0ee48a7467a, type: 3}
+      propertyPath: near clip plane
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 3575163833142463942, guid: d7b5cac681f972d45b67d0ee48a7467a, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -2490,11 +2526,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5394179010992963895, guid: d7b5cac681f972d45b67d0ee48a7467a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.79
+      value: 0.19
       objectReference: {fileID: 0}
     - target: {fileID: 5394179010992963895, guid: d7b5cac681f972d45b67d0ee48a7467a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.2
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 5394179010992963895, guid: d7b5cac681f972d45b67d0ee48a7467a, type: 3}
       propertyPath: m_LocalPosition.z
@@ -3101,7 +3137,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6268253571442220601, guid: 6ca93ed3abcd6174ba9bd5336462b609, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6907510667807880458, guid: 6ca93ed3abcd6174ba9bd5336462b609, type: 3}
       propertyPath: patrolPoints.Array.data[0]
@@ -3500,7 +3536,7 @@ SpriteRenderer:
   m_SortingLayerID: -111998033
   m_SortingLayer: 4
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 885a86a88e4e81c438e9863c6284d932, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d584d113b760d5b4694c38d70c1b5666, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -4034,7 +4070,7 @@ Transform:
   m_GameObject: {fileID: 3375920692604126337}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.19, y: -0.28, z: 0}
+  m_LocalPosition: {x: -8.34, y: -0.28, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
