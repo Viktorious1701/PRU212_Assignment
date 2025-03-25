@@ -78,6 +78,32 @@ public class WheelbarrowController : MonoBehaviour
         }
     }
     
+    // Public method to force release the wheelbarrow (can be called from other scripts)
+    public void ForceRelease()
+    {
+        if (isHeld)
+        {
+            Debug.Log("Force releasing wheelbarrow");
+            isHeld = false;
+            
+            // Find and destroy any joints on the player
+            if (player != null)
+            {
+                SpringJoint2D[] joints = player.GetComponents<SpringJoint2D>();
+                foreach (SpringJoint2D j in joints)
+                {
+                    if (j != null)
+                    {
+                        Destroy(j);
+                    }
+                }
+            }
+            
+            // Also clear our joint reference
+            joint = null;
+        }
+    }
+    
     private void OnDrawGizmosSelected()
     {
         if (handlePoint != null)
