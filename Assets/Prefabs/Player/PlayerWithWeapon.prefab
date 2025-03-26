@@ -78,6 +78,9 @@ GameObject:
   - component: {fileID: 2558119078521775459}
   - component: {fileID: 7944740274898364522}
   - component: {fileID: 4516675297573743189}
+  - component: {fileID: 5724186218945257143}
+  - component: {fileID: 1513655586181583578}
+  - component: {fileID: 3607338565575380048}
   m_Layer: 3
   m_Name: PlayerWithWeapon
   m_TagString: Player
@@ -166,12 +169,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12042f2d113fd4f4f9857dd6d69c520e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dialogueManager: {fileID: 0}
   moveSpeed: 10
   jumpForce: 10
   wallJumpForce: 14
   wallJumpUpForce: 12
   wallSlidingSpeed: 2
   firePoint: {fileID: 1719411333002057815}
+  climbSpeed: 5
+  ladderLayer:
+    serializedVersion: 2
+    m_Bits: 4096
   fallMultiplier: 3
   lowJumpMultiplier: 3.5
   jumpApexThreshold: 2
@@ -215,7 +223,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!61 &4393832610289218965
 BoxCollider2D:
@@ -295,6 +303,14 @@ MonoBehaviour:
   spellPrefab: {fileID: 5853618178704275592, guid: 83cf04ce4b112be4b81b8fa9b8aa61f7, type: 3}
   projectileSpeed: 10
   firePoint: {fileID: 1719411333002057815}
+  maxArrows: 100
+  currentArrows: 10
+  arrowPickupAmount: 3
+  maxMana: 100
+  currentMana: 0
+  spellManaCost: 20
+  manaRegenRate: 5
+  manaRegenDelay: 2
 --- !u!95 &7944740274898364522
 Animator:
   serializedVersion: 5
@@ -356,3 +372,43 @@ MonoBehaviour:
   onInvincibilityChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &5724186218945257143
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5883888934238944523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a564a1006a774541901547dbbad5521, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1513655586181583578
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5883888934238944523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: deec6234a9624ee449bb9f3ab06ff893, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  coins: 0
+  keys: []
+--- !u!114 &3607338565575380048
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5883888934238944523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99d563995c3b9d7489162c9c6e727555, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerMovement: {fileID: 373014949009209793}
+  dialogueSystem: {fileID: 0}
