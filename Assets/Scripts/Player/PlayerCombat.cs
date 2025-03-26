@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using System.Linq;
-using UnityEditor.Animations;
+
 
 public class PlayerCombat : MonoBehaviour
 {
@@ -75,14 +75,17 @@ public class PlayerCombat : MonoBehaviour
     private Coroutine resetComboCoroutine;
     private bool hasDealtDamage = false;
 
-    private enum WeaponType
+    public enum WeaponType
     {
         BareHand,
         Sword,
         Bow,
         Spell
     }
-
+    public WeaponType GetCurrentWeapon()
+    {
+        return currentWeapon;
+    }
     private void Start()
     {
         animator = GetComponent<Animator>();
@@ -548,7 +551,7 @@ public class PlayerCombat : MonoBehaviour
     {
         StartCoroutine(DamageBoostCoroutine(multiplier, duration));
     }
-
+   
     private IEnumerator DamageBoostCoroutine(float multiplier, float duration)
     {
         // Store original damage values

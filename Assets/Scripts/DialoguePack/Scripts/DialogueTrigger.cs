@@ -47,7 +47,8 @@ public class DialogueTrigger : MonoBehaviour
     private void Update()
     {
         // Optional: Allow player to press E to show the message again while in range
-        if (canInteract && dialogueSystem != null && !dialogueSystem.isDialogueActive && Input.GetKeyDown(KeyCode.E))
+        if (canInteract && dialogueSystem != null && !dialogueSystem.isDialogueActive && Input.GetKeyDown(KeyCode.F))
+
         {
             dialogueSystem.Say(customMessages, speakerName, messageDuration);
         }
