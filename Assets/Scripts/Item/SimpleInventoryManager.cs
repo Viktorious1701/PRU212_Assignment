@@ -16,11 +16,44 @@ public class SimpleInventoryManager : MonoBehaviour, IInventory
     [Header("Inventory")]
     [SerializeField] private List<Key> keys = new List<Key>();
     
+    // Session ID used to track game restarts
+    private static string SESSION_ID_KEY = "InventorySessionID";
+    private string currentSessionId;
+    
+    private void Awake()
+    {
+        // Generate a new session ID for this playthrough
+        string savedSessionId = PlayerPrefs.GetString(SESSION_ID_KEY, "");
+        currentSessionId = System.Guid.NewGuid().ToString();
+        
+        if (showDebugLogs)
+        {
+            Debug.Log($"Previous session ID: {savedSessionId}");
+            Debug.Log($"New session ID: {currentSessionId}");
+        }
+        
+        // If session IDs don't match, we have a new game session
+        if (string.IsNullOrEmpty(savedSessionId) || savedSessionId != currentSessionId)
+        {
+            // Clear inventory since we're in a new session
+            if (keys.Count > 0)
+            {
+                Debug.LogWarning("Detected new game session. Clearing inventory.");
+                keys.Clear();
+            }
+        }
+        
+        // Save the new session ID
+        PlayerPrefs.SetString(SESSION_ID_KEY, currentSessionId);
+        PlayerPrefs.Save();
+    }
+    
     private void Start()
     {
         if (showDebugLogs)
         {
             Debug.Log($"SimpleInventoryManager initialized on {gameObject.name}");
+            Debug.Log($"Current inventory has {keys.Count} keys at game start");
         }
     }
     
@@ -113,5 +146,43 @@ public class SimpleInventoryManager : MonoBehaviour, IInventory
     public void AddKeyFromInspector(string keyId)
     {
         AddKey(keyId, null);
+    }
+    
+    // Clear the entire inventory
+    public void ClearInventory()
+    {
+        int keyCount = keys.Count;
+        keys.Clear();
+        
+        if (showDebugLogs)
+        {
+            Debug.Log($"Cleared inventory. Removed {keyCount} keys.");
+        }
+    }
+    
+    // Clear inventory when application is quit
+    private void OnApplicationQuit()
+    {
+        if (showDebugLogs)
+        {
+            Debug.Log("Application is quitting. Clearing inventory.");
+        }
+        
+        ClearInventory();
+        
+        // Clear the session ID to force a reset on next game launch
+        PlayerPrefs.DeleteKey(SESSION_ID_KEY);
+        PlayerPrefs.Save();
+    }
+    
+    // Also clear when scene is unloaded
+    private void OnDestroy()
+    {
+        if (showDebugLogs)
+        {
+            Debug.Log("SimpleInventoryManager is being destroyed. Clearing inventory.");
+        }
+        
+        ClearInventory();
     }
 } 

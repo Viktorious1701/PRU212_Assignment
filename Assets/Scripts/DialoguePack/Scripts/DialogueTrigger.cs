@@ -12,7 +12,10 @@ public class DialogueTrigger : MonoBehaviour
     };
     [SerializeField] private string speakerName = "Billboard";
     [SerializeField] private float messageDuration = 3f;
-
+    [SerializeField] private bool isOneTimeOnly = false;
+    
+    private bool hasTriggeredOnce = false;
+    
     private void Awake()
     {
         if (dialogueSystem == null)
@@ -26,10 +29,16 @@ public class DialogueTrigger : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             canInteract = true;
-            // Automatically show the message when player enters the trigger area
-            if (dialogueSystem != null && !dialogueSystem.isDialogueActive)
+            
+            // Only show if it hasn't been triggered yet (for one-time triggers) or if it's repeatable
+            if (!hasTriggeredOnce || !isOneTimeOnly)
             {
-                dialogueSystem.Say(customMessages, speakerName, messageDuration);
+                // Automatically show the message when player enters the trigger area
+                if (dialogueSystem != null && !dialogueSystem.isDialogueActive)
+                {
+                    dialogueSystem.Say(customMessages, speakerName, messageDuration);
+                    hasTriggeredOnce = true;
+                }
             }
         }
     }
@@ -47,10 +56,27 @@ public class DialogueTrigger : MonoBehaviour
     private void Update()
     {
         // Optional: Allow player to press E to show the message again while in range
-        if (canInteract && dialogueSystem != null && !dialogueSystem.isDialogueActive && Input.GetKeyDown(KeyCode.F))
-
+        // Only if it hasn't been triggered yet (for one-time triggers) or if it's repeatable
+        if (canInteract && dialogueSystem != null && !dialogueSystem.isDialogueActive && 
+            Input.GetKeyDown(KeyCode.F) && (!hasTriggeredOnce || !isOneTimeOnly))
         {
             dialogueSystem.Say(customMessages, speakerName, messageDuration);
+            hasTriggeredOnce = true;
         }
+    }
+    
+    // Public methods to force trigger or reset the dialogue trigger
+    public void TriggerDialogue()
+    {
+        if (dialogueSystem != null && (!hasTriggeredOnce || !isOneTimeOnly))
+        {
+            dialogueSystem.Say(customMessages, speakerName, messageDuration);
+            hasTriggeredOnce = true;
+        }
+    }
+    
+    public void ResetTrigger()
+    {
+        hasTriggeredOnce = false;
     }
 }

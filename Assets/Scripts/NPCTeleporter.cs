@@ -162,6 +162,25 @@ public class NPCTeleporter : MonoBehaviour
                         speakerNameField.SetValue(dialogueTrigger, "Old Man");
                     }
                     
+                    // Make sure the trigger is reset so it will show the new message
+                    System.Reflection.MethodInfo resetMethod = typeof(DialogueTrigger).GetMethod("ResetTrigger");
+                    if (resetMethod != null)
+                    {
+                        resetMethod.Invoke(dialogueTrigger, null);
+                        Debug.Log("Reset dialogue trigger to ensure new message is shown");
+                    }
+                    
+                    // Set one-time only if needed
+                    System.Reflection.FieldInfo oneTimeField = typeof(DialogueTrigger).GetField("isOneTimeOnly", 
+                        System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | 
+                        System.Reflection.BindingFlags.Public);
+                        
+                    if (oneTimeField != null)
+                    {
+                        oneTimeField.SetValue(dialogueTrigger, true);
+                        Debug.Log("Set dialogue trigger to one-time only");
+                    }
+                    
                     Debug.Log("Permanently updated bearded NPC dialogue to thank you message");
                 }
                 else
