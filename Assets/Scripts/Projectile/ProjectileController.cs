@@ -8,7 +8,7 @@ public class ProjectileController : MonoBehaviour
     private float distanceTravelled = 0f;
     private Vector3 lastPosition;
     private Vector2 direction = Vector2.zero;
-    private GameObject owner;
+    public GameObject owner;
     private Animator animator;
     [SerializeField] private bool isHoming = true; // Adjust in Inspector
     public float speed = 10f; // Adjust in Inspector
@@ -24,10 +24,18 @@ public class ProjectileController : MonoBehaviour
     [SerializeField] private float homingRadius = 10f; // Detection radius for targets
     [SerializeField] private float homingForce = 5f; // How strongly it homes in on targets
     [SerializeField] private string targetTag = "Enemy"; // Tag of objects to target
-    [SerializeField] private LayerMask allyLayer; // Layer mask for allies to ignore
+    public LayerMask allyLayer; // Layer mask for allies to ignore
     private Transform currentTarget = null;
     private Vector2 currentMoveDirection;
     [SerializeField] private bool needRoate = false;
+    private FireballExplosion explosionComponent;
+    private bool isDestroyImmediately = false;
+
+    [Header("Audio")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip clip;
+
+
 
     // Cached results to avoid garbage collection
     private Collider2D[] colliderResults = new Collider2D[10];
@@ -35,6 +43,7 @@ public class ProjectileController : MonoBehaviour
     private void Awake()
     {
         animator = GetComponent<Animator>();
+        audioSource = gameObject.AddComponent<AudioSource>();
     }
 
     public void Initialize(float damageAmount, float maxRange, GameObject source)
@@ -57,9 +66,15 @@ public class ProjectileController : MonoBehaviour
             targetTag = "Player";
             allyLayer = LayerMask.GetMask("Enemy");
         }
+        SetupExplosionComponent();
     }
-
-    public void Initialize(float damageAmount, float maxRange, GameObject source, Vector2 dir)
+    private void SetupExplosionComponent()
+    {
+        // Add FireballExplosion component if not already present
+        explosionComponent = GetComponent<FireballExplosion>();
+        
+    }
+    public void Initialize(float damageAmount, float maxRange, GameObject source, Vector2 dir, bool destroyImme)
     {
         damage = damageAmount;
         range = maxRange;
@@ -68,6 +83,7 @@ public class ProjectileController : MonoBehaviour
         direction = dir.normalized;
         currentMoveDirection = direction;
         chasingTimer = startChasingTime;
+        isDestroyImmediately = destroyImme;
 
         // If owner is player, target enemies. If owner is enemy, target player
         if (owner.CompareTag("Player"))
@@ -91,6 +107,7 @@ public class ProjectileController : MonoBehaviour
             }
             transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
         }
+        SetupExplosionComponent();
     }
 
     private void Update()
@@ -137,6 +154,8 @@ public class ProjectileController : MonoBehaviour
                     );
                 }
             }
+           
+
         }
         else
         {
@@ -155,7 +174,7 @@ public class ProjectileController : MonoBehaviour
         if (currentMoveDirection != Vector2.zero)
         {
             float angle = Mathf.Atan2(currentMoveDirection.y, currentMoveDirection.x) * Mathf.Rad2Deg;
-            if(needRoate)
+            if (needRoate)
             {
                 angle = Mathf.Atan2(currentMoveDirection.y, currentMoveDirection.x) * Mathf.Rad2Deg - 90f;
             }
@@ -232,13 +251,29 @@ public class ProjectileController : MonoBehaviour
         if (((1 << hitObject.layer) & allyLayer.value) != 0)
             return;
 
-        if(collider.gameObject.CompareTag("Player") || collider.gameObject.CompareTag("Enemy"))
+        if (collider.gameObject.CompareTag("Player") || collider.gameObject.CompareTag("Enemy"))
         {
             hasHit = true; // Stop movement
+            collider.gameObject.CompareTag("Player");
+            if (audioSource != null && clip != null)
+            {
+                audioSource.PlayOneShot(clip);
+            }
+
         }
         else
         {
             return;
+        }
+
+        if (explosionComponent != null)
+        {
+            explosionComponent.Explode();
+        }
+
+        if (animator != null)
+        {
+            animator.SetTrigger("Explode"); // Trigger explosion animation if present
         }
 
         if (animator != null)
@@ -264,8 +299,15 @@ public class ProjectileController : MonoBehaviour
             rb.isKinematic = true; // Make it kinematic to prevent physics interference
         }
 
-        // Destroy after a delay (e.g., 2 seconds)
-        Destroy(gameObject, 1f);
+        if (isDestroyImmediately)
+        {
+            Destroy(gameObject, 0.3f);
+        }
+        else
+        {
+            // Destroy after a delay (e.g., 2 seconds)
+            Destroy(gameObject, 2f);
+        }
     }
 
     public void OnExplodeAnimationEnd()

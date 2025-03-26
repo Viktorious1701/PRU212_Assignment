@@ -99,6 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1a746a6dd3854248be68fece5f00bfa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  owner: {fileID: 0}
   isHoming: 1
   speed: 30
   startChasingTime: 0.1
@@ -111,6 +112,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   needRoate: 1
+  audioSource: {fileID: 0}
+  clip: {fileID: 8300000, guid: 50c04a1b993fcb3459dd48b5eb26b07a, type: 3}
 --- !u!61 &5993567845925727380
 BoxCollider2D:
   m_ObjectHideFlags: 0

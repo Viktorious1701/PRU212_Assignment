@@ -49,7 +49,7 @@ public abstract class DoorBase : MonoBehaviour
             else
             {
                 // If no SimpleInventoryManager, try regular InventoryManager
-                playerInventory = playerObj.GetComponent<InventoryManager>();
+                playerInventory = playerObj.GetComponent<SimpleInventoryManager>();
                 
                 if (playerInventory == null && showDebugLogs)
                 {

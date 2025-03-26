@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class InventoryManager : MonoBehaviour, IInventory
+public class InventoryManager : MonoBehaviour
 {
     [System.Serializable]
     public class Key

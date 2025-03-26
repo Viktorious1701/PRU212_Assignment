@@ -171,7 +171,7 @@ public class BossEnemy : Enemy
         }
 
         // Check if player is in special attack range and we can use a special attack
-        else if (IsPlayerInRange(specialAttackRange) && canUseSpecialAttack)
+        if (IsPlayerInRange(specialAttackRange) && canUseSpecialAttack)
         {
             // Choose a special attack based on current phase
             ChooseAttackPattern();
@@ -575,7 +575,7 @@ public class BossEnemy : Enemy
                     float phaseDamage = damage * phaseDamageMultipliers[currentPhase - 1];
                     float projectileRange = 15f; // Maximum range before auto-destroying
 
-                    projectileController.Initialize(phaseDamage, projectileRange, gameObject, direction);
+                    projectileController.Initialize(phaseDamage, projectileRange, gameObject, direction,true);
                     projectileController.speed = projectileSpeed;
                 }
             }
@@ -583,7 +583,7 @@ public class BossEnemy : Enemy
             // Brief delay between multiple projectiles
             if (projectileCount > 1 && i < projectileCount - 1)
             {
-                yield return new WaitForSeconds(0.15f);
+                yield return new WaitForSeconds(0.25f);
             }
         }
 
@@ -763,7 +763,7 @@ public class BossEnemy : Enemy
 
         // Calculate current health percentage
         float healthPercentage = healthComponent.GetCurrentHealth() / maxHealth;
-
+       
         // Check for phase transitions
         if (currentPhase < maxPhases)
         {
@@ -822,6 +822,7 @@ public class BossEnemy : Enemy
         Collider2D[] nearbyPlayers = Physics2D.OverlapCircleAll(transform.position, detectionRange, LayerMask.GetMask("Player"));
         foreach (Collider2D playerCollider in nearbyPlayers)
         {
+            if (!playerCollider.CompareTag("Player")) continue;
             if (playerCollider.attachedRigidbody != null)
             {
                 Vector2 direction = (playerCollider.transform.position - transform.position).normalized;
