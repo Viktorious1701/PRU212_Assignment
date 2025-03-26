@@ -22,6 +22,10 @@ public class NPCTeleporter : MonoBehaviour
     [SerializeField] private bool teleportToRight = true; // Teleport to the right of the target?
     [SerializeField] private bool destroyAfterTeleport = true; // Destroy this NPC after teleporting?
     
+    [Header("Bearded NPC Settings")]
+    [SerializeField] private string beardedNPCThankYouMessage = "Thank you for rescuing my friend!";
+    [SerializeField] private float beardedDialogueDelay = 0.5f;
+    
     private bool playerInRange = false;
     private bool hasInteracted = false;
     private GameObject playerObject;
@@ -96,19 +100,25 @@ public class NPCTeleporter : MonoBehaviour
             float xOffset = teleportToRight ? teleportOffset : -teleportOffset;
             targetPosition += new Vector3(xOffset, 0, 0);
             
-            // Create teleport effect at current position (optional)
-            // PlayTeleportEffectAt(transform.position);
-            
             // Teleport this NPC
             transform.position = targetPosition;
             Debug.Log($"Teleported NPC to: {targetPosition}");
             
-            // Trigger any event on the target NPC if needed
+            // Trigger the NPC Interaction Controller if available
             NPCInteractionController targetNPC = teleportTarget.GetComponent<NPCInteractionController>();
             if (targetNPC != null)
             {
                 // This will trigger the barrel/wheelbarrow hiding if it hasn't happened yet
                 targetNPC.TriggerHideObjects();
+            }
+            
+            // Just update the DialogueTrigger on the bearded NPC
+            // Don't show dialogue now - it will show when player interacts with bearded NPC later
+            DialogueTrigger dialogueTrigger = teleportTarget.GetComponent<DialogueTrigger>();
+            if (dialogueTrigger != null)
+            {
+                UpdateDialogueTriggerMessage(dialogueTrigger);
+                Debug.Log("Updated bearded NPC dialogue for future interactions");
             }
             
             // Destroy this NPC after teleporting if configured to do so
@@ -120,6 +130,49 @@ public class NPCTeleporter : MonoBehaviour
         else
         {
             Debug.LogError("Cannot teleport: target is null");
+        }
+    }
+    
+    private void UpdateDialogueTriggerMessage(DialogueTrigger dialogueTrigger)
+    {
+        try {
+            // Permanently change the bearded NPC's dialogue content
+            if (dialogueTrigger != null)
+            {
+                // Create a new single-element array with just the thank you message
+                string[] newMessages = new string[] { beardedNPCThankYouMessage };
+                
+                // Use reflection to update the custom messages array
+                System.Reflection.FieldInfo customMessagesField = typeof(DialogueTrigger).GetField("customMessages", 
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | 
+                    System.Reflection.BindingFlags.Public);
+                    
+                if (customMessagesField != null)
+                {
+                    // Replace all messages with just the thank you message
+                    customMessagesField.SetValue(dialogueTrigger, newMessages);
+                    
+                    // Also update speaker name if needed
+                    System.Reflection.FieldInfo speakerNameField = typeof(DialogueTrigger).GetField("speakerName", 
+                        System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | 
+                        System.Reflection.BindingFlags.Public);
+                        
+                    if (speakerNameField != null)
+                    {
+                        speakerNameField.SetValue(dialogueTrigger, "Old Man");
+                    }
+                    
+                    Debug.Log("Permanently updated bearded NPC dialogue to thank you message");
+                }
+                else
+                {
+                    Debug.LogWarning("Could not find customMessages field in DialogueTrigger");
+                }
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Failed to update dialogue message: {e.Message}");
         }
     }
     
