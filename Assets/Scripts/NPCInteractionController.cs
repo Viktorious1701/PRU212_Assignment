@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Linq;
 
 public class NPCInteractionController : MonoBehaviour
 {
@@ -100,10 +101,21 @@ public class NPCInteractionController : MonoBehaviour
             barrel.SetActive(false);
         }
         
-        // Hide wheelbarrow
+        // Hide the specific wheelbarrow reference
         if (wheelbarrow != null)
         {
             wheelbarrow.SetActive(false);
+        }
+        
+        // Find and hide ALL wheelbarrow objects in the scene, including clones
+        GameObject[] allWheelbarrows = GameObject.FindObjectsOfType<GameObject>()
+            .Where(go => go.name.Contains("Wheelbarrow") || go.name.Contains("wheelbarrow"))
+            .ToArray();
+        
+        foreach (GameObject wb in allWheelbarrows)
+        {
+            Debug.Log($"Found and hiding wheelbarrow: {wb.name}");
+            wb.SetActive(false);
         }
     }
     
