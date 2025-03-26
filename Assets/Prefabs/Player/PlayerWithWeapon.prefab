@@ -257,7 +257,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.11060476, y: -0.19344446}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -268,7 +268,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.3, y: 2.3}
+  m_Size: {x: 1.3421774, y: 1.925611}
   m_EdgeRadius: 0
 --- !u!114 &2558119078521775459
 MonoBehaviour:
@@ -311,6 +311,8 @@ MonoBehaviour:
   spellManaCost: 20
   manaRegenRate: 5
   manaRegenDelay: 2
+  bareHandHitColor: {r: 1, g: 0.5, b: 0.5, a: 1}
+  swordHitColor: {r: 0.5, g: 0.5, b: 1, a: 1}
 --- !u!95 &7944740274898364522
 Animator:
   serializedVersion: 5
