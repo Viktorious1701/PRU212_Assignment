@@ -126,11 +126,6 @@ public class HitEffectController : MonoBehaviour
             float moveDistance = Mathf.Lerp(0f, distance, t); // Lerp the distance, not position
             effectObject.transform.position = startPosition + direction * moveDistance;
 
-            // Smoothly rotate toward target angle
-            float targetRotation = isFacingRight ? -15f : 15f;
-            float currentRotation = Mathf.Lerp(randomStartRotation, targetRotation, t);
-            effectObject.transform.rotation = Quaternion.Euler(0f, 0f, -currentRotation);
-
             Color mainColor = mainRenderer.color;
             mainColor.a = Mathf.Lerp(1f, 0f, t);
             mainRenderer.color = mainColor;

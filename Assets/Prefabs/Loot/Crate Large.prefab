@@ -201,10 +201,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   brokenBoxPrefab: {fileID: 8990656623095389341, guid: cdc20307a11dbe743aeb0d9dd57d1451, type: 3}
-  destructionForce: 5
+  destructionForce: 10
   destructionTorque: 2
-  destroyOnAnyHit: 1
+  destroyOnAnyHit: 0
   hitPointsRequired: 1
-  possibleRewards: []
+  possibleRewards:
+  - {fileID: 3894888977823033227, guid: 4a29e2288e4c7614bb3dfe61f6c091a2, type: 3}
   rewardSpawnChance: 0.5
   rewardSpawnOffset: {x: 0, y: 0.5}
