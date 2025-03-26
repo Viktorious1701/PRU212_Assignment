@@ -77,7 +77,7 @@ public class MainMenuController : MonoBehaviour
 
 
         // Load the first scene
-        SceneManager.LoadScene("SCENE1_Cave");
+        SceneManager.LoadScene("SCENE3_Forest");
     }
 
     private IEnumerator SpinButton()

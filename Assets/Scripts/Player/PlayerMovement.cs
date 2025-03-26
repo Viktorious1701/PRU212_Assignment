@@ -47,7 +47,7 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D rb;
     private bool isGrounded;
     private bool isWallSliding;
-    private bool canDoubleJump = true;
+    private bool canDoubleJump = false;
     private float coyoteTimeCounter;
     private float wallJumpTimeCounter;
     private float jumpBufferCounter;
@@ -109,6 +109,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (dialogueManager.CanMove())
         {
+            CheckAndStepUp();
             // Input handling
             float horizontalInput = Input.GetAxisRaw("Horizontal");
             float verticalInput = Input.GetAxisRaw("Vertical");
@@ -236,7 +237,52 @@ public class PlayerMovement : MonoBehaviour
         }
         UpdateAnimationStates();
     }
+    // step up for small climbing
+    private void CheckAndStepUp()
+    {
+        // Only attempt step-up when moving horizontally
+        float horizontalInput = Input.GetAxisRaw("Horizontal");
+        if (horizontalInput == 0 || isClimbing) return;
 
+        // Define step height parameters
+        float stepHeight = 0.5f; // Maximum height to step up
+        float stepCheckDistance = 0.5f; // Distance to check for obstacles
+
+        // Determine direction based on input
+        Vector2 moveDirection = horizontalInput > 0 ? Vector2.right : Vector2.left;
+
+        // First, check for a horizontal obstacle
+        RaycastHit2D horizontalHit = Physics2D.Raycast(
+            transform.position,
+            moveDirection,
+            stepCheckDistance,
+            groundLayer
+        );
+
+        if (horizontalHit.collider != null)
+        {
+            // If there's a horizontal obstacle, check if we can step up
+            Vector2 stepUpOrigin = (Vector2)transform.position + moveDirection * stepCheckDistance;
+
+            // Check if there's space above the obstacle
+            RaycastHit2D verticalClearanceCheck = Physics2D.Raycast(
+                stepUpOrigin,
+                Vector2.up,
+                stepHeight,
+                groundLayer
+            );
+
+            // If there's no obstruction above, perform the step-up
+            if (verticalClearanceCheck.collider == null)
+            {
+                // Smoothly move the player up
+                transform.position += Vector3.up * stepHeight;
+
+                // Optional: Add a small horizontal nudge to clear the obstacle
+                rb.position += moveDirection * 0.1f;
+            }
+        }
+    }
     // New method to check if player is on a ladder
     private void CheckLadder()
     {
