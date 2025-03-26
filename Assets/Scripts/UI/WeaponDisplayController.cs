@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using static PlayerCombat;
@@ -12,7 +13,7 @@ public class WeaponDisplayController : MonoBehaviour
 
     [Header("UI References")]
     [SerializeField] private Image weaponIconImage;
-    [SerializeField] private Text weaponNameText;
+    [SerializeField] private TextMeshProUGUI weaponNameText;
 
     private PlayerCombat playerCombat;
 

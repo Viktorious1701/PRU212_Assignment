@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 3340087711279263511}
   - component: {fileID: 2248652418328530093}
-  - component: {fileID: 5365814422205384400}
   - component: {fileID: 3596535233645682399}
   - component: {fileID: 824439132980864425}
+  - component: {fileID: 3945657274051623749}
   m_Layer: 7
   m_Name: VillageGirl
   m_TagString: Untagged
@@ -88,19 +88,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &5365814422205384400
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7370853083791101945}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d03f6005979af04aa4ebc09eaa4c9b5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dialogueSystem: {fileID: 0}
 --- !u!58 &3596535233645682399
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -149,6 +136,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   questIcon: {fileID: 7963167224549457713}
+--- !u!114 &3945657274051623749
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7370853083791101945}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19e0712dcf319b549989d9805efb1b21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dialogueSystem: {fileID: 0}
+  customMessages:
+  - Kill The Monsters
+  - I will meet you at the end of journey
+  - Good luck on your journey!
+  speakerName: Billboard
+  messageDuration: 3
 --- !u!1 &7963167224549457713
 GameObject:
   m_ObjectHideFlags: 0
