@@ -44,10 +44,16 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private int currentArrows;
     [SerializeField] private float arrowPickupAmount = 3;
 
-    [Header("Sword Effect")]
-    // Add a method to track positions for sword trail
-    private List<Vector3> swordTrailPositions = new List<Vector3>();
-    private bool isRecordingTrail = false;
+    [Header("Weapon Inventory")]
+    [SerializeField] private InventoryManager inventoryManager;
+
+    // New dictionary to track weapon availability
+    private Dictionary<WeaponType, string> weaponKeys = new Dictionary<WeaponType, string>
+    {
+        { WeaponType.Sword, "sword_key" },
+        { WeaponType.Bow, "bow_key" },
+        { WeaponType.Spell, "spell_key" }
+    };
 
 
     [Header("Mana Settings")]
@@ -95,8 +101,11 @@ public class PlayerCombat : MonoBehaviour
         currentArrows = maxArrows/10;
         currentMana = maxMana;
         lastManaUseTime = -manaRegenDelay; // Allow immediate regen at start
-                                           // Generate hit effect sprites procedurally
-       
+        if (inventoryManager == null)
+        {
+            inventoryManager = FindObjectOfType<InventoryManager>();
+        }
+
     }
 
 
@@ -130,12 +139,7 @@ public class PlayerCombat : MonoBehaviour
         {
             currentMana = Mathf.Min(currentMana + manaRegenRate * Time.deltaTime, maxMana);
         }
-        if (isRecordingTrail && currentWeapon == WeaponType.Sword)
-        {
-            // Get position of sword tip - you might need to adjust this based on your character setup
-            Vector3 swordTipPos = transform.position + (isFacingRight ? Vector3.right : Vector3.left) * 0.8f + Vector3.up * 0.5f;
-            swordTrailPositions.Add(swordTipPos);
-        }
+      
 
     }
 
@@ -154,52 +158,57 @@ public class PlayerCombat : MonoBehaviour
     private void PerformAttack()
     {
         float currentCooldown = GetCurrentCooldown();
-
-      
-
-        // Prevent new attack until damage is dealt, unless starting a new combo
-        if (isInCombo && isComboWindowOpen && !hasDealtDamage && currentComboCount > 0)
+        if (currentWeapon == WeaponType.BareHand ||
+            (inventoryManager != null && inventoryManager.HasKey(weaponKeys[currentWeapon])))
         {
-            Debug.LogError("Waiting for damage to be applied");
-            return;
-        }
-
-        lastAttackTime = Time.time;
-        hasDealtDamage = false; // Reset for the new attack
-
-        if (!isInCombo || comboTimer <= 0)
-        {
-            currentComboCount = 0;
-            isInCombo = true;
-        }
-
-        if (isComboWindowOpen || currentComboCount == 0)
-        {
-            currentComboCount = Mathf.Min(currentComboCount + 1, 3);
-            //Debug.Log($"Combo count: {currentComboCount}");
-            comboTimer = comboTimeWindow;
-
-            if (resetComboCoroutine != null)
+            // Prevent new attack until damage is dealt, unless starting a new combo
+            if (isInCombo && isComboWindowOpen && !hasDealtDamage && currentComboCount > 0)
             {
-                StopCoroutine(resetComboCoroutine);
+                Debug.LogError("Waiting for damage to be applied");
+                return;
             }
-            resetComboCoroutine = StartCoroutine(ResetComboAfterAnimation());
 
-            switch (currentWeapon)
+            lastAttackTime = Time.time;
+            hasDealtDamage = false; // Reset for the new attack
+
+            if (!isInCombo || comboTimer <= 0)
             {
-                case WeaponType.BareHand:
-                    BareHandAttack();
-                    break;
-                case WeaponType.Sword:
-                    SwordAttack();
-                    break;
-                case WeaponType.Bow:
-                    BowAttack();
-                    break;
-                case WeaponType.Spell:
-                    SpellAttack();
-                    break;
+                currentComboCount = 0;
+                isInCombo = true;
             }
+
+            if (isComboWindowOpen || currentComboCount == 0)
+            {
+                currentComboCount = Mathf.Min(currentComboCount + 1, 3);
+                //Debug.Log($"Combo count: {currentComboCount}");
+                comboTimer = comboTimeWindow;
+
+                if (resetComboCoroutine != null)
+                {
+                    StopCoroutine(resetComboCoroutine);
+                }
+                resetComboCoroutine = StartCoroutine(ResetComboAfterAnimation());
+
+                switch (currentWeapon)
+                {
+                    case WeaponType.BareHand:
+                        BareHandAttack();
+                        break;
+                    case WeaponType.Sword:
+                        SwordAttack();
+                        break;
+                    case WeaponType.Bow:
+                        BowAttack();
+                        break;
+                    case WeaponType.Spell:
+                        SpellAttack();
+                        break;
+                }
+            }
+        }
+        else
+        {
+            Debug.Log($"Cannot attack with {currentWeapon}. Weapon not collected!");
         }
     }
 
@@ -388,6 +397,7 @@ public class PlayerCombat : MonoBehaviour
 
     public void SpawnArrow()
     {
+        if (currentArrows <= 0) return;
         // Decrease arrow count
         currentArrows--;
         // Instantiate arrow
@@ -551,7 +561,13 @@ public class PlayerCombat : MonoBehaviour
     {
         StartCoroutine(DamageBoostCoroutine(multiplier, duration));
     }
-   
+    public void CollectWeapon(WeaponType weaponType, Sprite weaponIcon)
+    {
+        if (inventoryManager != null)
+        {
+            inventoryManager.AddKey(weaponKeys[weaponType], weaponIcon);
+        }
+    }
     private IEnumerator DamageBoostCoroutine(float multiplier, float duration)
     {
         // Store original damage values
