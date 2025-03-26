@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class FireballExplosion : MonoBehaviour
@@ -14,15 +15,24 @@ public class FireballExplosion : MonoBehaviour
     [SerializeField] private int maxFragments = 10;
     [SerializeField] private float fragmentSpawnRadius = 0.5f;
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip clip;
+
     private ProjectileController projectileController;
 
     private void Awake()
     {
         projectileController = GetComponent<ProjectileController>();
+        audioSource = gameObject.AddComponent<AudioSource>();
     }
 
     public void Explode()
     {
+        if(audioSource != null && clip != null)
+        {
+            audioSource.PlayOneShot(clip);
+        }
         Vector3 explosionOrigin = transform.position;
 
         // Create explosion effect
@@ -65,15 +75,15 @@ public class FireballExplosion : MonoBehaviour
         }
 
         // Spawn chaos fragments
-        SpawnFragments(explosionOrigin);
+        StartCoroutine(SpawnFragments(explosionOrigin));
     }
 
-    private void SpawnFragments(Vector3 explosionOrigin)
+    private IEnumerator SpawnFragments(Vector3 explosionOrigin)
     {
-        if (fragmentPrefabs == null || fragmentPrefabs.Length == 0) return;
+        if (fragmentPrefabs == null || fragmentPrefabs.Length == 0) yield return null;
 
         int fragmentCount = Random.Range(minFragments, maxFragments + 1);
-
+        yield return new WaitForSeconds(0.25f);
         for (int i = 0; i < fragmentCount; i++)
         {
             // Select a random fragment prefab

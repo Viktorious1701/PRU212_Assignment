@@ -31,12 +31,19 @@ public class ProjectileController : MonoBehaviour
     private FireballExplosion explosionComponent;
     private bool isDestroyImmediately = false;
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip clip;
+
+
+
     // Cached results to avoid garbage collection
     private Collider2D[] colliderResults = new Collider2D[10];
 
     private void Awake()
     {
         animator = GetComponent<Animator>();
+        audioSource = gameObject.AddComponent<AudioSource>();
     }
 
     public void Initialize(float damageAmount, float maxRange, GameObject source)
@@ -147,18 +154,7 @@ public class ProjectileController : MonoBehaviour
                     );
                 }
             }
-            // Update rotation smoothly
-            if (currentMoveDirection != Vector2.zero)
-            {
-                float angle = Mathf.Atan2(currentMoveDirection.y, currentMoveDirection.x) * Mathf.Rad2Deg;
-                if (needRoate)
-                {
-                    angle = Mathf.Atan2(currentMoveDirection.y, currentMoveDirection.x) * Mathf.Rad2Deg - 90f;
-                }
-
-                Quaternion targetRotation = Quaternion.AngleAxis(angle, Vector3.forward);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
-            }
+           
 
         }
         else
@@ -174,7 +170,19 @@ public class ProjectileController : MonoBehaviour
             }
         }
 
-     
+        // Update rotation smoothly
+        if (currentMoveDirection != Vector2.zero)
+        {
+            float angle = Mathf.Atan2(currentMoveDirection.y, currentMoveDirection.x) * Mathf.Rad2Deg;
+            if (needRoate)
+            {
+                angle = Mathf.Atan2(currentMoveDirection.y, currentMoveDirection.x) * Mathf.Rad2Deg - 90f;
+            }
+
+            Quaternion targetRotation = Quaternion.AngleAxis(angle, Vector3.forward);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        }
+
         // Move the projectile
         transform.position += (Vector3)currentMoveDirection * speed * Time.deltaTime;
 
@@ -247,7 +255,10 @@ public class ProjectileController : MonoBehaviour
         {
             hasHit = true; // Stop movement
             collider.gameObject.CompareTag("Player");
-            Debug.Log("hit");
+            if (audioSource != null && clip != null)
+            {
+                audioSource.PlayOneShot(clip);
+            }
 
         }
         else
@@ -290,7 +301,7 @@ public class ProjectileController : MonoBehaviour
 
         if (isDestroyImmediately)
         {
-            Destroy(gameObject);
+            Destroy(gameObject, 0.3f);
         }
         else
         {

@@ -68,6 +68,11 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private Color bareHandHitColor = new Color(1f, 0.5f, 0.5f, 1f);
     [SerializeField] private Color swordHitColor = new Color(0.5f, 0.5f, 1f, 1f);
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip clip;
+
+
     private float lastAttackTime;
     private WeaponType currentWeapon = WeaponType.BareHand;
     private Animator animator;
@@ -105,6 +110,8 @@ public class PlayerCombat : MonoBehaviour
         {
             inventoryManager = FindObjectOfType<InventoryManager>();
         }
+
+        audioSource = gameObject.AddComponent<AudioSource>();
 
     }
 
@@ -411,7 +418,10 @@ public class PlayerCombat : MonoBehaviour
         ProjectileController arrowController = arrow.GetComponent<ProjectileController>();
         arrowController.Initialize(bowDamage, bowRange, gameObject);
        
-
+        if(audioSource != null && clip != null)
+        {
+            audioSource.PlayOneShot(clip);
+        }
     }
 
     private void SpellAttack()

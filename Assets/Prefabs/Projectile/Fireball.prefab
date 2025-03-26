@@ -238,3 +238,5 @@ MonoBehaviour:
   minFragments: 5
   maxFragments: 10
   fragmentSpawnRadius: 0.5
+  audioSource: {fileID: 0}
+  clip: {fileID: 8300000, guid: cc2ade6b8fd1fc943b37d7e787af0084, type: 3}
