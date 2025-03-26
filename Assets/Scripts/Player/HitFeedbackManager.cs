@@ -81,12 +81,15 @@ public class HitFeedbackManager : MonoBehaviour
         activeHitStopCoroutine = null;
     }
 
-    public void TriggerHitFeedback(Vector3 hitPosition, float hitStrength)
+    public void TriggerHitFeedback(Vector3 hitPosition, float hitStrength, PlayerCombat.WeaponType weaponType)
     {
         // Determine intensity based on hit strength
         HitIntensity intensity = HitIntensity.Light;
-
-        if (hitStrength > 20f)
+        if (weaponType == PlayerCombat.WeaponType.BareHand)
+        {
+            intensity = HitIntensity.Light;
+        }
+        else if (hitStrength > 20f)
             intensity = HitIntensity.Heavy;
         else if (hitStrength > 10f)
             intensity = HitIntensity.Medium;

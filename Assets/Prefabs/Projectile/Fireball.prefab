@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 8764375061816043300}
   - component: {fileID: 205951335178067967}
   - component: {fileID: 1698157221184242835}
+  - component: {fileID: 6625543830468548890}
   m_Layer: 0
   m_Name: Fireball
   m_TagString: Untagged
@@ -127,6 +128,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1a746a6dd3854248be68fece5f00bfa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  owner: {fileID: 0}
   isHoming: 1
   speed: 20
   startChasingTime: 0.15
@@ -137,7 +139,7 @@ MonoBehaviour:
   targetTag: Enemy
   allyLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8
   needRoate: 0
 --- !u!95 &205951335178067967
 Animator:
@@ -205,3 +207,34 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.2, y: 0.22}
   m_EdgeRadius: 0
+--- !u!114 &6625543830468548890
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5853618178704275592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df228588c2551954da1e462b642fd029, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  explosionPrefab: {fileID: 0}
+  explosionRadius: 2
+  explosionForce: 2
+  damageAmount: 50
+  fragmentPrefabs:
+  - {fileID: 7668363806092556553, guid: c99193f874ec6f74ead2b55fda5d80e1, type: 3}
+  - {fileID: 6181028000398332805, guid: ec2393688de172241b03a5d5f4985bab, type: 3}
+  - {fileID: 3720986554149176955, guid: 0c88c67665fb6e0499ec417ccd5422f7, type: 3}
+  - {fileID: 6173176973061111417, guid: 0350e56baac6f084cb9b296d33afc40f, type: 3}
+  - {fileID: 7452401733142471920, guid: 6d8dc1c95dcd8b548b0449b809c79f14, type: 3}
+  - {fileID: 8909506368125000027, guid: 3c40e279e69605348910c881a8706a2a, type: 3}
+  - {fileID: 377455048899177768, guid: 284671c643050d847bc434198eaa2222, type: 3}
+  - {fileID: 6423108319524724823, guid: 45d28563285b59248965d0bb4220c500, type: 3}
+  - {fileID: 4776012381727099397, guid: 291c2c1fef3a0934e84d29c38065f3a2, type: 3}
+  - {fileID: 3259064505793732444, guid: cd814de8473ca4144938c8e21341e661, type: 3}
+  - {fileID: 1553161246376134648, guid: 05a72d4feddf557429bb1c4bcf37f9ba, type: 3}
+  minFragments: 5
+  maxFragments: 10
+  fragmentSpawnRadius: 0.5

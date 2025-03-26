@@ -120,7 +120,7 @@ public class FlyingEnemy : Enemy
         ProjectileController projectileController = projectile.GetComponent<ProjectileController>();
         if (projectileController != null)
         {
-            projectileController.Initialize(10f, 15f, gameObject,direction);
+            projectileController.Initialize(10f, 15f, gameObject,direction,false);
             projectile.GetComponent<Rigidbody2D>().velocity = direction * 10f;
         }
         isAttacking = false;
