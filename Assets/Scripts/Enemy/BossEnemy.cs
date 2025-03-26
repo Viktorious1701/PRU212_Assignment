@@ -43,6 +43,7 @@ public class BossEnemy : Enemy
 
     // State tracking for boss
     private int currentPhase = 1;
+    private Coroutine specialAttackCooldownCoroutine;
     private bool canUseSpecialAttack = true;
     private bool isDashing = false;
     private bool isJumping = false;
@@ -170,7 +171,7 @@ public class BossEnemy : Enemy
         }
 
         // Check if player is in special attack range and we can use a special attack
-        if (IsPlayerInRange(specialAttackRange) && canUseSpecialAttack)
+        else if (IsPlayerInRange(specialAttackRange) && canUseSpecialAttack)
         {
             // Choose a special attack based on current phase
             ChooseAttackPattern();
@@ -239,7 +240,7 @@ public class BossEnemy : Enemy
 
             // Don't stop ALL coroutines, just attack-related ones
             // Instead of StopAllCoroutines(), stop specific ones:
-            StopAttackCoroutines();
+            //StopAttackCoroutines();
 
             isDashing = false;
             isJumping = false;
@@ -261,7 +262,7 @@ public class BossEnemy : Enemy
 
                 // Always ensure these are restarted
                 if (!canUseSpecialAttack)
-                    StartCoroutine(SpecialAttackCooldownRoutine());
+                    StartSpecialAttackCooldown();
                 if (!canUseShield)
                     StartCoroutine(ShieldCooldownRoutine());
             }
@@ -444,7 +445,7 @@ public class BossEnemy : Enemy
         isAttacking = false;
 
         // Start special attack cooldown
-        StartCoroutine(SpecialAttackCooldownRoutine());
+        StartSpecialAttackCooldown();
     }
     private void CheckPlayerDamageCollision()
     {
@@ -514,7 +515,7 @@ public class BossEnemy : Enemy
         isAttacking = false;
 
         // Start special attack cooldown
-        StartCoroutine(SpecialAttackCooldownRoutine());
+        StartSpecialAttackCooldown();
     }
 
     private IEnumerator GroundSlamEffect()
@@ -590,7 +591,7 @@ public class BossEnemy : Enemy
         isAttacking = false;
 
         // Start special attack cooldown
-        StartCoroutine(SpecialAttackCooldownRoutine());
+        StartSpecialAttackCooldown();
     }
 
     private IEnumerator ActivateShieldSequence()
@@ -691,13 +692,25 @@ public class BossEnemy : Enemy
         isAttacking = false;
     }
 
+    private void StartSpecialAttackCooldown()
+    {
+        // Stop any existing cooldown coroutine
+        if (specialAttackCooldownCoroutine != null)
+        {
+            StopCoroutine(specialAttackCooldownCoroutine);
+        }
+
+        // Start a new cooldown coroutine
+        specialAttackCooldownCoroutine = StartCoroutine(SpecialAttackCooldownRoutine());
+    }
+
     private IEnumerator SpecialAttackCooldownRoutine()
     {
         canUseSpecialAttack = false;
-        yield return new WaitForSeconds(specialAttackCooldown); // Shorter cooldown in later phases
+        yield return new WaitForSeconds(specialAttackCooldown);
         canUseSpecialAttack = true;
+        specialAttackCooldownCoroutine = null;
     }
-
     private IEnumerator ShieldCooldownRoutine()
     {
         canUseShield = false;
@@ -846,7 +859,7 @@ public class BossEnemy : Enemy
             spriteRenderer.color = phaseColors[currentPhase - 1];
         }
 
-        StartCoroutine(SpecialAttackCooldownRoutine());
+        StartSpecialAttackCooldown();
         StartCoroutine(ShieldCooldownRoutine());
 
         // End immunity state

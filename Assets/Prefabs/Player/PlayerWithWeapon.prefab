@@ -79,7 +79,6 @@ GameObject:
   - component: {fileID: 7944740274898364522}
   - component: {fileID: 4516675297573743189}
   - component: {fileID: 5724186218945257143}
-  - component: {fileID: 1513655586181583578}
   - component: {fileID: 3607338565575380048}
   m_Layer: 3
   m_Name: PlayerWithWeapon
@@ -257,7 +256,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.11060476, y: -0.19344446}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -268,7 +267,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.3, y: 2.3}
+  m_Size: {x: 1.3421774, y: 1.925611}
   m_EdgeRadius: 0
 --- !u!114 &2558119078521775459
 MonoBehaviour:
@@ -291,8 +290,8 @@ MonoBehaviour:
   bowCooldown: 1
   spellCooldown: 1.5
   bareHandRange: 0.75
-  swordRange: 1.5
-  bowRange: 10
+  swordRange: 2
+  bowRange: 20
   spellRange: 20
   comboTimeWindow: 0.8
   bareHandComboMultiplier: 1.2
@@ -306,11 +305,14 @@ MonoBehaviour:
   maxArrows: 100
   currentArrows: 10
   arrowPickupAmount: 3
+  inventoryManager: {fileID: 0}
   maxMana: 100
   currentMana: 0
   spellManaCost: 20
   manaRegenRate: 5
   manaRegenDelay: 2
+  bareHandHitColor: {r: 1, g: 0.5, b: 0.5, a: 1}
+  swordHitColor: {r: 0.5, g: 0.5, b: 1, a: 1}
 --- !u!95 &7944740274898364522
 Animator:
   serializedVersion: 5
@@ -384,20 +386,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a564a1006a774541901547dbbad5521, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1513655586181583578
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5883888934238944523}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: deec6234a9624ee449bb9f3ab06ff893, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  coins: 0
-  keys: []
 --- !u!114 &3607338565575380048
 MonoBehaviour:
   m_ObjectHideFlags: 0
