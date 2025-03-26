@@ -927,7 +927,7 @@ GameObject:
   - component: {fileID: 2028059549}
   - component: {fileID: 2028059548}
   m_Layer: 5
-  m_Name: SettingsButton
+  m_Name: Mute Music Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
