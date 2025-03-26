@@ -95,7 +95,7 @@ public class HitEffectGenerator : MonoBehaviour
         return animationFrames;
     }
 
-    public static (Sprite mainSprite, Sprite glowSprite) GenerateHorizontalPunchEffect(Color baseColor, int width = 128, int height = 32)
+    public static (Sprite mainSprite, Sprite glowSprite) GenerateHorizontalPunchEffect(Color baseColor, int width = 128, int height = 64)
     {
         // Main sprite
         Texture2D mainTexture = new Texture2D(width, height, TextureFormat.RGBA32, false);

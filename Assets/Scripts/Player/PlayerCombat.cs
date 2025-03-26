@@ -455,7 +455,7 @@ public class PlayerCombat : MonoBehaviour
 
         // Add a script to the spell to handle damage and special effects
         ProjectileController spellController = spell.GetComponent<ProjectileController>();
-        spellController.Initialize(spellDamage, spellRange, gameObject,direction);
+        spellController.Initialize(spellDamage, spellRange, gameObject,direction, true);
     }
 
     private void ApplyDamage(GameObject target, float damage)
@@ -480,7 +480,7 @@ public class PlayerCombat : MonoBehaviour
         if (HitFeedbackManager.Instance != null)
         {
             Debug.Log("Triggering hit feedback");
-            HitFeedbackManager.Instance.TriggerHitFeedback(target.transform.position, damage);
+            HitFeedbackManager.Instance.TriggerHitFeedback(target.transform.position, damage, currentWeapon);
         }
     }
 
@@ -571,11 +571,13 @@ public class PlayerCombat : MonoBehaviour
     private IEnumerator DamageBoostCoroutine(float multiplier, float duration)
     {
         // Store original damage values
+        float originalBareHandDamage = bareHandDamage;
         float originalSwordDamage = swordDamage;
         float originalBowDamage = bowDamage;
         float originalSpellDamage = spellDamage;
 
         // Apply multiplier
+        bareHandDamage *= multiplier;
         swordDamage *= multiplier;
         bowDamage *= multiplier;
         spellDamage *= multiplier;
@@ -584,6 +586,7 @@ public class PlayerCombat : MonoBehaviour
         yield return new WaitForSeconds(duration);
 
         // Reset to original values
+        bareHandDamage = originalBareHandDamage;
         swordDamage = originalSwordDamage;
         bowDamage = originalBowDamage;
         spellDamage = originalSpellDamage;

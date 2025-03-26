@@ -28,7 +28,7 @@ public class DamagePopupManager : MonoBehaviour
     {
         // If target is null, return
         if (target == null) return;
-
+        
         if(target.GetComponent<Health>().IsInvincible()) return;
         // Get the enemy's position instead of the hit point
         // This will use the center of the game object
