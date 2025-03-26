@@ -1,5 +1,9 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEditor;
+using System.Linq;
+using UnityEditor.Animations;
 
 public class PlayerCombat : MonoBehaviour
 {
@@ -40,6 +44,12 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private int currentArrows;
     [SerializeField] private float arrowPickupAmount = 3;
 
+    [Header("Sword Effect")]
+    // Add a method to track positions for sword trail
+    private List<Vector3> swordTrailPositions = new List<Vector3>();
+    private bool isRecordingTrail = false;
+
+
     [Header("Mana Settings")]
     [SerializeField] private float maxMana = 100f;
     [SerializeField] private float currentMana;
@@ -47,6 +57,10 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private float manaRegenRate = 5f;
     [SerializeField] private float manaRegenDelay = 2f;
     private float lastManaUseTime;
+
+    [Header("Hit Effect Settings")]
+    [SerializeField] private Color bareHandHitColor = new Color(1f, 0.5f, 0.5f, 1f);
+    [SerializeField] private Color swordHitColor = new Color(0.5f, 0.5f, 1f, 1f);
 
     private float lastAttackTime;
     private WeaponType currentWeapon = WeaponType.BareHand;
@@ -78,7 +92,10 @@ public class PlayerCombat : MonoBehaviour
         currentArrows = maxArrows/10;
         currentMana = maxMana;
         lastManaUseTime = -manaRegenDelay; // Allow immediate regen at start
+                                           // Generate hit effect sprites procedurally
+       
     }
+
 
     private void Update()
     {
@@ -110,6 +127,13 @@ public class PlayerCombat : MonoBehaviour
         {
             currentMana = Mathf.Min(currentMana + manaRegenRate * Time.deltaTime, maxMana);
         }
+        if (isRecordingTrail && currentWeapon == WeaponType.Sword)
+        {
+            // Get position of sword tip - you might need to adjust this based on your character setup
+            Vector3 swordTipPos = transform.position + (isFacingRight ? Vector3.right : Vector3.left) * 0.8f + Vector3.up * 0.5f;
+            swordTrailPositions.Add(swordTipPos);
+        }
+
     }
 
     private void SwitchWeapon(WeaponType newWeapon)
@@ -149,7 +173,7 @@ public class PlayerCombat : MonoBehaviour
         if (isComboWindowOpen || currentComboCount == 0)
         {
             currentComboCount = Mathf.Min(currentComboCount + 1, 3);
-            Debug.Log($"Combo count: {currentComboCount}");
+            //Debug.Log($"Combo count: {currentComboCount}");
             comboTimer = comboTimeWindow;
 
             if (resetComboCoroutine != null)
@@ -179,9 +203,8 @@ public class PlayerCombat : MonoBehaviour
     public void OnAttackPoint(int comboStep)
     {
         Debug.Log($"Attack point hit for combo step {comboStep}");
-        hasDealtDamage = true; // Mark damage as dealt
+        hasDealtDamage = true;
 
-        // Rest of your OnAttackPoint logic...
         Vector3 attackDirection = isFacingRight ? transform.right : -transform.right;
         float damage = 0f;
         float attackRadius = 0f;
@@ -205,10 +228,34 @@ public class PlayerCombat : MonoBehaviour
         foreach (Collider2D hit in hits)
         {
             if (hit.gameObject == gameObject) continue;
-            if(hit.GetComponent<Health>() && !hit.GetComponent<Health>().IsInvincible())
+            if (hit.GetComponent<Health>() && !hit.GetComponent<Health>().IsInvincible())
             {
                 ApplyDamage(hit.gameObject, damage);
+                // Spawn appropriate effect on hit
+                if (HitEffectController.Instance != null)
+                {
+                    Vector3 hitPosition = hit.transform.position;
+                    if (currentWeapon == WeaponType.BareHand)
+                    {
+                        HitEffectController.Instance.SpawnPunchEffect(
+                            transform.position,
+                            hitPosition,
+                            bareHandHitColor,
+                            isFacingRight
+                        );
+                    }
+                    else if (currentWeapon == WeaponType.Sword)
+                    {
+                        HitEffectController.Instance.SpawnSwordEffect(
+                            transform.position,
+                            hitPosition,
+                            swordHitColor,
+                            isFacingRight
+                        );
+                    }
+                }
             }
+
             Rigidbody2D hitRigidbody = hit.GetComponent<Rigidbody2D>();
             if (hitRigidbody != null && comboStep == 3)
             {
@@ -216,7 +263,6 @@ public class PlayerCombat : MonoBehaviour
                 hitRigidbody.AddForce(attackDirection * knockbackForce, ForceMode2D.Impulse);
             }
         }
-        SpawnHitEffect(transform.position + attackDirection * attackRange);
     }
     private IEnumerator ResetComboAfterAnimation()
     {
@@ -306,8 +352,12 @@ public class PlayerCombat : MonoBehaviour
                 animator?.SetTrigger("SwordAttack3");
                 break;
         }
+      
     }
 
+    
+
+  
     private void BowAttack()
     {
         // Check if we have arrows
@@ -467,35 +517,7 @@ public class PlayerCombat : MonoBehaviour
         }
     }
 
-    //Spawn visual effects on hit
-    private void SpawnHitEffect(Vector3 position)
-    {
-        // Check if we have a hit effect prefab for the current weapon
-        GameObject effectPrefab = null;
-
-        switch (currentWeapon)
-        {
-            case WeaponType.BareHand:
-                if (bareHandHitEffectPrefab != null)
-                    effectPrefab = bareHandHitEffectPrefab;
-                break;
-
-            case WeaponType.Sword:
-                if (swordHitEffectPrefab != null)
-                    effectPrefab = swordHitEffectPrefab;
-                break;
-        }
-
-        // Instantiate the effect if we have one
-        if (effectPrefab != null)
-        {
-            GameObject effect = Instantiate(effectPrefab, position, Quaternion.identity);
-
-            // Optionally destroy after a short time
-            Destroy(effect, 1f);
-        }
-    }
-
+    
 
     public void AddArrows(int amount = 0)
     {

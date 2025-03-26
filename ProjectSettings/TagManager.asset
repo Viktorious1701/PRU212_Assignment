@@ -7,6 +7,7 @@ TagManager:
   - Enemy
   - Boss
   - DoorKey
+  - Wheelbarrow
   layers:
   - Default
   - TransparentFX
@@ -19,9 +20,8 @@ TagManager:
   - Enemy
   - Boss
   - MovingGround
-  - 
+  - Effects
   - Ladder
-  - 
   - 
   - 
   - 
@@ -59,6 +59,9 @@ TagManager:
     locked: 0
   - name: Foreground
     uniqueID: 1022189187
+    locked: 0
+  - name: Effect
+    uniqueID: 3329758417
     locked: 0
   - name: Moving Ground
     uniqueID: 3843538325
