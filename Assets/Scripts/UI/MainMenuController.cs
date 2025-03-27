@@ -9,6 +9,12 @@ public class MainMenuController : MonoBehaviour
     [SerializeField] private Button playButton;
     [SerializeField] private Button quitButton;
 
+    [Header("Choose Menu")]
+    [SerializeField] private Button level1;
+    [SerializeField] private Button level2;
+    [SerializeField] private Button level3;
+    [SerializeField] private Button level4;
+
     [Header("Sound Effects")]
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip playButtonSoundEffect;
@@ -30,6 +36,23 @@ public class MainMenuController : MonoBehaviour
             quitButton.onClick.AddListener(QuitGame);
         }
 
+        if (level1 != null)
+        {
+            level1.onClick.AddListener(LoadSceneLevel1);
+        }
+        if (level2 != null)
+        {
+            level2.onClick.AddListener(LoadSceneLevel2);
+        }
+        if (level3 != null)
+        {
+            level3.onClick.AddListener(LoadSceneLevel3);
+        }
+        if (level4 != null)
+        {
+            level4.onClick.AddListener(LoadSceneLevel4);
+        }
+
         // Ensure AudioSource is assigned
         if (audioSource == null)
         {
@@ -41,6 +64,27 @@ public class MainMenuController : MonoBehaviour
         {
             audioSource = gameObject.AddComponent<AudioSource>();
         }
+    }
+
+    private void LoadSceneLevel1()
+    {
+        SceneManager.LoadScene("SCENE1_Cave");
+    }
+
+
+    private void LoadSceneLevel2()
+    {
+        SceneManager.LoadScene("SCENE2_Village");
+    }
+
+    private void LoadSceneLevel3()
+    {
+        SceneManager.LoadScene("SCENE3_Forest");
+    }
+
+    private void LoadSceneLevel4()
+    {
+        SceneManager.LoadScene("SCENE4_Castle");
     }
 
     private void OnPlayButtonClicked()
