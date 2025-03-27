@@ -191,7 +191,7 @@ MonoBehaviour:
   wallJumpTime: 0.2
   jumpBufferTime: 0.1
   groundCheck: {fileID: 2879580921818622562}
-  groundCheckRadius: 0.2
+  groundCheckRadius: 0.6
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -313,6 +313,8 @@ MonoBehaviour:
   manaRegenDelay: 2
   bareHandHitColor: {r: 1, g: 0.5, b: 0.5, a: 1}
   swordHitColor: {r: 0.5, g: 0.5, b: 1, a: 1}
+  audioSource: {fileID: 0}
+  clip: {fileID: 0}
 --- !u!95 &7944740274898364522
 Animator:
   serializedVersion: 5

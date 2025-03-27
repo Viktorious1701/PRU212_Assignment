@@ -9,7 +9,7 @@ public class SceneTransitionTrigger : MonoBehaviour
 
     [Header("Interaction Settings")]
     [Tooltip("Key to press for interaction")]
-    public KeyCode interactionKey = KeyCode.E;
+    public KeyCode interactionKey = KeyCode.F;
 
     [Header("Visual Feedback")]
     [SerializeField] private GameObject interactionPrompt;
