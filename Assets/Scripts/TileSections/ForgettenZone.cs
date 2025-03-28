@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -16,9 +17,12 @@ public class ForgottenZone : MonoBehaviour
     private float damageTimer = 0f;
     private Volume volume;
     private Vignette vignette;
+    private AudioSource audioSource;
+    [SerializeField] private AudioClip audioClip;
 
     void Start()
     {
+        audioSource = gameObject.AddComponent<AudioSource>();
         volume = FindObjectOfType<Volume>();
         if (volume != null)
         {
@@ -41,7 +45,9 @@ public class ForgottenZone : MonoBehaviour
             playerHealth = player.GetComponent<Health>();
             playerInZone = true;
             timeInZone = 0f;
+            audioSource.PlayOneShot(audioClip);
         }
+        
     }
 
     void OnTriggerExit2D(Collider2D collision)
@@ -50,6 +56,8 @@ public class ForgottenZone : MonoBehaviour
         {
             playerInZone = false;
             ResetVignette();
+            timeInZone = 0f;
+            damageTimer = 0f;
         }
     }
 
@@ -71,6 +79,18 @@ public class ForgottenZone : MonoBehaviour
                 float intensity = Mathf.Clamp01(timeInZone * vignetteSpeed);
                 vignette.intensity.value = Mathf.Lerp(0f, vignetteMaxIntensity, intensity);
             }
+
+            if(playerHealth.GetCurrentHealth() <= 0)
+            {
+                playerInZone = false;
+                ResetVignette();
+                audioSource.Stop();
+            }
+
+            if(audioSource != null && !audioSource.isPlaying)
+            {
+                audioSource.PlayOneShot(audioClip);
+            }
         }
     }
 
@@ -78,7 +98,20 @@ public class ForgottenZone : MonoBehaviour
     {
         if (vignette != null)
         {
-            vignette.intensity.value = 0f;
+            StartCoroutine(EaseOutVignette());
+        }
+    }
+
+    private IEnumerator EaseOutVignette()
+    {
+        float t = 0f;
+        float startIntensity = vignette.intensity.value;
+        float endIntensity = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime * (vignetteSpeed); 
+            vignette.intensity.value = Mathf.Lerp(startIntensity, endIntensity, t);
+            yield return null;
         }
     }
 }
