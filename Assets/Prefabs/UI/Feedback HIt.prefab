@@ -53,9 +53,16 @@ MonoBehaviour:
   hitStopTimeScale: 0.05
   impactFlashPrefab: {fileID: 0}
   flashDuration: 0.1
-  lightHitSounds: []
-  mediumHitSounds: []
-  heavyHitSounds: []
+  lightHitSounds:
+  - {fileID: 8300000, guid: 2cd722063eb5aa0479df03ec7c6c0115, type: 3}
+  - {fileID: 8300000, guid: 2043e1aa6cb1e004cbb301d809149c6c, type: 3}
+  mediumHitSounds:
+  - {fileID: 8300000, guid: 3c448e04347c70f46beab2dd948428b8, type: 3}
+  - {fileID: 8300000, guid: 4f39a4517bb3375478c2952ae6f45a00, type: 3}
+  heavyHitSounds:
+  - {fileID: 8300000, guid: 1013b1ee392b49043a40b594b9e5bdf5, type: 3}
+  - {fileID: 8300000, guid: 7fe34d29bd231ef408ef1c9bd0f68528, type: 3}
+  - {fileID: 8300000, guid: 657abaa7a33eb7d49bb6d33f6e4194a6, type: 3}
   audioSource: {fileID: 0}
 --- !u!114 &310110326153633673
 MonoBehaviour:

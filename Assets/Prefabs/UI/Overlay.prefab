@@ -830,10 +830,10 @@ MonoBehaviour:
   healthSlider: {fileID: 8327661839927892072}
   healthText: {fileID: 7147015218431298648}
   damageFlashPanel: {fileID: 5904759862523770654}
-  manaSlider: {fileID: 0}
-  manaText: {fileID: 0}
-  arrowCountText: {fileID: 0}
-  arrowIcon: {fileID: 0}
+  manaSlider: {fileID: 124049562794117288}
+  manaText: {fileID: 9055070582475300792}
+  arrowCountText: {fileID: 2764783745275872274}
+  arrowIcon: {fileID: 2296675236049725335}
   playerHealth: {fileID: 0}
   playerCombat: {fileID: 0}
   flashDuration: 0.2

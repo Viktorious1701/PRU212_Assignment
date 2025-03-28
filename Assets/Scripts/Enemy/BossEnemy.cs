@@ -164,13 +164,6 @@ public class BossEnemy : Enemy
     {
         if (isAttacking || isDashing || isJumping || isImmune) return;
 
-        // Check if player is in attack range
-        if (IsPlayerInRange(attackRange) && canAttack)
-        {
-            currentState = EnemyState.Attack;
-        }
-
-        // Check if player is in special attack range and we can use a special attack
         if (IsPlayerInRange(specialAttackRange) && canUseSpecialAttack)
         {
             // Choose a special attack based on current phase
@@ -178,6 +171,15 @@ public class BossEnemy : Enemy
             currentState = EnemyState.Attack;
             return;
         }
+
+        // Check if player is in attack range
+        if (IsPlayerInRange(attackRange) && canAttack)
+        {
+            currentState = EnemyState.Attack;
+        }
+
+        // Check if player is in special attack range and we can use a special attack
+       
 
         // Consider using shield when health is below 50% in the current phase threshold
         // and player is getting close but not in melee range yet
@@ -348,7 +350,7 @@ public class BossEnemy : Enemy
         }
         
 
-        if(currentAttackType == BossAttackType.MeleeSlash && !IsPlayerInRange(attackRange))
+        if(currentAttackType == BossAttackType.MeleeSlash && !IsPlayerInRange(attackRange) && !canUseSpecialAttack)
         {
             currentState = EnemyState.Chase;
             isAttacking = false;

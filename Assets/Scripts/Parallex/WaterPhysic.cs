@@ -12,6 +12,8 @@ public class WaterPhysic : MonoBehaviour
     [Tooltip("Depth at which full buoyancy is applied")]
     public float fullBuoyancyDepth = 1f;
 
+
+
     private void OnTriggerStay2D(Collider2D other)
     {
         Debug.Log("Slow");
@@ -28,6 +30,16 @@ public class WaterPhysic : MonoBehaviour
 
         // Apply buoyancy force
         ApplyBuoyancy(rb, objectDepth);
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        // Reset drag when object leaves water
+        Rigidbody2D rb = collision.GetComponent<Rigidbody2D>();
+        if (rb != null)
+        {
+            rb.drag = 0;
+        }
     }
 
     private float CalculateObjectDepth(Collider2D collision)
