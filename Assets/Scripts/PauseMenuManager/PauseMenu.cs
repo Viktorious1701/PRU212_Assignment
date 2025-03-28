@@ -34,12 +34,15 @@ public class PauseMenu : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            Debug.Log("Escape key pressed!");
             if (IsPaused)
             {
+                Debug.Log("Attempting to resume");
                 ResumeGame();
             }
             else
             {
+                Debug.Log("Attempting to pause");
                 PauseGame();
             }
         }
@@ -47,10 +50,16 @@ public class PauseMenu : MonoBehaviour
 
     void PauseGame()
     {
-        // Pause the game
-        pauseMenuUI.SetActive(true);
-        Time.timeScale = 0f; // Freeze game time
-        IsPaused = true;
+        if (pauseMenuUI != null)
+        {
+            pauseMenuUI.SetActive(true);
+            Time.timeScale = 0f;
+            IsPaused = true;
+        }
+        else
+        {
+            Debug.LogError("Pause Menu UI reference is null!");
+        }
     }
 
     public void ResumeGame()

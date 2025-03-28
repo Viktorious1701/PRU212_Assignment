@@ -73,27 +73,47 @@ public class MainMenuController : MonoBehaviour
 
     private void LoadSceneLevel1()
     {
+        if (musicController != null)
+        {
+            musicController.StopMusic();
+        }
         SceneManager.LoadScene("SCENE1_Cave");
     }
 
 
     private void LoadSceneLevel2()
     {
+        if (musicController != null)
+        {
+            musicController.StopMusic();
+        }
         SceneManager.LoadScene("SCENE2_Village");
     }
 
     private void LoadSceneLevel3()
     {
+        if (musicController != null)
+        {
+            musicController.StopMusic();
+        }
         SceneManager.LoadScene("SCENE3_Forest");
     }
 
     private void LoadSceneLevel4()
     {
+        if (musicController != null)
+        {
+            musicController.StopMusic();
+        }
         SceneManager.LoadScene("SCENE4_Castle");
     }
 
     private void LoadSceneLevel5()
     {
+        if (musicController != null)
+        {
+            musicController.StopMusic();
+        }
         SceneManager.LoadScene("SCENE5_BOSS");
     }
 
@@ -131,7 +151,7 @@ public class MainMenuController : MonoBehaviour
 
 
         // Load the first scene
-        SceneManager.LoadScene("SCENE3_Forest");
+        SceneManager.LoadScene("SCENE1_Cave");
     }
 
     private IEnumerator SpinButton()

@@ -1431,7 +1431,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 92.0657, y: 102.8258}
+  m_SizeDelta: {x: 60, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8062170972934916620
 CanvasRenderer:
@@ -1861,6 +1861,7 @@ MonoBehaviour:
   level2: {fileID: 8967301450540792321}
   level3: {fileID: 3747020307497530865}
   level4: {fileID: 7586227991760459296}
+  level5: {fileID: 0}
   audioSource: {fileID: 0}
   playButtonSoundEffect: {fileID: 8300000, guid: c111188e8cafa1e4cb0ec96000049eee, type: 3}
   backgroundImage: {fileID: 7638983744632283792}
