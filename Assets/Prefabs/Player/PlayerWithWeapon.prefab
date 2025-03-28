@@ -191,7 +191,7 @@ MonoBehaviour:
   wallJumpTime: 0.2
   jumpBufferTime: 0.1
   groundCheck: {fileID: 2879580921818622562}
-  groundCheckRadius: 0.2
+  groundCheckRadius: 0.6
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -311,10 +311,10 @@ MonoBehaviour:
   spellManaCost: 20
   manaRegenRate: 5
   manaRegenDelay: 2
-  bareHandHitColor: {r: 0.5471698, g: 0.5239409, b: 0.5239409, a: 1}
-  swordHitColor: {r: 0.6226415, g: 0.6226415, b: 0.6226415, a: 1}
+  bareHandHitColor: {r: 1, g: 0.5, b: 0.5, a: 1}
+  swordHitColor: {r: 0.5, g: 0.5, b: 1, a: 1}
   audioSource: {fileID: 0}
-  clip: {fileID: 8300000, guid: d67215c0bd481c641aa0e999ae6a6a1f, type: 3}
+  clip: {fileID: 0}
 --- !u!95 &7944740274898364522
 Animator:
   serializedVersion: 5
