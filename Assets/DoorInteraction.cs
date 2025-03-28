@@ -27,10 +27,6 @@ public class DoorInteraction : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            if (other.CompareTag("Player"))
-            {
-                Debug.Log("Player exited trigger. Position: " + other.transform.position);
-            }
             isPlayerNear = false;
         }
     }
