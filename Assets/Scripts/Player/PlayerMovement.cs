@@ -346,6 +346,7 @@ public class PlayerMovement : MonoBehaviour
     private void ExitLadder()
     {
         isClimbing = false;
+        rb.AddForce(Vector2.up * 2, ForceMode2D.Impulse); // Optional: Add a small jump off the ladder
         rb.gravityScale = 1; // Reset gravity
         animator.SetBool(IS_CLIMBING, false);
         animator.speed = 1; // Reset animation speed

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 219626048282827381}
   - component: {fileID: 7356522399349044299}
   - component: {fileID: 3075888215766460059}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: HealthPotion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -171,13 +171,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e64aa4316d4ca647b75b7e1ac899f49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healAmount: 25
-  percentageHealing: 0
   pickupDelay: 0.5
   popForce: 10
   popTorque: 2
   applyRandomDirection: 1
   collectEffectPrefab: {fileID: 0}
   collectSound: {fileID: 0}
-  bobAmount: 0.2
-  bobSpeed: 2
+  floatAmplitude: 0.2
+  floatSpeed: 2
+  rotationSpeed: 30
+  healAmount: 25
+  percentageHealing: 0
