@@ -376,15 +376,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6479492450982426327, guid: 7c7d24253f088ab4bb08f7d382ac8b7c, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.66
+      value: 0.36
       objectReference: {fileID: 0}
     - target: {fileID: 6479492450982426327, guid: 7c7d24253f088ab4bb08f7d382ac8b7c, type: 3}
       propertyPath: m_LocalScale.y
-      value: 2.64
+      value: 1.44
       objectReference: {fileID: 0}
     - target: {fileID: 6479492450982426327, guid: 7c7d24253f088ab4bb08f7d382ac8b7c, type: 3}
       propertyPath: m_LocalScale.z
-      value: 2.64
+      value: 1.44
       objectReference: {fileID: 0}
     - target: {fileID: 6479492450982426327, guid: 7c7d24253f088ab4bb08f7d382ac8b7c, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -548,11 +548,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8849352190563038399, guid: 7c7d24253f088ab4bb08f7d382ac8b7c, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 315.00006
+      value: 293
       objectReference: {fileID: 0}
     - target: {fileID: 8849352190563038399, guid: 7c7d24253f088ab4bb08f7d382ac8b7c, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 155
+      value: 178
       objectReference: {fileID: 0}
     - target: {fileID: 8849352190563038399, guid: 7c7d24253f088ab4bb08f7d382ac8b7c, type: 3}
       propertyPath: m_ConstrainProportionsScale
@@ -599,10 +599,6 @@ PrefabInstance:
     - target: {fileID: 1594472085162221780, guid: 9e2be8eb880c8cc4094d465d19874448, type: 3}
       propertyPath: m_ReferenceResolution.y
       value: 1080
-      objectReference: {fileID: 0}
-    - target: {fileID: 1594472085162221783, guid: 9e2be8eb880c8cc4094d465d19874448, type: 3}
-      propertyPath: m_RenderMode
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1594472085162221783, guid: 9e2be8eb880c8cc4094d465d19874448, type: 3}
       propertyPath: m_RenderMode
@@ -808,11 +804,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 630354194296556108, guid: 9d93baea1faf8d94b93f7fd17cc0fa4a, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -203
+      value: -309
       objectReference: {fileID: 0}
     - target: {fileID: 630354194296556108, guid: 9d93baea1faf8d94b93f7fd17cc0fa4a, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -245
+      value: -210
       objectReference: {fileID: 0}
     - target: {fileID: 630354194296556108, guid: 9d93baea1faf8d94b93f7fd17cc0fa4a, type: 3}
       propertyPath: m_ConstrainProportionsScale
