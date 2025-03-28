@@ -5,7 +5,7 @@ public class SceneTransitionTrigger : MonoBehaviour
 {
     [Header("Scene Transition Settings")]
     [Tooltip("Name of the scene to load when interacting")]
-    public string sceneToLoad = "Forest";
+    public string sceneToLoad = "SCENE4_Castle";
 
     [Header("Interaction Settings")]
     [Tooltip("Key to press for interaction")]
