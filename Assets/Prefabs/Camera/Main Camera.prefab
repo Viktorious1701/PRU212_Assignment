@@ -497,8 +497,8 @@ PrefabInstance:
     m_TransformParent: {fileID: 5394179010992963895}
     m_Modifications:
     - target: {fileID: 1594472085162221783, guid: 9e2be8eb880c8cc4094d465d19874448, type: 3}
-      propertyPath: m_SortingOrder
-      value: 99
+      propertyPath: m_RenderMode
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1594472085162221783, guid: 9e2be8eb880c8cc4094d465d19874448, type: 3}
       propertyPath: m_SortingLayerID
