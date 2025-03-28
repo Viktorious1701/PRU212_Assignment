@@ -40773,6 +40773,46 @@ PrefabInstance:
       propertyPath: m_AnchorMin.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2468557282572412747, guid: d7b5cac681f972d45b67d0ee48a7467a, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2468557282572412747, guid: d7b5cac681f972d45b67d0ee48a7467a, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2468557282572412747, guid: d7b5cac681f972d45b67d0ee48a7467a, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2468557282572412747, guid: d7b5cac681f972d45b67d0ee48a7467a, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2468557282572412747, guid: d7b5cac681f972d45b67d0ee48a7467a, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2468557282572412747, guid: d7b5cac681f972d45b67d0ee48a7467a, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2468557282572412747, guid: d7b5cac681f972d45b67d0ee48a7467a, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2468557282572412747, guid: d7b5cac681f972d45b67d0ee48a7467a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2468557282572412747, guid: d7b5cac681f972d45b67d0ee48a7467a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2468557282572412747, guid: d7b5cac681f972d45b67d0ee48a7467a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3575163833142463942, guid: d7b5cac681f972d45b67d0ee48a7467a, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -41932,6 +41972,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   transitionController: {fileID: 1154810113}
+  targetSceneName: SCENE1.1_Dungeon
 --- !u!1 &1084431255
 GameObject:
   m_ObjectHideFlags: 0
@@ -101589,7 +101630,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1154810113
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -104178,5 +104219,5 @@ SceneRoots:
   - {fileID: 1229105640}
   - {fileID: 1100409218}
   - {fileID: 239837969}
-  - {fileID: 1154810114}
   - {fileID: 1084308684}
+  - {fileID: 1154810114}

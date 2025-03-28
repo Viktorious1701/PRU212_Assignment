@@ -19,6 +19,7 @@ public class SceneTransitionController : MonoBehaviour
     private TransitionState currentState = TransitionState.Idle;
     private string targetSceneName;
     private Vector3 initialCameraSize;
+    private Transform player;
 
     private enum TransitionState
     {
@@ -47,6 +48,7 @@ public class SceneTransitionController : MonoBehaviour
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        player = GameObject.FindGameObjectWithTag("Player").transform;
         // Find camera in new scene
         virtualCamera = FindObjectOfType<CinemachineVirtualCamera>();
 
@@ -115,6 +117,7 @@ public class SceneTransitionController : MonoBehaviour
                 HandleShrinkingMask();
                 break;
         }
+        blackHoleMask.transform.position = player.position + new Vector3(0, 0, 10);
     }
 
     void HandleGrowingMask()

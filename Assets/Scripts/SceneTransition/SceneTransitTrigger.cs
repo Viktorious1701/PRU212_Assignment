@@ -5,6 +5,12 @@ using UnityEngine;
 public class SceneTransitTrigger : MonoBehaviour
 {
     public SceneTransitionController transitionController;
+    public string targetSceneName;
+
+    private void Start()
+    {
+        transitionController = FindAnyObjectByType<SceneTransitionController>();
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -16,6 +22,6 @@ public class SceneTransitTrigger : MonoBehaviour
 
     void GoToNextLevel()
     {
-        transitionController.TransitionToScene("SCENE1.1_Dungeon");
+        transitionController.TransitionToScene(targetSceneName);
     }
 }
