@@ -48,7 +48,10 @@ public class SceneTransitionController : MonoBehaviour
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        player = GameObject.FindGameObjectWithTag("Player").transform;
+        if(GameObject.FindGameObjectWithTag("Player")!= null)
+        {
+            player = GameObject.FindGameObjectWithTag("Player").transform;
+        }
         // Find camera in new scene
         virtualCamera = FindObjectOfType<CinemachineVirtualCamera>();
 
