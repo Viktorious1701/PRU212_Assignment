@@ -207,5 +207,7 @@ MonoBehaviour:
   hitPointsRequired: 1
   possibleRewards:
   - {fileID: 3894888977823033227, guid: 4a29e2288e4c7614bb3dfe61f6c091a2, type: 3}
+  - {fileID: 1933485498544054884, guid: bda1192143530994cbf5e1aa2810cb59, type: 3}
+  - {fileID: 7752129833944474999, guid: 56dff09ba66130944914d2ee88308e49, type: 3}
   rewardSpawnChance: 0.5
   rewardSpawnOffset: {x: 0, y: 0.5}

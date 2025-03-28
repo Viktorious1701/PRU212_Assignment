@@ -14,15 +14,19 @@ public class MainMenuController : MonoBehaviour
     [SerializeField] private Button level2;
     [SerializeField] private Button level3;
     [SerializeField] private Button level4;
+    [SerializeField] private Button level5;
 
     [Header("Sound Effects")]
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip playButtonSoundEffect;
 
     [Header("Transition Effects")]
-    [SerializeField] private Image backgroundImage; // For fading to black
+    [SerializeField] private Image fadeOverlay; // Renamed: This is the fade-to-black overlay, not the background
     [SerializeField] private float spinDuration = 1f; // Duration of spin
     [SerializeField] private float fadeDuration = 1f; // Duration of fade to black
+
+    [Header("Music Control")]
+    [SerializeField] private MenuMusicController musicController;
 
     private void Start()
     {
@@ -52,6 +56,10 @@ public class MainMenuController : MonoBehaviour
         {
             level4.onClick.AddListener(LoadSceneLevel4);
         }
+        if (level5 != null)
+        {
+            level5.onClick.AddListener(LoadSceneLevel5);
+        }
 
         // Ensure AudioSource is assigned
         if (audioSource == null)
@@ -68,23 +76,47 @@ public class MainMenuController : MonoBehaviour
 
     private void LoadSceneLevel1()
     {
+        if (musicController != null)
+        {
+            musicController.StopMusic();
+        }
         SceneManager.LoadScene("SCENE1_Cave");
     }
 
-
     private void LoadSceneLevel2()
     {
+        if (musicController != null)
+        {
+            musicController.StopMusic();
+        }
         SceneManager.LoadScene("SCENE2_Village");
     }
 
     private void LoadSceneLevel3()
     {
+        if (musicController != null)
+        {
+            musicController.StopMusic();
+        }
         SceneManager.LoadScene("SCENE3_Forest");
     }
 
     private void LoadSceneLevel4()
     {
+        if (musicController != null)
+        {
+            musicController.StopMusic();
+        }
         SceneManager.LoadScene("SCENE4_Castle");
+    }
+
+    private void LoadSceneLevel5()
+    {
+        if (musicController != null)
+        {
+            musicController.StopMusic();
+        }
+        SceneManager.LoadScene("SCENE5_BOSS");
     }
 
     private void OnPlayButtonClicked()
@@ -95,8 +127,7 @@ public class MainMenuController : MonoBehaviour
         // Start coroutine for transition
         StartCoroutine(PlayButtonTransition());
     }
-    [Header("Music Control")]
-    [SerializeField] private MenuMusicController musicController;
+
     private IEnumerator PlayButtonTransition()
     {
         // Spin the play button
@@ -109,19 +140,19 @@ public class MainMenuController : MonoBehaviour
         }
 
         // Fade to black
-        yield return StartCoroutine(FadeToBlack());
+        yield return StartCoroutine(FadeImagesToBlack());
 
         // Wait for spin to complete
         yield return spinCoroutine;
+
         // Stop the music before loading the scene (optional)
         if (musicController != null)
         {
             musicController.StopMusic();
         }
 
-
         // Load the first scene
-        SceneManager.LoadScene("SCENE3_Forest");
+        SceneManager.LoadScene("SCENE1_Cave");
     }
 
     private IEnumerator SpinButton()
@@ -148,31 +179,42 @@ public class MainMenuController : MonoBehaviour
         buttonRectTransform.rotation = startRotation;
     }
 
-    private IEnumerator FadeToBlack()
+    private IEnumerator FadeImagesToBlack()
     {
-        // Ensure background image is assigned
-        if (backgroundImage == null)
-        {
-            Debug.LogWarning("Background image not assigned for fade effect!");
-            yield break;
-        }
-
-        // Start with transparent black
-        Color startColor = new Color(0, 0, 0, 0);
-        Color endColor = new Color(0, 0, 0, 1);
-
         float elapsedTime = 0f;
+
+        // Store initial colors
+        Color startColorBackground = fadeOverlay.color;
+        Color startColorPlay = (playButton != null) ? playButton.image.color : Color.white;
+        Color endColor = Color.black; // Target color (black, fully opaque)
+
         while (elapsedTime < fadeDuration)
         {
-            // Interpolate the color alpha
-            backgroundImage.color = Color.Lerp(startColor, endColor, elapsedTime / fadeDuration);
-
             elapsedTime += Time.deltaTime;
+            float t = elapsedTime / fadeDuration;
+
+            // Fade the background image to black
+            fadeOverlay.color = Color.Lerp(startColorBackground, endColor, t);
+
+            // Optionally fade the play button image to black
+            if (playButton != null)
+            {
+                playButton.image.color = Color.Lerp(startColorPlay, endColor, t);
+            }
+
+            // Optionally fade other UI elements (e.g., quitButton)
+            if (quitButton != null)
+            {
+                quitButton.image.color = Color.Lerp(startColorPlay, endColor, t);
+            }
+
             yield return null;
         }
 
-        // Ensure it's fully black at the end
-        backgroundImage.color = endColor;
+        // Ensure final colors are set to black
+        fadeOverlay.color = endColor;
+        if (playButton != null) playButton.image.color = endColor;
+        if (quitButton != null) quitButton.image.color = endColor;
     }
 
     private void QuitGame()
