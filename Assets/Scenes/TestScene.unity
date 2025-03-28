@@ -858,17 +858,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cam: {fileID: 519420028}
   parallaxEffect: 0.8
---- !u!114 &609959437 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2966433290974235351, guid: d7b5cac681f972d45b67d0ee48a7467a, type: 3}
-  m_PrefabInstance: {fileID: 325740536058050336}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0
@@ -1693,44 +1682,8 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: 3010fb960f1eb9949a7a78b15a45bbcc, type: 3}
     - target: {fileID: 2558119078521775459, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
-      propertyPath: clip
-      value: 
-      objectReference: {fileID: 8300000, guid: d67215c0bd481c641aa0e999ae6a6a1f, type: 3}
-    - target: {fileID: 2558119078521775459, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
       propertyPath: hitEffectSize
       value: 64
-      objectReference: {fileID: 0}
-    - target: {fileID: 2558119078521775459, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
-      propertyPath: swordHitColor.b
-      value: 0.6226415
-      objectReference: {fileID: 0}
-    - target: {fileID: 2558119078521775459, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
-      propertyPath: swordHitColor.g
-      value: 0.6226415
-      objectReference: {fileID: 0}
-    - target: {fileID: 2558119078521775459, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
-      propertyPath: swordHitColor.r
-      value: 0.6226415
-      objectReference: {fileID: 0}
-    - target: {fileID: 2558119078521775459, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
-      propertyPath: bareHandHitColor.b
-      value: 0.5239409
-      objectReference: {fileID: 0}
-    - target: {fileID: 2558119078521775459, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
-      propertyPath: bareHandHitColor.g
-      value: 0.5239409
-      objectReference: {fileID: 0}
-    - target: {fileID: 2558119078521775459, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
-      propertyPath: bareHandHitColor.r
-      value: 0.5471698
-      objectReference: {fileID: 0}
-    - target: {fileID: 4393832610289218965, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
-      propertyPath: m_UsedByEffector
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4516675297573743189, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
-      propertyPath: currentHealth
-      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 4516675297573743189, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
       propertyPath: onHealthChanged.m_PersistentCalls.m_Calls.Array.size
@@ -1763,10 +1716,6 @@ PrefabInstance:
     - target: {fileID: 5883888934238944523, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
       propertyPath: m_Name
       value: PlayerWithWeapon
-      objectReference: {fileID: 0}
-    - target: {fileID: 5883888934238944523, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
-      propertyPath: m_TagString
-      value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 5883888934238944523, guid: 9f6a71066b9f81649b99c419f9850f54, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -2224,17 +2173,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4753c2063b9ed4e45900bc62d3222c62, type: 3}
---- !u!114 &1937863554 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1201320374352406866, guid: d7b5cac681f972d45b67d0ee48a7467a, type: 3}
-  m_PrefabInstance: {fileID: 325740536058050336}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2000183498
 GameObject:
   m_ObjectHideFlags: 0
@@ -2508,18 +2446,6 @@ PrefabInstance:
       value: BowPickUp
       objectReference: {fileID: 0}
     - target: {fileID: 7357027950363172582, guid: 49ceb4395963ed240afd4f3aec3b2fbe, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7357027950363172582, guid: 49ceb4395963ed240afd4f3aec3b2fbe, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7357027950363172582, guid: 49ceb4395963ed240afd4f3aec3b2fbe, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7357027950363172582, guid: 49ceb4395963ed240afd4f3aec3b2fbe, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.34
       objectReference: {fileID: 0}
@@ -2559,37 +2485,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7357027950363172582, guid: 49ceb4395963ed240afd4f3aec3b2fbe, type: 3}
-      propertyPath: m_ConstrainProportionsScale
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49ceb4395963ed240afd4f3aec3b2fbe, type: 3}
---- !u!114 &2075136047 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1066272416503301741, guid: d7b5cac681f972d45b67d0ee48a7467a, type: 3}
-  m_PrefabInstance: {fileID: 325740536058050336}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &2145721026 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8277209083390415229, guid: d7b5cac681f972d45b67d0ee48a7467a, type: 3}
-  m_PrefabInstance: {fileID: 325740536058050336}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &325740536058050336
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2715,18 +2615,6 @@ PrefabInstance:
       value: 314.69998
       objectReference: {fileID: 0}
     - target: {fileID: 5755259766378913772, guid: d7b5cac681f972d45b67d0ee48a7467a, type: 3}
-      propertyPath: manaText
-      value: 
-      objectReference: {fileID: 2145721026}
-    - target: {fileID: 5755259766378913772, guid: d7b5cac681f972d45b67d0ee48a7467a, type: 3}
-      propertyPath: arrowIcon
-      value: 
-      objectReference: {fileID: 1937863554}
-    - target: {fileID: 5755259766378913772, guid: d7b5cac681f972d45b67d0ee48a7467a, type: 3}
-      propertyPath: manaSlider
-      value: 
-      objectReference: {fileID: 2075136047}
-    - target: {fileID: 5755259766378913772, guid: d7b5cac681f972d45b67d0ee48a7467a, type: 3}
       propertyPath: playerCombat
       value: 
       objectReference: {fileID: 1864830969}
@@ -2734,10 +2622,6 @@ PrefabInstance:
       propertyPath: playerHealth
       value: 
       objectReference: {fileID: 1864830967}
-    - target: {fileID: 5755259766378913772, guid: d7b5cac681f972d45b67d0ee48a7467a, type: 3}
-      propertyPath: arrowCountText
-      value: 
-      objectReference: {fileID: 609959437}
     - target: {fileID: 6695616565000842723, guid: d7b5cac681f972d45b67d0ee48a7467a, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -3018,10 +2902,6 @@ PrefabInstance:
     - target: {fileID: 3894888977823033227, guid: 4a29e2288e4c7614bb3dfe61f6c091a2, type: 3}
       propertyPath: m_Name
       value: HealthPotion_Small
-      objectReference: {fileID: 0}
-    - target: {fileID: 3894888977823033227, guid: 4a29e2288e4c7614bb3dfe61f6c091a2, type: 3}
-      propertyPath: m_Layer
-      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6470512186875849746, guid: 4a29e2288e4c7614bb3dfe61f6c091a2, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3570,46 +3450,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2238048847601530277, guid: c04ce050e4bfa934298b38362b5fb8a7, type: 3}
-      propertyPath: heavyHitSounds.Array.size
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 2238048847601530277, guid: c04ce050e4bfa934298b38362b5fb8a7, type: 3}
-      propertyPath: lightHitSounds.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2238048847601530277, guid: c04ce050e4bfa934298b38362b5fb8a7, type: 3}
-      propertyPath: mediumHitSounds.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2238048847601530277, guid: c04ce050e4bfa934298b38362b5fb8a7, type: 3}
-      propertyPath: heavyHitSounds.Array.data[0]
-      value: 
-      objectReference: {fileID: 8300000, guid: 1013b1ee392b49043a40b594b9e5bdf5, type: 3}
-    - target: {fileID: 2238048847601530277, guid: c04ce050e4bfa934298b38362b5fb8a7, type: 3}
-      propertyPath: heavyHitSounds.Array.data[1]
-      value: 
-      objectReference: {fileID: 8300000, guid: 7fe34d29bd231ef408ef1c9bd0f68528, type: 3}
-    - target: {fileID: 2238048847601530277, guid: c04ce050e4bfa934298b38362b5fb8a7, type: 3}
-      propertyPath: heavyHitSounds.Array.data[2]
-      value: 
-      objectReference: {fileID: 8300000, guid: 657abaa7a33eb7d49bb6d33f6e4194a6, type: 3}
-    - target: {fileID: 2238048847601530277, guid: c04ce050e4bfa934298b38362b5fb8a7, type: 3}
-      propertyPath: lightHitSounds.Array.data[0]
-      value: 
-      objectReference: {fileID: 8300000, guid: 2cd722063eb5aa0479df03ec7c6c0115, type: 3}
-    - target: {fileID: 2238048847601530277, guid: c04ce050e4bfa934298b38362b5fb8a7, type: 3}
-      propertyPath: lightHitSounds.Array.data[1]
-      value: 
-      objectReference: {fileID: 8300000, guid: 2043e1aa6cb1e004cbb301d809149c6c, type: 3}
-    - target: {fileID: 2238048847601530277, guid: c04ce050e4bfa934298b38362b5fb8a7, type: 3}
-      propertyPath: mediumHitSounds.Array.data[0]
-      value: 
-      objectReference: {fileID: 8300000, guid: 3c448e04347c70f46beab2dd948428b8, type: 3}
-    - target: {fileID: 2238048847601530277, guid: c04ce050e4bfa934298b38362b5fb8a7, type: 3}
-      propertyPath: mediumHitSounds.Array.data[1]
-      value: 
-      objectReference: {fileID: 8300000, guid: 4f39a4517bb3375478c2952ae6f45a00, type: 3}
     - target: {fileID: 2434361608635559651, guid: c04ce050e4bfa934298b38362b5fb8a7, type: 3}
       propertyPath: m_Name
       value: FeedbackHItManager

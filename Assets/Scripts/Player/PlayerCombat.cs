@@ -171,7 +171,7 @@ public class PlayerCombat : MonoBehaviour
             // Prevent new attack until damage is dealt, unless starting a new combo
             if (isInCombo && isComboWindowOpen && !hasDealtDamage && currentComboCount > 0)
             {
-                Debug.LogError("Waiting for damage to be applied");
+                //Debug.LogError("Waiting for damage to be applied");
                 return;
             }
 
@@ -573,6 +573,7 @@ public class PlayerCombat : MonoBehaviour
     }
     public void CollectWeapon(WeaponType weaponType, Sprite weaponIcon)
     {
+        inventoryManager = FindObjectOfType<InventoryManager>();
         if (inventoryManager != null)
         {
             inventoryManager.AddKey(weaponKeys[weaponType], weaponIcon);
