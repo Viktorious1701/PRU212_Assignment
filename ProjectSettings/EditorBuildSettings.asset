@@ -20,5 +20,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SCENE1_Cave.unity
     guid: f818427ed096a0d46b1a7c2d60483f99
+  - enabled: 1
+    path: Assets/Scenes/SCENE5_BOSS.unity
+    guid: bbea0556cd304164c876ef3af0dc16b3
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 5354f8ea59193da459d5ef7a8bee83d2, type: 3}
