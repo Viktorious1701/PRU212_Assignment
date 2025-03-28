@@ -14,6 +14,7 @@ public class MainMenuController : MonoBehaviour
     [SerializeField] private Button level2;
     [SerializeField] private Button level3;
     [SerializeField] private Button level4;
+    [SerializeField] private Button level5;
 
     [Header("Sound Effects")]
     [SerializeField] private AudioSource audioSource;
@@ -52,6 +53,10 @@ public class MainMenuController : MonoBehaviour
         {
             level4.onClick.AddListener(LoadSceneLevel4);
         }
+        if (level5 != null)
+        {
+            level5.onClick.AddListener(LoadSceneLevel5);
+        }
 
         // Ensure AudioSource is assigned
         if (audioSource == null)
@@ -85,6 +90,11 @@ public class MainMenuController : MonoBehaviour
     private void LoadSceneLevel4()
     {
         SceneManager.LoadScene("SCENE4_Castle");
+    }
+
+    private void LoadSceneLevel5()
+    {
+        SceneManager.LoadScene("SCENE5_BOSS");
     }
 
     private void OnPlayButtonClicked()
