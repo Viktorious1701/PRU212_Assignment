@@ -166,18 +166,20 @@ public class SceneTransitionController : MonoBehaviour
         // Zoom out slightly during shrink
         virtualCamera.m_Lens.OrthographicSize = initialCameraSize.x * Mathf.Lerp(1.2f, 1f, shrinkProgress);
 
-      
+
         // Reset when transition complete
         if (transitionProgress >= 1f)
         {
-             Destroy(blackHoleMask.gameObject);
+            currentState = TransitionState.Idle;
+            blackHoleMask.gameObject.SetActive(false);
         }
+
+        
     }
 
     public void TransitionToScene(string sceneName)
     {
         if (currentState != TransitionState.Idle) return;
-
         targetSceneName = sceneName;
         currentState = TransitionState.GrowingMask;
         transitionProgress = 0f;

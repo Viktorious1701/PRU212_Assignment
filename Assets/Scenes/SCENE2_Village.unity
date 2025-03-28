@@ -3228,7 +3228,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d03f6005979af04aa4ebc09eaa4c9b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialogueSystem: {fileID: 0}
+  dialogueSystem: {fileID: 1283988835}
   customMessages:
   - My old friend is trapped in the cave.
   - Please go explore and save her!
@@ -5600,7 +5600,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d03f6005979af04aa4ebc09eaa4c9b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialogueSystem: {fileID: 0}
+  dialogueSystem: {fileID: 1283988835}
   customMessages:
   - Get the key to unlock the door.
   speakerName: Sign
@@ -6701,6 +6701,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d7b5cac681f972d45b67d0ee48a7467a, type: 3}
+--- !u!114 &1283988835 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2468557282491777730, guid: d7b5cac681f972d45b67d0ee48a7467a, type: 3}
+  m_PrefabInstance: {fileID: 1283988834}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ba242529b731784aa1cffb4ded95edc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1352332412
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -89175,7 +89186,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d03f6005979af04aa4ebc09eaa4c9b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialogueSystem: {fileID: 0}
+  dialogueSystem: {fileID: 1283988835}
   customMessages:
   - Take the wheelbarrow to the end of the stage!
   - Press 'E' near the wheelbarrow to grab it.

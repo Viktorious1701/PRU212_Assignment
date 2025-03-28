@@ -11738,6 +11738,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Feedback HIt
       objectReference: {fileID: 0}
+    - target: {fileID: 2434361608635559651, guid: c04ce050e4bfa934298b38362b5fb8a7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5934684497677460313, guid: c04ce050e4bfa934298b38362b5fb8a7, type: 3}
       propertyPath: m_LocalPosition.x
       value: -12.15134
@@ -11783,17 +11787,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c04ce050e4bfa934298b38362b5fb8a7, type: 3}
---- !u!114 &914867026 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5964673571634855179, guid: c04ce050e4bfa934298b38362b5fb8a7, type: 3}
-  m_PrefabInstance: {fileID: 914867025}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec22e7207fc99bb4c9a55b9bcaadba27, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &920032302
 GameObject:
   m_ObjectHideFlags: 0
@@ -30311,10 +30304,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Trigger
       objectReference: {fileID: 0}
-    - target: {fileID: 7969807841994039742, guid: ee549a0c7c4c97843bcebe099f716c56, type: 3}
-      propertyPath: transitionController
-      value: 
-      objectReference: {fileID: 914867026}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
